@@ -14,20 +14,16 @@ shinyUI(fluidPage(
   # Sidebar with a slider input for number of bins
   sidebarLayout(
     sidebarPanel(
-        textInput("unstd_beta", "Unstandardized Beta Coefficient"),
-        verbatimTextOutput("value"),
-        textInput("std_error", "Standard Error"),
-        verbatimTextOutput("value"),
-        textInput("n_obs", "Number of Observations"),
-        verbatimTextOutput("value"),
-        textInput("n_covariates", "Number of Covariates"),
-        verbatimTextOutput("value"),
+        textInput("unstd_beta", "Unstandardized Beta Coefficient", "2"),
+        textInput("std_error", "Standard Error", ".4"),
+        textInput("n_obs", "Number of Observations", "100"),
+        textInput("n_covariates", "Number of Covariates", "3"),
         actionButton("button", "Run")
     ),
 
     # Show text results
     mainPanel(
-        textOutput("text1")
+        verbatimTextOutput("text")
     )
   )
 ))

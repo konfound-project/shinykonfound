@@ -5,9 +5,15 @@ library(konfound)
 
 shinyServer(function(input, output) {
     
-    output$text1 <- renderText({ 
-        "You have selected this"
+    df <- eventReactive(input$button, {
+        pkonfound(as.numeric(input$unstd_beta), 
+                  as.numeric(input$std_error), 
+                  as.numeric(input$n_obs), 
+                  as.numeric(input$n_covariates))
     })
     
-}
-)
+    output$text <- renderPrint({
+        df()
+    })
+    
+})
