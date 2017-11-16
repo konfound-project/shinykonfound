@@ -5,10 +5,9 @@ library(shiny)
 shinyUI(fluidPage(
     
     # Application title
-    titlePanel("konfound: Sensitivity analysis as described in Frank, Maroulis, Duong, and Kelcey (2013)"),
+    titlePanel("konfound: Sensitivity analysis as described in Frank, Maroulis, Duong, and Kelcey (2013) and in Frank (2000)"),
     
-    p("The goal of konfound is to carry out sensitivity analysis as described in Frank, Maroulis, Duong, and Kelcey (2013) based on Rubin's (1974) causal model."),
-    
+    p("The goal of konfound is to carry out sensitivity analysis as described in Frank, Maroulis, Duong, and Kelcey (2013) and in Frank (2000) based on Rubin's (1974) causal model."),
     
     # Sidebar with a slider input for number of bins
     sidebarLayout(
@@ -26,18 +25,21 @@ shinyUI(fluidPage(
                 tabPanel("Results (Printed)", 
                          tags$br(), 
                          verbatimTextOutput("text")), 
-                tabPanel("Results (Plot)", 
+                tabPanel("Results (Plot 1)", 
                          tags$br(), 
-                         plotOutput("plot", width = "50%")), 
+                         plotOutput("plot1", width = "50%")), 
+                tabPanel("Results (Plot 2)", 
+                        tags$br(), 
+                        plotOutput("plot2", width = "50%")), 
                 tabPanel("More Information", 
                          tags$br(),
                          p("For more information:"),
                          tags$ul(
-                             tags$li(tags$a(href="https://msu.edu/~kenfrank/research", "Ken Frank's homepage")), 
+                             tags$li(tags$a(href="https://msu.edu/~kenfrank/research.htm#causal", "Ken Frank's homepage")), 
                              tags$li(tags$a(href="https://msu.edu/~kenfrank/papers/Introduction%20to%20causal%20inference.doc", "Summary statement on approach to sensitivity analysis")), 
                              tags$li(tags$a(href="https://msu.edu/~kenfrank/What%20would%20it%20take%20to%20Change%20an%20Inference%20published.docx", "Frank, Maroulis, Duong, & Kelcey's (2013) paper in EEPA")),
-                             tags$li(tags$a(href="https://msu.edu/~kenfrank/quantifying%20the%20robustness%20of%20causal%20inferences%20replacement%20of%20cases%202.pptx", "Quick examples")), 
-                             tags$li(tags$a(href="https://msu.edu/~kenfrank/papers/Introduction%20to%20causal%20inference.doc", "Powerpoint for replacement of cases")), 
+                             tags$li(tags$a(href="https://msu.edu/~kenfrank/Quick%20Examples%20of%20Quantifying%20the%20Robustness%20to%20Invalidate.pptx", "Quick examples")), 
+                             tags$li(tags$a(href="https://msu.edu/~kenfrank/quantifying%20the%20robustness%20of%20causal%20inferences%20replacement%20of%20cases%202.pptx", "Powerpoint for replacement of cases")), 
                              tags$li(tags$a(href="https://msu.edu/~kenfrank/quantifying%20the%20robustness%20of%20causal%20inferences%20for%20regression.pptx", "Powerpoint for correlation framework")),
                              tags$li(tags$a(href="https://msu.edu/~kenfrank/quantifying%20the%20robustness%20of%20causal%20inferences%20%20comparison%20of%20frameworks.pptx", "Powerpoint for comparison of frameworks")),
                              tags$li(tags$a(href="https://msu.edu/~kenfrank/KonFound-it!.xlsx", "Spreadsheet for calculating indices (KonFound-it!)"))
@@ -62,7 +64,7 @@ shinyUI(fluidPage(
                          tags$code("konfound x1"),
                          tags$br(),
                          tags$br(),
-                         tags$a(href="https://msu.edu/~kenfrank/research", "More information on use in STATA can be found here."),
+                         tags$a(href="https://msu.edu/~kenfrank/research.htm", "More information on use in STATA can be found here."),
                          tags$br(),
                          h4("R"),
                          p("For R (presently in-development), issue the following commands:"),
