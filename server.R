@@ -3,29 +3,9 @@
 library(shiny)
 library(konfound)
 
+url <- "https://twitter.com/intent/tweet?text=Check%20out%20the%20Konfound-it%20web%20app%20for%20carrying%20out%20sensitivity%20analysis!&url=https://konfound-it/"
+
 shinyServer(function(input, output) {
-    
-    # df_brief <- eventReactive(input$button, {
-    #     
-    #     unstd_beta <- as.numeric(input$unstd_beta)
-    #     std_error <- as.numeric(input$std_error)
-    #     n_obs <- as.numeric(input$n_obs)
-    #     n_covariates <- as.numeric(input$n_covariates)
-    #     
-    #     pkonfound_output <- pkonfound(unstd-beta,
-    #                                   std_error,
-    #                                   n_obs,
-    #                                   n_covariates,
-    #                                   to_return = "raw_output")
-    #     
-    #     pkonfound_output <- pkonfound_output[, -c(2, 4, 5, 6)] # removing replace null cases, beta_threshold, and omitted variable corr
-    #     
-    # })
-    # output$brief_text <- renderTable({
-    #     x <- df_brief()
-    #     names(x) <- c("action", "pct_bias", "omit_corr", "itcv")    
-    #     x
-    # })
     
     df <- eventReactive(input$button, {
         
