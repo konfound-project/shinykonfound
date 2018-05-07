@@ -31,26 +31,6 @@ shinyServer(function(input, output) {
         all[1:3]
     })
     
-    # df2 <- eventReactive(input$button, {
-    #     
-    #     unstd_beta <- as.numeric(input$unstd_beta)
-    #     std_error <- as.numeric(input$std_error)
-    #     n_obs <- as.numeric(input$n_obs)
-    #     n_covariates <- as.numeric(input$n_covariates)
-    #     
-    #     validate(
-    #         need(is.numeric(unstd_beta) &
-    #                  is.numeric(std_error) &
-    #                  is.numeric(n_obs) &
-    #                  is.numeric(n_covariates), "Please select a data set")
-    #     )
-    #     
-    #     capture.output(pkonfound(as.numeric(input$unstd_beta), 
-    #                              as.numeric(input$std_error), 
-    #                              as.numeric(input$n_obs), 
-    #                              as.numeric(input$n_covariates)))
-    # })
-    
     output$text2 <- renderText({
         all <- df()
         all[4:7]
