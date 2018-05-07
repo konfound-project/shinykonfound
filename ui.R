@@ -2,13 +2,15 @@
 
 library(shiny)
 
+url <- "https://twitter.com/intent/tweet?text=Check%20out%20the%20Konfound-it%20web%20app%20for%20carrying%20out%20sensitivity%20analysis!&url=https://konfound-it/"
+
 shinyUI(fluidPage(theme = shinythemes::shinytheme("cerulean"),
                   
                   tags$head(includeScript("google-analytics.js")),
                   
                   # Application title
-                  titlePanel("KonFound-It: Interactive application (and Stata procedure and R package) to carry out sensitivity analysis"),
-                  p("KonFound-It takes four values - the estimated effect (such as an unstandardized regression coefficient), its standard error, the number of observations, and the number of covariates. KonFound-It returns output in the forms of publishable statements as well as figures to support the interpretation of the output."),
+                  titlePanel("KonFound-It: Quantify the Robustness of Causal Inferences"),
+                  p("KonFound-It takes four values - the estimated effect (such as an unstandardized regression coefficient or the group mean difference), its standard error, the number of observations, and the number of covariates. KonFound-It returns output in the forms of publishable statements as well as figures to support the interpretation of the output."),
                   tags$b("Change or set any of the values below and then click run to see output from KonFound-It!"),
                   tags$br(),
                   tags$br(),
@@ -41,28 +43,6 @@ shinyUI(fluidPage(theme = shinythemes::shinytheme("cerulean"),
                                        plotOutput("plot2", width = "50%"),
                                        tags$br(),
                                        tags$p("'Right click' this plot to save it")),
-                              tabPanel("More Information", 
-                                       tags$br(),
-                                       tags$ul(
-                                           tags$b("Resources:"),
-                                           p(),
-                                           tags$li(tags$a(href="https://msu.edu/~kenfrank/research.htm#causal", "Ken Frank's homepage")), 
-                                           tags$li(tags$a(href="https://jrosen48.github.io/konfound/", "konfound (in-development) R package")),
-                                           tags$li(tags$a(href="https://msu.edu/~kenfrank/papers/Introduction%20to%20causal%20inference.doc", "Summary statement on approach to sensitivity analysis")), 
-                                           tags$li(tags$a(href="https://msu.edu/~kenfrank/Quick%20Examples%20of%20Quantifying%20the%20Robustness%20to%20Invalidate.pptx", "Quick examples")), 
-                                           tags$li(tags$a(href="https://msu.edu/~kenfrank/quantifying%20the%20robustness%20of%20causal%20inferences%20replacement%20of%20cases%202.pptx", "Powerpoint for replacement of cases")), 
-                                           tags$li(tags$a(href="https://msu.edu/~kenfrank/quantifying%20the%20robustness%20of%20causal%20inferences%20for%20regression.pptx", "Powerpoint for correlation framework")),
-                                           tags$li(tags$a(href="https://msu.edu/~kenfrank/quantifying%20the%20robustness%20of%20causal%20inferences%20%20comparison%20of%20frameworks.pptx", "Powerpoint for comparison of frameworks")),
-                                           tags$li(tags$a(href="https://msu.edu/~kenfrank/KonFound-it!.xlsx", "Spreadsheet for calculating indices (KonFound-it!)")),
-                                           p(),
-                                           tags$b("Publications:"),
-                                           p(),
-                                           tags$li(tags$a(href="https://msu.edu/~kenfrank/What%20would%20it%20take%20to%20Change%20an%20Inference%20published.docx", "Frank and colleagues' (2013) paper in EEPA")),
-                                           tags$li(tags$a(href="https://msu.edu/~kenfrank/papers/Does%20NBPTS%20Certification%20Affect%20the%20Number%20of%20Colleagues%20a%20Teacher%20Helps%20with%20Instructional%20Matters%20acceptance%20version%202.doc", "Frank and colleagues' (2008) paper in EEPA")),
-                                           tags$li(tags$a(href="https://msu.edu/~kenfrank/papers/impact%20of%20a%20confounding%20variable.pdf", "Frank's (2000) paper in SMR"))
-                                       ),
-                                       tags$br()
-                              ),
                               tabPanel("Workshops", 
                                        tags$br(), 
                                        tags$p("Upcoming workshops and trainings:"),
@@ -109,12 +89,38 @@ shinyUI(fluidPage(theme = shinythemes::shinytheme("cerulean"),
                                        tags$code("konfound x1"),
                                        tags$br(),
                                        tags$br()
-                              )
+                              ),
+                              tabPanel("More Info. & Contact", 
+                                       tags$br(),
+                                       tags$ul(
+                                           tags$b("Resources:"),
+                                           p(),
+                                           tags$li(tags$a(href="https://msu.edu/~kenfrank/research.htm#causal", "Ken Frank's homepage")), 
+                                           tags$li(tags$a(href="https://jrosen48.github.io/konfound/", "konfound (in-development) R package")),
+                                           tags$li(tags$a(href="https://msu.edu/~kenfrank/papers/Introduction%20to%20causal%20inference.doc", "Summary statement on approach to sensitivity analysis")), 
+                                           tags$li(tags$a(href="https://msu.edu/~kenfrank/Quick%20Examples%20of%20Quantifying%20the%20Robustness%20to%20Invalidate.pptx", "Quick examples")), 
+                                           tags$li(tags$a(href="https://msu.edu/~kenfrank/quantifying%20the%20robustness%20of%20causal%20inferences%20replacement%20of%20cases%202.pptx", "Powerpoint for replacement of cases")), 
+                                           tags$li(tags$a(href="https://msu.edu/~kenfrank/quantifying%20the%20robustness%20of%20causal%20inferences%20for%20regression.pptx", "Powerpoint for correlation framework")),
+                                           tags$li(tags$a(href="https://msu.edu/~kenfrank/quantifying%20the%20robustness%20of%20causal%20inferences%20%20comparison%20of%20frameworks.pptx", "Powerpoint for comparison of frameworks")),
+                                           tags$li(tags$a(href="https://msu.edu/~kenfrank/KonFound-it!.xlsx", "Spreadsheet for calculating indices (KonFound-it!)")),
+                                           p(),
+                                           tags$b("Publications:"),
+                                           p(),
+                                           tags$li(tags$a(href="https://msu.edu/~kenfrank/What%20would%20it%20take%20to%20Change%20an%20Inference%20published.docx", "Frank and colleagues' (2013) paper in EEPA")),
+                                           tags$li(tags$a(href="https://msu.edu/~kenfrank/papers/Does%20NBPTS%20Certification%20Affect%20the%20Number%20of%20Colleagues%20a%20Teacher%20Helps%20with%20Instructional%20Matters%20acceptance%20version%202.doc", "Frank and colleagues' (2008) paper in EEPA")),
+                                           tags$li(tags$a(href="https://msu.edu/~kenfrank/papers/impact%20of%20a%20confounding%20variable.pdf", "Frank's (2000) paper in SMR")),
+                                           p(),
+                                           tags$b("Contact:"),
+                                           p(),
+                                           tags$li(tags$a(href="Email Ken Frank", "kenfrank@msu.edu")),
+                                           tags$li(tags$a(href="Google Form to add email to Ken Frank's Konfound-it! mailing list for news and updates", "https://goo.gl/forms/qeXowIXpHNdHaOBH2")),
+                                           tags$li(tags$a(href="Post a question to Google Groups mailing list for Konfond-it!", "https://groups.google.com/forum/#!forum/konfound-it")),
+                                           p()))
                           )
-                      )
-                  ),
+                      )),
                   tags$a(href=url, "Tweet", class="twitter-share-button"),
                   includeScript("http://platform.twitter.com/widgets.js"),
+                  tags$p(),
                   tags$i("To cite this KonFound-It interactive application:"),
                   p(),
                   p(" Rosenberg, J. M., Xu, R., & Frank, K. A. (2018). Konfound-It: Interactive application (and Stata procedure and R package) to carry out sensitivity analysis. http://konfound-it.com."),
@@ -126,4 +132,5 @@ shinyUI(fluidPage(theme = shinythemes::shinytheme("cerulean"),
                   p(),
                   tags$i("Source code for this app is", 
                          a(href="https://github.com/jrosen48/shinykonfound", "here."))
-))
+)
+)

@@ -3,8 +3,6 @@
 library(shiny)
 library(konfound)
 
-url <- "https://twitter.com/intent/tweet?text=Check%20out%20the%20Konfound-it%20web%20app%20for%20carrying%20out%20sensitivity%20analysis!&url=https://konfound-it/"
-
 shinyServer(function(input, output) {
     
     df <- eventReactive(input$button, {
