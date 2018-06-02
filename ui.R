@@ -2,25 +2,25 @@
 
 library(shiny)
 
-url <- "https://twitter.com/intent/tweet?text=Check%20out%20the%20Konfound-it%20web%20app%20for%20carrying%20out%20sensitivity%20analysis!&url=https://konfound-it/"
+# instructions here: https://dev.twitter.com/web/tweet-button/web-intent
+url <- "https://twitter.com/intent/tweet?text=Check%20out%20the%20Konfound-it%20web%20application%20for%20carrying%20out%20sensitivity%20analysis!&url=http://konfound-it.com/&hashtags=konfoundit,sensitivityanalysis"
 
 shinyUI(fluidPage(theme = shinythemes::shinytheme("cerulean"),
                   
                   tags$head(includeScript("google-analytics.js")),
                   
                   # Application title
-                  titlePanel("KonFound-It: Quantify the Robustness of Causal Inferences"),
-                  p("KonFound-It takes four values - the estimated effect (such as an unstandardized regression coefficient or the group mean difference), its standard error, the number of observations, and the number of covariates. KonFound-It returns output in the forms of publishable statements as well as figures to support the interpretation of the output."),
-                  tags$b("Change or set any of the values below and then click run to see output from KonFound-It!"),
-                  tags$br(),
-                  tags$br(),
+                  titlePanel("KonFound-It!"),
+                  h3("Quantify the Robustness of Causal Inferences"),
+                  p("KonFound-It! takes four values - the estimated effect (such as an unstandardized regression coefficient or the group mean difference), its standard error, the number of observations, and the number of covariates. KonFound-It returns output in the forms of publishable statements as well as figures to support the interpretation of the output."),
+                  tags$h5("Change or set any of the values below and then click run to see output from KonFound-It!"),
                   # Sidebar with a slider input for number of bins
                   sidebarLayout(
                       sidebarPanel(
-                          numericInput("unstd_beta", "Estimated Effect", "2"),
-                          numericInput("std_error", "Standard Error", ".4"),
-                          numericInput("n_obs", "Number of Observations", "100"),
-                          numericInput("n_covariates", "Number of Covariates", "3"),
+                          numericInput("unstd_beta", "Estimated Effect", 2),
+                          numericInput("std_error", "Standard Error", .4),
+                          numericInput("n_obs", "Number of Observations", 100),
+                          numericInput("n_covariates", "Number of Covariates", 3),
                           actionButton("button", "Run"),
                           width = 2
                       ),
@@ -46,9 +46,33 @@ shinyUI(fluidPage(theme = shinythemes::shinytheme("cerulean"),
                               tabPanel("Workshops", 
                                        tags$br(), 
                                        tags$p("Upcoming workshops and trainings:"),
-                                       tags$li("June 18, Vienna University of Economics. Contact: Thomas Plümper (thomas.pluemper@wu.ac.at>)"),
-                                       tags$li("July 30 - August 3, Peking University. Contact: Qiang Ren is contact (renqiang@pku.edu.cn)"),
+                                       tags$li("June 18, Vienna University of Economics. Contact: Thomas Plümper (thomas.pluemper@wu.ac.at)"),
+                                       tags$li("July 30 - August 3, Peking University. Contact: Qiang Ren (renqiang@pku.edu.cn). Web: http://www.oir.pku.edu.cn/umich/jxsz1/nsqkczsjz2018.htm"),
                                        tags$br()
+                              ),
+                              tabPanel("Add to Mobile Device", 
+                                       tags$b("To add this app to your home screen, follow these instructions based on the browser and operating system you're using"),
+                                       tags$p(),
+                                       tags$u("Using the Chrome Browser on either iOS (iPhone and iPad) or Android"),
+                                       tags$ol(
+                                           tags$li("Using the built-in (can vary across devices) browser on Android; note that these can vary across devices)"),
+                                           tags$li("Select 'Add to homescreen'"),
+                                           tags$li("Tap 'Add'")),
+                                       tags$p(),
+                                       tags$u("Using the Safari browser on iOS"),
+                                       tags$ol(
+                                           tags$li("Visit a page you'd like to bookmark (e.g. the ASX 200 page)"),
+                                           tags$li("Tap the 'Share' icon"),
+                                           tags$li("Tap 'Add to Home Screen'"),
+                                           tags$li("Tap 'Add'")),
+                                       tags$p(),
+                                       tags$u("Using the built-in (can vary across devices) browser on Android; note that these can vary across devices)"),
+                                       tags$ol(
+                                           tags$li("Tap the Menu button (  Android Menu Button V  Android Menu Button V1  Android Menu Button V2"),
+                                           tags$li("Select Bookmarks"),
+                                           tags$li("Tap Add Bookmark then OK to save"),
+                                           tags$li("Press and hold the Bookmark you just saved"),
+                                           tags$li("Select Add shortcut to Home"))
                               ),
                               tabPanel("R and Stata",
                                        tags$br(),
@@ -93,15 +117,19 @@ shinyUI(fluidPage(theme = shinythemes::shinytheme("cerulean"),
                               tabPanel("More Info. & Contact", 
                                        tags$br(),
                                        tags$ul(
-                                           tags$b("Resources:"),
+                                           tags$b("Resources (getting started):"),
                                            p(),
-                                           tags$li(tags$a(href="https://msu.edu/~kenfrank/research.htm#causal", "Ken Frank's homepage")), 
-                                           tags$li(tags$a(href="https://jrosen48.github.io/konfound/", "konfound (in-development) R package")),
                                            tags$li(tags$a(href="https://msu.edu/~kenfrank/papers/Introduction%20to%20causal%20inference.doc", "Summary statement on approach to sensitivity analysis")), 
                                            tags$li(tags$a(href="https://msu.edu/~kenfrank/Quick%20Examples%20of%20Quantifying%20the%20Robustness%20to%20Invalidate.pptx", "Quick examples")), 
                                            tags$li(tags$a(href="https://msu.edu/~kenfrank/quantifying%20the%20robustness%20of%20causal%20inferences%20replacement%20of%20cases%202.pptx", "Powerpoint for replacement of cases")), 
                                            tags$li(tags$a(href="https://msu.edu/~kenfrank/quantifying%20the%20robustness%20of%20causal%20inferences%20for%20regression.pptx", "Powerpoint for correlation framework")),
                                            tags$li(tags$a(href="https://msu.edu/~kenfrank/quantifying%20the%20robustness%20of%20causal%20inferences%20%20comparison%20of%20frameworks.pptx", "Powerpoint for comparison of frameworks")),
+                                           p(),
+                                           tags$b("Resources (more advanced uses):"),
+                                           p(),
+                                           tags$li(tags$a(href="https://msu.edu/~kenfrank/Examples%20of%20applications%20of%20indices%20for%20quantifying%20the%20robustness%20of%20causal%20inferences.docx", "Published empirical examples")),
+                                           tags$li(tags$a(href="https://msu.edu/~kenfrank/Quantifying%20the%20Robustness%20of%20the%20Inference%20full%20write%20up%20case%20replacement%20approach.docx", "Full publishable write-up (replacement of cases)")),
+                                           tags$li(tags$a(href="https://msu.edu/~kenfrank/Quantifying%20the%20Robustness%20of%20the%20Inference%20full%20write%20up%20correlation%20based%20approach.docx", "Full publishable write-up (correlation)")),
                                            tags$li(tags$a(href="https://msu.edu/~kenfrank/KonFound-it!.xlsx", "Spreadsheet for calculating indices (KonFound-it!)")),
                                            p(),
                                            tags$b("Publications:"),
@@ -112,25 +140,31 @@ shinyUI(fluidPage(theme = shinythemes::shinytheme("cerulean"),
                                            p(),
                                            tags$b("Contact:"),
                                            p(),
-                                           tags$li(tags$a(href="Email Ken Frank", "kenfrank@msu.edu")),
-                                           tags$li(tags$a(href="Google Form to add email to Ken Frank's Konfound-it! mailing list for news and updates", "https://goo.gl/forms/qeXowIXpHNdHaOBH2")),
-                                           tags$li(tags$a(href="Post a question to Google Groups mailing list for Konfond-it!", "https://groups.google.com/forum/#!forum/konfound-it")),
-                                           p()))
-                          )
-                      )),
-                  tags$a(href=url, "Tweet", class="twitter-share-button"),
+                                           tags$li(tags$a(href="https://msu.edu/~kenfrank/research.htm#causal", "Ken Frank's homepage")), 
+                                           tags$li(tags$a(href = "mailto:kenfrank@msu.edu", "Email Ken Frank")),
+                                           tags$li(tags$a(href="https://groups.google.com/forum/#!forum/konfound-it", "Post a question to Google Groups mailing list for Konfond-it!")),
+                                           p())
+                              )
+                          ))),
+                  tags$b("Note:"),
+                  p(),
+                  tags$p("This is intended for academic use. We do not make any money on this and we will not sell your data. We ask for your email (through the form below) to build a user community. We also ask that you cite this app and the publications when you use the results."),
+                  p(),
+                  tags$b("To cite this application:"),
+                  p(),
+                  p(" Rosenberg, J. M., Xu, R., & Frank, K. A. (2018). Konfound-It!: Interactive application (and Stata procedure and R package) to carry out sensitivity analysis. http://konfound-it.com."),
+                  tags$b("More information can be found in the following two publications:"),
+                  p(),
+                  tags$a(href="https://msu.edu/~kenfrank/papers/impact%20of%20a%20confounding%20variable.pdf", "Frank, K. 2000. Impact of a Confounding Variable on the Inference of a Regression Coefficient. Sociological Methods and Research, 29(2), 147-194"),
+                  p(),
+                  tags$a(href = "https://msu.edu/~kenfrank/What%20would%20it%20take%20to%20Change%20an%20Inference%20published.docx", "Frank, K.A., Maroulis, S., Duong, M., and Kelcey, B. 2013. What would it take to change an inference? Using Rubin’s causal model to interpret the robustness of causal inferences. Education, Evaluation and Policy Analysis. Vol 35: 437-460."),
+                  p(),
+                  tags$hr(),
+                  tags$i("Send a tweet with a link to Konfound-It!", a(href = url, "here"), class="twitter-share-button"),
                   includeScript("http://platform.twitter.com/widgets.js"),
-                  tags$p(),
-                  tags$i("To cite this KonFound-It interactive application:"),
-                  p(),
-                  p(" Rosenberg, J. M., Xu, R., & Frank, K. A. (2018). Konfound-It: Interactive application (and Stata procedure and R package) to carry out sensitivity analysis. http://konfound-it.com."),
-                  p(),
-                  tags$i("More information can be found in Frank (2000) and  Frank, Maroulis, Duong, and Kelcey (2013):"),
-                  p(),
-                  p("Frank, K. 2000. “Impact of a Confounding Variable on the Inference of a Regression Coefficient.” Sociological Methods and Research, 29(2), 147-194 https://msu.edu/~kenfrank/papers/impact%20of%20a%20confounding%20variable.pdf"),
-                  p("Frank, K.A., Maroulis, S., Duong, M., and Kelcey, B. 2013. What would it take to change an inference?: Using Rubin’s causal model to interpret the robustness of causal inferences. Education, Evaluation and Policy Analysis. Vol 35: 437-460. https://msu.edu/~kenfrank/What%20would%20it%20take%20to%20Change%20an%20Inference%20published.docx"),
-                  p(),
+                  tags$hr(),
                   tags$i("Source code for this app is", 
-                         a(href="https://github.com/jrosen48/shinykonfound", "here."))
+                         a(href="https://github.com/jrosen48/shinykonfound", "here")),
+                  tags$hr()
 )
 )
