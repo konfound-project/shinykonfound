@@ -1,12 +1,12 @@
-name: shinykonfound
-title: shinykonfound
+name: konfound-it
+title: konfound-it
 username:
 account: jmichaelrosenberg
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
-appId: 200320
-bundleId: 1407043
+appId: 353052
+bundleId: 1407053
 url: https://jmichaelrosenberg.shinyapps.io/konfound-it/
-when: 1527947636.11004
+when: 1527948277.7796
 asMultiple: FALSE
 asStatic: FALSE
