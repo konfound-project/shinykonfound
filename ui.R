@@ -2,6 +2,17 @@
 
 library(shiny)
 
+# tags$head(
+#     tags$style(HTML("
+#                     
+#                     h4 {
+#                     color: #48ca3b;
+#                     }
+#                     
+#                     ")
+#     )
+# ),
+
 # instructions here: https://dev.twitter.com/web/tweet-button/web-intent
 url <- "https://twitter.com/intent/tweet?text=Check%20out%20the%20Konfound-it%20web%20application%20for%20carrying%20out%20sensitivity%20analysis!&url=http://konfound-it.com/&hashtags=konfoundit,sensitivityanalysis"
 
@@ -11,7 +22,9 @@ shinyUI(fluidPage(theme = shinythemes::shinytheme("cerulean"),
                   
                   # Application title
                   titlePanel("KonFound-It!"),
+                  img(src='konfoundlogo-small-new.png'),
                   h3("Quantify the Robustness of Causal Inferences"),
+                  # h4("Announcement! Quantifying What it Would Take to Change an Inference: Toward a Pragmatic Sociology talk at ASA"),
                   p("KonFound-It! takes four values - the estimated effect (such as an unstandardized regression coefficient or the group mean difference), its standard error, the number of observations, and the number of covariates. KonFound-It returns output in the forms of publishable statements as well as figures to support the interpretation of the output."),
                   tags$h5("Change or set any of the values below and then click run to see output from KonFound-It!"),
                   # Sidebar with a slider input for number of bins
@@ -50,8 +63,7 @@ shinyUI(fluidPage(theme = shinythemes::shinytheme("cerulean"),
                               tabPanel("Workshops", 
                                        tags$br(), 
                                        tags$p("Upcoming workshops and trainings:"),
-                                       tags$li("June 18, Vienna University of Economics. Contact: Thomas Plümper (thomas.pluemper@wu.ac.at)"),
-                                       tags$li("July 30 - August 3, Peking University. Contact: Qiang Ren (renqiang@pku.edu.cn). Web: http://www.oir.pku.edu.cn/umich/jxsz1/nsqkczsjz2018.htm"),
+                                       tags$li("None scheduled right now; check with the mailing list (see More Info. & Contact tab) for details about how to join!"),
                                        tags$br()
                               ),
                               tabPanel("Add to Mobile Device", 
@@ -115,7 +127,7 @@ shinyUI(fluidPage(theme = shinythemes::shinytheme("cerulean"),
                               tabPanel("More Info. & Contact", 
                                        tags$br(),
                                        tags$ul(
-                                           tags$b("Explanatory Resources:"),
+                                           tags$b("Explanatory resources:"),
                                            p(),
                                            tags$li(tags$a(href="https://msu.edu/~kenfrank/papers/Introduction%20to%20causal%20inference.doc", "Summary statement on approach to sensitivity analysis")), 
                                            tags$li(tags$a(href="https://msu.edu/~kenfrank/Quick%20Examples%20of%20Quantifying%20the%20Robustness%20to%20Invalidate.pptx", "Quick examples")), 
@@ -146,12 +158,16 @@ shinyUI(fluidPage(theme = shinythemes::shinytheme("cerulean"),
                           ))),
                   tags$b("Note:"),
                   p(),
-                  tags$p("This is intended for academic use. We do not make any money on this and we will not sell your data. We ask for your email (through the form below) to build a user community. We also ask that you cite this app and the publications when you use the results."),
+                  tags$p("This is intended for academic use. We do not make any money on this and we will not sell your data. We ask for you to join the mailing list (see link below) to build a user community. We also ask that you cite this app and the publications when you use the results."),
+                  p(),
+                  tags$b("Mailing list:"),
+                  p(),
+                  tags$a(href="https://groups.google.com/forum/#!forum/konfound-it", "Google Groups mailing list for Konfound-It!"),
                   p(),
                   tags$b("To cite this application:"),
                   p(),
-                  p(" Rosenberg, J. M., Xu, R., & Frank, K. A. (2018). Konfound-It!: Interactive application (and Stata procedure and R package) to carry out sensitivity analysis. http://konfound-it.com."),
-                  tags$b("More information can be found in the following two publications:"),
+                  p(" Rosenberg, J. M., Xu, R., & Frank, K. A. (2018). Konfound-It!: Quantify the Robustness of Causal Inferences. http://konfound-it.com."),
+                  tags$b("More information can be found in the following three publications:"),
                   p(),
                   tags$a(href="https://msu.edu/~kenfrank/papers/impact%20of%20a%20confounding%20variable.pdf", "Frank (2000)"),
                   p(),
