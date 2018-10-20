@@ -24,7 +24,6 @@ shinyUI(fluidPage(theme = shinythemes::shinytheme("cerulean"),
                   titlePanel("KonFound-It!"),
                   img(src='konfoundlogo-small-new.png'),
                   h3("Quantify the Robustness of Causal Inferences"),
-                  # h4("Announcement! Quantifying What it Would Take to Change an Inference: Toward a Pragmatic Sociology talk at ASA"),
                   p("KonFound-It! takes four values - the estimated effect (such as an unstandardized regression coefficient or the group mean difference), its standard error, the number of observations, and the number of covariates. KonFound-It returns output in the forms of publishable statements as well as figures to support the interpretation of the output."),
                   tags$h5("Change or set any of the values below and then click run to see output from KonFound-It!"),
                   # Sidebar with a slider input for number of bins
