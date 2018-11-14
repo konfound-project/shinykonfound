@@ -13,7 +13,7 @@ shinyServer(function(input, output) {
                      is.numeric(input$n_obs) &
                      is.numeric(input$n_covariates), "Did not run! Did you enter numbers for the estimated effect, standard error, number of observations, and number of covariates? Please change any of these that are not to a number.")
         )
-
+        
         validate(
             need(input$n_obs > (input$n_covariates + 1), "Did not run! There are too few observations relative to the number of observations and covariates. Please specify a less complex model to use KonFound-It.")
         )

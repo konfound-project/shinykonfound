@@ -25,14 +25,15 @@ shinyUI(fluidPage(theme = shinythemes::shinytheme("cerulean"),
                   img(src='konfoundlogo-small-new.png'),
                   h3("Quantify the Robustness of Causal Inferences"),
                   p("KonFound-It! takes four values - the estimated effect (such as an unstandardized regression coefficient or the group mean difference), its standard error, the number of observations, and the number of covariates. KonFound-It returns output in the forms of publishable statements as well as figures to support the interpretation of the output."),
-                  tags$h5("Change or set any of the values below and then click run to see output from KonFound-It!"),
+                  # tags$h5(""),
                   # Sidebar with a slider input for number of bins
                   sidebarLayout(
-                      sidebarPanel(
-                          numericInput("unstd_beta", "Estimated Effect", 2),
-                          numericInput("std_error", "Standard Error", .4),
-                          numericInput("n_obs", "Number of Observations", 100),
-                          numericInput("n_covariates", "Number of Covariates", 3),
+                      sidebarPanel(tags$h5("Change or set any of the values below and then click run to see output from KonFound-It!"),
+                          numericInput("unstd_beta", "Estimated Effect", 2, step = .1),
+                          numericInput("std_error", "Standard Error", .4, step = .1),
+                          numericInput("n_obs", "Number of Observations", 100, step = 1),
+                          numericInput("n_covariates", "Number of Covariates", 3, step = 1),
+                          p("Please note that decimals must be denoted with a period, i.e., 2.1"),
                           actionButton("button", "Run"),
                           width = 2
                       ),
