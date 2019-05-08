@@ -2,17 +2,6 @@
 
 library(shiny)
 
-# tags$head(
-#     tags$style(HTML("
-#                     
-#                     h4 {
-#                     color: #48ca3b;
-#                     }
-#                     
-#                     ")
-#     )
-# ),
-
 # instructions here: https://dev.twitter.com/web/tweet-button/web-intent
 url <- "https://twitter.com/intent/tweet?text=Check%20out%20the%20Konfound-it%20web%20application%20for%20carrying%20out%20sensitivity%20analysis!&url=http://konfound-it.com/&hashtags=konfoundit,sensitivityanalysis"
 
@@ -28,22 +17,58 @@ shinyUI(fluidPage(theme = shinythemes::shinytheme("cerulean"),
                   # tags$h5(""),
                   # Sidebar with a slider input for number of bins
                   sidebarLayout(
-                      sidebarPanel(tags$h5("Change or set any of the values below and then click run to see output from KonFound-It!"),
-                          numericInput("unstd_beta", "Estimated Effect", 2, step = .1),
-                          numericInput("std_error", "Standard Error", .4, step = .1),
-                          numericInput("n_obs", "Number of Observations", 100, step = 1),
-                          numericInput("n_covariates", "Number of Covariates", 3, step = 1),
-                          p("Please note that decimals must be denoted with a period, i.e., 2.1"),
-                          actionButton("button", "Run"),
-                          width = 2
-                      ),
+                    tabsetPanel(
+                      tabPanel("Linear",
+                        sidebarPanel(tags$h5("Change or set any of the values below and then click run to see output from KonFound-It!"),
+                                     numericInput("unstd_beta", "Estimated Effect", 2, step = .1),
+                                     numericInput("std_error", "Standard Error", .4, step = .1),
+                                     numericInput("n_obs", "Number of Observations", 100, step = 1),
+                                     numericInput("n_covariates", "Number of Covariates", 3, step = 1),
+                                     p("Please note that decimals must be denoted with a period, i.e., 2.1"),
+                                     actionButton("button", "Run"),
+                                     width = 2
+                      )),
+                      tabPanel("Non-Linear (Beta)",
+                        sidebarPanel(tags$h5("Change or set any of the values below and then click run to see output from KonFound-It!"),
+                                     numericInput("unstd_beta1", "Estimated Effect", -.2, step = .1),
+                                     numericInput("std_error1", "Standard Error", .103, step = .1),
+                                     numericInput("n_obs1", "Number of Observations", 20888, step = 1),
+                                     numericInput("n_covariates1", "Number of Covariates", 3, step = 1),
+                                     numericInput("n_trm", "Number of Treat. Cond. Cases", 17888, step = 1),
+                                     p("Please note that decimals must be denoted with a period, i.e., 2.1"),
+                                     actionButton("button1", "Run"),
+                                     width = 2
+                      )
+                      )),
                       mainPanel(
                           tabsetPanel(
-                              tabPanel("Results (Printed)", 
+                              tabPanel("Linear Results (Printed)", 
                                        tags$br(),
                                        htmlOutput("text1"),
                                        tags$br(),
                                        htmlOutput("text2"), 
+                                       tags$br(),
+                                       tags$li(tags$a(href="https://msu.edu/~kenfrank/Examples%20of%20applications%20of%20indices%20for%20quantifying%20the%20robustness%20of%20causal%20inferences.docx", "Published empirical examples")),
+                                       tags$li(tags$a(href="https://msu.edu/~kenfrank/Quantifying%20the%20Robustness%20of%20the%20Inference%20full%20write%20up%20case%20replacement%20approach.docx", "Full publishable write-up (replacement of cases)")),
+                                       tags$li(tags$a(href="https://msu.edu/~kenfrank/Quantifying%20the%20Robustness%20of%20the%20Inference%20full%20write%20up%20correlation%20based%20approach.docx", "Full publishable write-up (correlation)")),
+                                       p()
+                              ),
+                              tabPanel("Non-Linear Results (Printed)", 
+                                       tags$br(),
+                                       span(textOutput("text0"), style="color:red"),
+                                       tags$br(),
+                                       # textOutput("text0"),
+                                       textOutput("textnl1"),
+                                       tags$br(),
+                                       textOutput("textnl2i"),
+                                       tableOutput("textnl2"),
+                                       tags$br(),
+                                       textOutput("textnl3i"),
+                                       tableOutput("textnl3"),
+                                       tags$br(),
+                                       textOutput("textnl4"),
+                                       tags$br(),
+                                       textOutput("textnl5"),
                                        tags$br(),
                                        tags$li(tags$a(href="https://msu.edu/~kenfrank/Examples%20of%20applications%20of%20indices%20for%20quantifying%20the%20robustness%20of%20causal%20inferences.docx", "Published empirical examples")),
                                        tags$li(tags$a(href="https://msu.edu/~kenfrank/Quantifying%20the%20Robustness%20of%20the%20Inference%20full%20write%20up%20case%20replacement%20approach.docx", "Full publishable write-up (replacement of cases)")),
