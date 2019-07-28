@@ -1,0 +1,22 @@
+{
+  "input": {
+    "button": 1,
+    "button_nl": 1,
+    "n_covariates": 3,
+    "n_covariates_nl": 3,
+    "n_obs": 100,
+    "n_obs_nl": 20888,
+    "n_trm_nl": 17888,
+    "std_error": 0.4,
+    "std_error_nl": 0.103,
+    "unstd_beta": 2,
+    "unstd_beta_nl": -0.2
+  },
+  "output": {
+    "text1": "Percent Bias Necessary to Invalidate the Inference: To invalidate an inference, 60.3% of the estimate would have to be due to bias. This is based on a threshold of 0.794 for statistical significance (alpha = 0.05). To invalidate an inference, 60 observations would have to be replaced with cases for which the effect is 0.",
+    "text2": " Impact Threshold for a Confounding Variable: An omitted variable would have to be correlated at 0.568 with the outcome and at 0.568 with the predictor of interest (conditioning on observed covariates) to invalidate an inference based on a threshold of 0.201 for statistical significance (alpha = 0.05). Correspondingly the impact of an omitted variable (as defined in Frank 2000) must be 0.568 X 0.568 = 0.323 to invalidate an inference."
+  },
+  "export": {
+
+  }
+}
