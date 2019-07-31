@@ -97,7 +97,7 @@ shinyServer(function(input, output) {
 
   output$textnl2 <- renderTable({
     df_nl()[[2]]
-  }, digits = 0, rownames = TRUE)
+  }, digits = 0, rownames = TRUE, bordered = TRUE)
 
   output$textnl3i <- eventReactive(input$button_nl, {
     "Transfer Table"
@@ -105,7 +105,7 @@ shinyServer(function(input, output) {
   
   output$textnl3 <- renderTable({
     df_nl()[[3]]
-  }, digits = 0, rownames = TRUE)
+  }, digits = 0, rownames = TRUE, bordered = TRUE)
 
   output$textnl4 <- renderText({
     df_nl()[[4]]
