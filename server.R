@@ -85,8 +85,8 @@ shinyServer(function(input, output) {
     
   })
   
-  # Non-linear output
-  # 
+  # Non-linear output 
+  
   output$textnl1 <- renderText({
     df_nl()[[1]][1]
   })

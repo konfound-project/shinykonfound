@@ -5,8 +5,8 @@ account: jmichaelrosenberg
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 200320
-bundleId: 2271838
+bundleId: 2279723
 url: https://jmichaelrosenberg.shinyapps.io/shinykonfound/
-when: 1564341759.77517
+when: 1564577581.20175
 asMultiple: FALSE
 asStatic: FALSE
