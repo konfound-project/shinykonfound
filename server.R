@@ -6,6 +6,42 @@ library(shinyjs)
 
 shinyServer(function(input, output) {
   
+  # default outputs
+  values <- reactiveValues(button = FALSE)
+  values <- reactiveValues(button_nl = FALSE)
+  
+  output$default_text_0 <- renderText({
+    o <- if (!input$button) {
+      "Text output will appear here when the the app is run"
+    } else {
+      NULL
+    }
+  })
+  
+  output$default_text_0b <- renderText({
+    o <- if (!input$button_nl) {
+      "Output will appear here when the the app is run"
+    } else {
+      NULL
+    }
+  })
+  
+  output$default_text_1 <- renderText({
+    o <- if (!input$button) {
+      "Plot will appear here when the the app is run"
+    } else {
+      NULL
+    }
+  })
+  
+  output$default_text_2 <- renderText({
+    o <- if (!input$button) {
+      "Plot will appear here when the the app is run"
+    } else {
+      NULL
+    }
+  })
+  
   # linear model
   df <- eventReactive(input$button, {
     
@@ -121,7 +157,7 @@ shinyServer(function(input, output) {
 
   output$textnl2 <- renderTable({
     df_nl()[[2]]
-  }, digits = 0, rownames = TRUE, bordered = TRUE)
+  }, digits = 0, rownames = TRUE, bordered = FALSE)
 
   output$textnl3i <- eventReactive(input$button_nl, {
     "Transfer Table"
@@ -129,7 +165,7 @@ shinyServer(function(input, output) {
   
   output$textnl3 <- renderTable({
     df_nl()[[3]]
-  }, digits = 0, rownames = TRUE, bordered = TRUE)
+  }, digits = 0, rownames = TRUE, bordered = FALSE)
 
   output$textnl4 <- renderText({
     df_nl()[[4]]
