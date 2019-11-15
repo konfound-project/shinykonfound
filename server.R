@@ -36,12 +36,36 @@ shinyServer(function(input, output) {
   })
   
   # Linear output
-  output$text1 <- renderText({
-    df()[[1]][1:3]
+  output$text1a <- renderText({
+    paste0("<b>", df()[[1]][1], "</b>")
   })
   
-  output$text2 <- renderText({
-    df()[[1]][4:7]
+  output$text1b <- renderText({
+    df()[[1]][2:3]
+  })
+  
+  output$text1c <- renderText({
+    paste0("<em>", df()[[1]][4], "</em>")
+  })
+  
+  output$text1d <- renderText({
+    df()[[1]][5]
+  })
+
+  output$text2a <- renderText({
+    paste0("<b>", df()[[1]][6], "</b>")
+  })
+  
+  output$text2b <- renderText({
+    df()[[1]][7:8]
+  })
+  
+  output$text2c <- renderText({
+    paste0("<em>", df()[[1]][9], "</em>")
+  })
+  
+  output$text2d <- renderText({
+    df()[[1]][10]
   })
   
   output$plot1 <- renderPlot({
