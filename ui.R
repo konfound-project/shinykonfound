@@ -89,7 +89,7 @@ shinyUI(fluidPage(theme = shinythemes::shinytheme("lumen"),
                                                  ),
                                                  mainPanel(
                                                    tabsetPanel(
-                                                     tabPanel("Results",
+                                                     tabPanel("Results (Printed)",
                                                               tags$br(),
                                                               textOutput("default_text_0b"),
                                                               span(textOutput("text0"), style="color:red"),

@@ -20,7 +20,7 @@ shinyServer(function(input, output) {
   
   output$default_text_0b <- renderText({
     o <- if (!input$button_nl) {
-      "Output will appear here when the the app is run"
+      "Text output will appear here when the the app is run"
     } else {
       NULL
     }
