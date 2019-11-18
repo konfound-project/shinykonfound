@@ -5,8 +5,8 @@ account: jmichaelrosenberg
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 353052
-bundleId: 2043387
+bundleId: 2594622
 url: https://jmichaelrosenberg.shinyapps.io/konfound-it/
-when: 1556381552.73825
+when: 1573960366.36773
 asMultiple: FALSE
 asStatic: FALSE

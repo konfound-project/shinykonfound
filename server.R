@@ -164,15 +164,15 @@ shinyServer(function(input, output) {
   }) 
   
   output$textnl3 <- renderTable({
-    df_nl()[[3]]
+    df_nl()[[4]]
   }, digits = 0, rownames = TRUE, bordered = FALSE)
 
   output$textnl4 <- renderText({
-    df_nl()[[4]]
+    df_nl()[[5]]
   })
 
   output$textnl5 <- renderText({
-    df_nl()[[5]]
+    df_nl()[[6]]
   })
   
 })
