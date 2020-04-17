@@ -4,7 +4,7 @@ library(shiny)
 library(konfound)
 library(shinyjs)
 
-shinyServer(function(input, output) {
+shinyServer(function(input, output, session) {
   
   # default outputs
   values <- reactiveValues(button = FALSE)
@@ -167,6 +167,12 @@ shinyServer(function(input, output) {
   
   # Non-linear output 
   
+  observeEvent(input$button_nl, {
+    updateTabsetPanel(session, 
+                      "nl-output",
+                      selected = "modelbased")
+  })
+  
   output$textnl1 <- renderText({
     df_nl()[[1]][1]
   })
@@ -196,6 +202,12 @@ shinyServer(function(input, output) {
   })
   
   # Non-linear output for tkonfound()
+  
+  observeEvent(input$button_t, {
+    updateTabsetPanel(session, 
+                      "nl-output",
+                      selected = "twobytwo")
+  })
   
   output$textt1 <- renderText({
     df_t()[[2]]
