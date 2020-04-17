@@ -9,6 +9,7 @@ shinyServer(function(input, output) {
   # default outputs
   values <- reactiveValues(button = FALSE)
   values <- reactiveValues(button_nl = FALSE)
+  values <- reactiveValues(button_t = FALSE)
   
   output$default_text_0 <- renderText({
     o <- if (!input$button) {
@@ -27,7 +28,7 @@ shinyServer(function(input, output) {
   })
   
   output$default_text_1 <- renderText({
-    o <- if (!input$button) {
+    o <- if (!input$button_t) {
       "Plot will appear here when the the app is run"
     } else {
       NULL
@@ -87,7 +88,7 @@ shinyServer(function(input, output) {
   output$text1d <- renderText({
     df()[[1]][5]
   })
-
+  
   output$text2a <- renderText({
     paste0("<b>", df()[[1]][6], "</b>")
   })
@@ -115,7 +116,7 @@ shinyServer(function(input, output) {
   output$plot_text_1 <- renderText({
     df()
     "Right-click this plot to save it as a PNG file"}
-    )
+  )
   
   output$plot_text_2 <- renderText({
     df()
@@ -124,7 +125,6 @@ shinyServer(function(input, output) {
   
   # non-linear model
   df_nl <- eventReactive(input$button_nl, {
-    
     validate(
       need(is.numeric(input$unstd_beta_nl) &
              is.numeric(input$std_error_nl) &
@@ -145,6 +145,26 @@ shinyServer(function(input, output) {
     
   })
   
+  df_t <- eventReactive(input$button_t, {
+    validate(
+      need(is.numeric(input$ctrl_fail) &
+             is.numeric(input$ctrl_success) &
+             is.numeric(input$treat_fail) &
+             is.numeric(input$treat_success),
+           "Did not run! Did you enter numbers for the estimated effect, standard error, number of observations, and number of covariates? Please change any of these that are not to a number."),
+      need(input$n_obs_nl > (input$n_covariates_nl + 1),
+           "Did not run! There are too few observations relative to the number of observations and covariates. Please specify a less complex model to use KonFound-It.")
+    )
+    
+    out <- tkonfound(input$ctrl_fail, 
+              input$ctrl_success, 
+              input$treat_fail, 
+              input$treat_success)
+    
+    print(out)
+    
+  })
+  
   # Non-linear output 
   
   output$textnl1 <- renderText({
@@ -154,11 +174,11 @@ shinyServer(function(input, output) {
   output$textnl2i <- eventReactive(input$button_nl,{
     "Implied Table"
   })
-
+  
   output$textnl2 <- renderTable({
     df_nl()[[2]]
   }, digits = 0, rownames = TRUE, bordered = FALSE)
-
+  
   output$textnl3i <- eventReactive(input$button_nl, {
     "Transfer Table"
   }) 
@@ -166,13 +186,43 @@ shinyServer(function(input, output) {
   output$textnl3 <- renderTable({
     df_nl()[[4]]
   }, digits = 0, rownames = TRUE, bordered = FALSE)
-
+  
   output$textnl4 <- renderText({
     df_nl()[[5]]
   })
-
+  
   output$textnl5 <- renderText({
     df_nl()[[6]]
+  })
+  
+  # Non-linear output for tkonfound()
+  
+  output$textt1 <- renderText({
+    df_t()[[2]]
+  })
+  
+  output$textt2i <- eventReactive(input$button_t,{
+    "Values Entered (Observed Table)"
+  })
+
+  output$textt2 <- renderTable({
+    df_t()$User_enter_value
+  }, digits = 0, rownames = TRUE, bordered = FALSE)
+
+  output$textt3i <- eventReactive(input$button_t, {
+    "Transfer Table"
+  })
+
+  output$textt3 <- renderTable({
+    df_t()$Transfer_Table
+  }, digits = 0, rownames = TRUE, bordered = FALSE)
+
+  output$textt4 <- renderText({
+    df_t()[[5]]
+  })
+  
+  output$textt5 <- renderText({
+    df_t()[[6]]
   })
   
 })
