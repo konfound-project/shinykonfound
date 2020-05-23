@@ -79,14 +79,14 @@ shinyUI(fluidPage(theme = shinythemes::shinytheme("lumen"),
                                                      tags$br(),
                                                      textOutput("plot_text_2"))
                                           )))),
-                             tabPanel("Non-linear Models (Developmental and Not-Published)",
+                             tabPanel("Non-linear Models (Beta)",
                                       sidebarLayout(
                                         sidebarPanel(
                                           tabsetPanel(
                                             tabPanel("Using Model Estimates", 
                                                      tags$h5("Change or set any of the values below and then click run to see output from KonFound-It!"),
-                                                     numericInput("unstd_beta_nl", "Estimated Effect", -.2, step = .1),
-                                                     numericInput("std_error_nl", "Standard Error", .103, step = .1),
+                                                     numericInput("unstd_beta_nl", "Estimated Effect (Log Odds)", -.2, step = .1),
+                                                     numericInput("std_error_nl", "Standard Error (of the Log Odds)", .103, step = .1),
                                                      numericInput("n_obs_nl", "Number of Observations", 20888, step = 1),
                                                      numericInput("n_covariates_nl", "Number of Covariates", 3, step = 1),
                                                      numericInput("n_trm_nl", "No. Treat. Cond. Cases", 17888, step = 1),
@@ -152,6 +152,12 @@ shinyUI(fluidPage(theme = shinythemes::shinytheme("lumen"),
                                         )
                                       ),
                              ),
+                             tabPanel("Blog",
+                                      tags$br(),
+                                      tags$a(href="https://konfound-it.org/", "KonFound-It! Blog"),
+                                      tags$br(),
+                                      tags$hr()
+                                      ),
                              navbarMenu("More",
                                         tabPanel("Add to Mobile Device", 
                                                  tags$b("To add this app to your home screen, follow these instructions based on the browser and operating system you're using"),
