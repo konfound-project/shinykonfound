@@ -210,31 +210,39 @@ shinyServer(function(input, output, session) {
   })
   
   output$textt1 <- renderText({
+    df_t()[[1]]
+  })
+  
+  output$textt2 <- renderText({
     df_t()[[2]]
   })
   
-  output$textt2i <- eventReactive(input$button_t,{
+  output$textt3 <- renderText({
+    df_t()[[3]]
+  })
+  
+  output$textt4i <- eventReactive(input$button_t,{
     "Values Entered (Observed Table)"
   })
 
-  output$textt2 <- renderTable({
+  output$textt4 <- renderTable({
     df_t()$User_enter_value
   }, digits = 0, rownames = TRUE, bordered = FALSE)
 
-  output$textt3i <- eventReactive(input$button_t, {
+  output$textt5i <- eventReactive(input$button_t, {
     "Transfer Table"
   })
 
-  output$textt3 <- renderTable({
+  output$textt5 <- renderTable({
     df_t()$Transfer_Table
   }, digits = 0, rownames = TRUE, bordered = FALSE)
 
-  output$textt4 <- renderText({
-    df_t()[[5]]
+  output$textt6 <- renderText({
+    df_t()[[6]]
   })
   
-  output$textt5 <- renderText({
-    df_t()[[6]]
+  output$textt7 <- renderText({
+    df_t()[[7]]
   })
   
 })
