@@ -59,13 +59,26 @@ shinyServer(function(input, output, session) {
                                      as.numeric(input$n_obs), 
                                      as.numeric(input$n_covariates),
                                      non_linear = FALSE,
+                                     #ql note we should remove the line of non_linear = T
+                                     #ql note add another line here: index = "RIR",
                                      to_return = c(c("print"))))
     
+    #ql note since we seperate the result for RIR and IT 
+    #ql note we should probably add one output below 
+    # out2 <- capture.output(pkonfound(as.numeric(input$unstd_beta), 
+    #                                 as.numeric(input$std_error), 
+    #                                 as.numeric(input$n_obs), 
+    #                                 as.numeric(input$n_covariates),
+    #                                 index = "IT",
+    #                                 to_return = c(c("print"))))
+    
+    #ql note probably need to change this to out3
     out2 <- pkonfound(as.numeric(input$unstd_beta), 
                       as.numeric(input$std_error), 
                       as.numeric(input$n_obs), 
                       as.numeric(input$n_covariates),
                       non_linear = FALSE,
+                      #ql note we should remove the line above of non_linear = T
                       to_return = c(c("thresh_plot", "corr_plot")))
     
     list(out1, out2)
@@ -141,6 +154,10 @@ shinyServer(function(input, output, session) {
               input$n_obs_nl, 
               input$n_covariates, 
               n_trm = input$n_trm_nl, 
+              #ql note change the line above to the following
+              # n_treat = input$n_trm_nl, 
+              #ql note add another line below
+              #model_type = "logistic",
               non_linear = TRUE)
     
   })
@@ -160,6 +177,13 @@ shinyServer(function(input, output, session) {
               input$ctrl_success, 
               input$treat_fail, 
               input$treat_success)
+    #qlnote remove the chunk above of tkonfound 
+    #qlnote instead using the below
+    # out <- pkonfound(a = input$ctrl_fail, 
+    #                 b = input$ctrl_success, 
+    #                 c = input$treat_fail, 
+    #                 d = input$treat_success,
+    #                 to_return = c(c("print")))
     
     print(out)
     
