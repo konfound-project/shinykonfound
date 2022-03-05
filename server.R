@@ -58,9 +58,7 @@ shinyServer(function(input, output, session) {
                                      as.numeric(input$std_error), 
                                      as.numeric(input$n_obs), 
                                      as.numeric(input$n_covariates),
-                                     non_linear = FALSE,
-                                     #ql note we should remove the line of non_linear = T
-                                     #ql note add another line here: index = "RIR",
+                                     index = "RIR",
                                      to_return = c(c("print"))))
     
     #ql note since we seperate the result for RIR and IT 
@@ -149,16 +147,15 @@ shinyServer(function(input, output, session) {
            "Did not run! There are too few observations relative to the number of observations and covariates. Please specify a less complex model to use KonFound-It.")
     )
     
-    pkonfound(input$unstd_beta_nl, 
+    out <- pkonfound(input$unstd_beta_nl, 
               input$std_error_nl, 
               input$n_obs_nl, 
-              input$n_covariates, 
-              n_trm = input$n_trm_nl, 
-              #ql note change the line above to the following
-              # n_treat = input$n_trm_nl, 
-              #ql note add another line below
-              #model_type = "logistic",
-              non_linear = TRUE)
+              input$n_covariates,
+              n_treat = input$n_trm_nl, 
+              model_type = "logistic",
+              to_return = "raw_output")
+    print(out)
+    out
     
   })
   
@@ -173,19 +170,13 @@ shinyServer(function(input, output, session) {
            "Did not run! There are too few observations relative to the number of observations and covariates. Please specify a less complex model to use KonFound-It.")
     )
     
-    out <- tkonfound(input$ctrl_fail, 
-              input$ctrl_success, 
-              input$treat_fail, 
-              input$treat_success)
-    #qlnote remove the chunk above of tkonfound 
-    #qlnote instead using the below
-    # out <- pkonfound(a = input$ctrl_fail, 
-    #                 b = input$ctrl_success, 
-    #                 c = input$treat_fail, 
-    #                 d = input$treat_success,
-    #                 to_return = c(c("print")))
-    
+    out <- pkonfound(a = input$ctrl_fail, 
+                     b = input$ctrl_success, 
+                     c = input$treat_fail, 
+                     d = input$treat_success,
+                     to_return = "raw_output")
     print(out)
+    out
     
   })
   
@@ -198,31 +189,37 @@ shinyServer(function(input, output, session) {
   })
   
   output$textnl1 <- renderText({
-    df_nl()[[1]][1]
+    paste0(df_nl()[[1]], ". ", df_nl()[[2]], " ", df_nl()[[3]])
   })
   
+  output$textnl1_rir <- renderText({
+    paste0(  
+      "RIR: ",
+      df_nl()$RIR)
+  })
+
   output$textnl2i <- eventReactive(input$button_nl,{
     "Implied Table"
   })
   
   output$textnl2 <- renderTable({
-    df_nl()[[2]]
+    df_nl()$Implied_Table
   }, digits = 0, rownames = TRUE, bordered = FALSE)
   
   output$textnl3i <- eventReactive(input$button_nl, {
     "Transfer Table"
-  }) 
+  })
   
   output$textnl3 <- renderTable({
-    df_nl()[[4]]
+    df_nl()$Transfer_Table
   }, digits = 0, rownames = TRUE, bordered = FALSE)
   
   output$textnl4 <- renderText({
-    df_nl()[[5]]
+    df_nl()[[7]]
   })
   
   output$textnl5 <- renderText({
-    df_nl()[[6]]
+    df_nl()[[8]]
   })
   
   # Non-linear output for tkonfound()
@@ -234,15 +231,13 @@ shinyServer(function(input, output, session) {
   })
   
   output$textt1 <- renderText({
-    df_t()[[1]]
+    paste0(df_t()[[1]], " ", df_t()[[2]], ". ", df_t()[[3]], ".")
   })
   
-  output$textt2 <- renderText({
-    df_t()[[2]]
-  })
-  
-  output$textt3 <- renderText({
-    df_t()[[3]]
+  output$textt1_rir <- renderText({
+    paste0(  
+      "RIR: ",
+      df_t()$RIR)
   })
   
   output$textt4i <- eventReactive(input$button_t,{
@@ -262,11 +257,11 @@ shinyServer(function(input, output, session) {
   }, digits = 0, rownames = TRUE, bordered = FALSE)
 
   output$textt6 <- renderText({
-    df_t()[[6]]
+    df_t()[[8]]
   })
   
   output$textt7 <- renderText({
-    df_t()[[7]]
+    df_t()[[9]]
   })
   
 })
