@@ -262,7 +262,7 @@ shinyUI(fluidPage(theme = shinythemes::shinytheme("lumen"),
                   p(),
                   tags$p(tags$em("Mailing list:"), tags$a(href="https://groups.google.com/forum/#!forum/konfound-it", "Google Groups mailing list for Konfound-It!")),
                   p(),
-                  tags$p(tags$em("To cite this application:"), " Rosenberg, J. M., Xu, R., & Frank, K. A. (2018). Konfound-It!: Quantify the Robustness of Causal Inferences. http://konfound-it.com."),
+                  tags$p(tags$em("To cite this application:"), " Rosenberg, J. M., Xu, R., Lin, Q., & Frank, K. A. (2022). Konfound-It!: Quantify the Robustness of Causal Inferences. http://konfound-it.com."),
                   p(),
                   tags$p(tags$b("More information can be found in the following publications:")),
                   tags$ul(
