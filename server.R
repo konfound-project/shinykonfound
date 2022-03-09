@@ -231,7 +231,7 @@ shinyServer(function(input, output, session) {
   })
   
   output$textt1 <- renderText({
-    paste0(df_t()[[1]], " ", df_t()[[2]], ". ", df_t()[[3]], ".")
+    paste0(df_t()[[1]], " ", df_t()[[2]], ". ", df_t()[[3]], " ", df_t()[[4]], " ", df_t()[[5]])
   })
   
   output$textt1_rir <- renderText({
