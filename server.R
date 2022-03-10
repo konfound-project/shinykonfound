@@ -75,8 +75,6 @@ shinyServer(function(input, output, session) {
                       as.numeric(input$std_error), 
                       as.numeric(input$n_obs), 
                       as.numeric(input$n_covariates),
-                      non_linear = FALSE,
-                      #ql note we should remove the line above of non_linear = T
                       to_return = c(c("thresh_plot", "corr_plot")))
     
     list(out1, out2)
