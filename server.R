@@ -61,23 +61,20 @@ shinyServer(function(input, output, session) {
                                      index = "RIR",
                                      to_return = c(c("print"))))
     
-    #ql note since we seperate the result for RIR and IT 
-    #ql note we should probably add one output below 
-    # out2 <- capture.output(pkonfound(as.numeric(input$unstd_beta), 
-    #                                 as.numeric(input$std_error), 
-    #                                 as.numeric(input$n_obs), 
-    #                                 as.numeric(input$n_covariates),
-    #                                 index = "IT",
-    #                                 to_return = c(c("print"))))
+    out2 <- capture.output(pkonfound(as.numeric(input$unstd_beta),
+                                    as.numeric(input$std_error),
+                                    as.numeric(input$n_obs),
+                                    as.numeric(input$n_covariates),
+                                    index = "IT",
+                                    to_return = c(c("print"))))
     
-    #ql note probably need to change this to out3
-    out2 <- pkonfound(as.numeric(input$unstd_beta), 
+    out3 <- pkonfound(as.numeric(input$unstd_beta), 
                       as.numeric(input$std_error), 
                       as.numeric(input$n_obs), 
                       as.numeric(input$n_covariates),
                       to_return = c(c("thresh_plot", "corr_plot")))
-    
-    list(out1, out2)
+    print(list(out1, out2, out3))
+    list(out1, out2, out3)
     
   })
   
@@ -91,35 +88,43 @@ shinyServer(function(input, output, session) {
   })
   
   output$text1c <- renderText({
-    paste0("<em>", df()[[1]][4], "</em>")
+    df()[[1]][5:6]
   })
   
   output$text1d <- renderText({
-    df()[[1]][5]
+    df()[[1]][8]
+  })
+  
+  output$text1e <- renderText({
+    df()[[1]][10:13]
   })
   
   output$text2a <- renderText({
-    paste0("<b>", df()[[1]][6], "</b>")
+    paste0("<b>", df()[[2]][1], "</b>")
   })
   
   output$text2b <- renderText({
-    df()[[1]][7:8]
+    df()[[2]][2:4]
   })
   
   output$text2c <- renderText({
-    paste0("<em>", df()[[1]][9], "</em>")
+    df()[[2]][6:7]
   })
   
   output$text2d <- renderText({
-    df()[[1]][10]
+    df()[[2]][8]
+  })
+  
+  output$text2e <- renderText({
+    df()[[2]][10:12]
   })
   
   output$plot1 <- renderPlot({
-    df()[[2]][[1]]
+    df()[[3]][[1]]
   })
   
   output$plot2 <- renderPlot({
-    df()[[2]][[2]]
+    df()[[3]][[2]]
   })
   
   output$plot_text_1 <- renderText({
