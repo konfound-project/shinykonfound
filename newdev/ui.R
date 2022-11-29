@@ -64,7 +64,7 @@ ui <- fluidPage(
                       "content 4"),
              
              ###### BLOG PAGE ######
-             tabPanel(title = "Blog",
+              tabPanel(title = "Blog",
                       "content 5"),
              
              ###### MORE PAGE ######
