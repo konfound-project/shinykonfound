@@ -1,7 +1,7 @@
 library(shiny)
 
 # Define UI for application that draws a histogram
-ui <- fluidPage(
+shinyUI(fluidPage(
   tags$head(tags$script(src="script.js")),
   navbarPage(title = "KonFound-It!",
              tabPanel(title = "Home",
@@ -43,8 +43,46 @@ ui <- fluidPage(
                         tabPanel(title = "Linear Model", #Submenu Tab Title
                                  "content 2.a"),
                         navbarMenu("Dichotomous Variables", #Submenu Tab Title
+                                   
+                                   #2x2 TABLE PAGE
                                    tabPanel(title = "2x2 Table", #Sub-submenu Tab Title
-                                            "content 2.b"),
+                                            sidebarPanel(tags$h5("Change any of the values below and then click run to see output from KonFound-It!"),
+                                                         numericInput("ctrl_fail", "Control Condition: Result Failure", 18, step = 1),
+                                                         numericInput("ctrl_success", "Control Condition: Result Success", 12, step = 1),
+                                                         numericInput("treat_fail", "Treatment Condition: Result Failure", 12, step = 1),
+                                                         numericInput("treat_success", "Treatment Condition: Result Sucesss", 17, step = 1),
+                                                         actionButton("button_t", "Run"),
+                                                         width = 2),
+                                            
+                                            mainPanel("Results (Using 2 x 2 table)",
+                                                      tags$br(),
+                                                      #textOutput("default_text_1"),
+                                                      # span(textOutput("text0"), style="color:red"),
+                                                      tags$br(),
+                                                      uiOutput("textt1"),
+                                                      tags$br(),
+                                                      textOutput("textt1_rir"),
+                                                      textOutput("textt2"),
+                                                      tags$br(),
+                                                      textOutput("textt3"),
+                                                      tags$br(),
+                                                      span(textOutput("textt4i"), style = "font-style: italic"),
+                                                      tableOutput("textt4"),
+                                                      tags$hr(),
+                                                      span(textOutput("textt5i"), style = "font-style: italic"),
+                                                      tableOutput("textt5"),
+                                                      tags$br(),
+                                                      textOutput("textt6"),
+                                                      tags$br(),
+                                                      textOutput("textt7"),
+                                                      tags$br(),
+                                                      tags$li(tags$a(href="https://msu.edu/~kenfrank/Examples%20of%20applications%20of%20indices%20for%20quantifying%20the%20robustness%20of%20causal%20inferences.docx", "Published empirical examples")),
+                                                      tags$li(tags$a(href="https://msu.edu/~kenfrank/Quantifying%20the%20Robustness%20of%20the%20Inference%20full%20write%20up%20case%20replacement%20approach.docx", "Full publishable write-up (replacement of cases)")),
+                                                      tags$li(tags$a(href="https://msu.edu/~kenfrank/Quantifying%20the%20Robustness%20of%20the%20Inference%20full%20write%20up%20correlation%20based%20approach.docx", "Full publishable write-up (correlation)"))
+                                              
+                                            )),
+                                   
+                                   
                                    tabPanel(title = "Logistic Regression", #Sub-submenu Tab Title
                                             "content 2.c"))),
              
@@ -74,4 +112,5 @@ ui <- fluidPage(
                       tabPanel(title = "More Info & Contact")))
   
   
+)
 )
