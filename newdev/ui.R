@@ -27,14 +27,14 @@ shinyUI(fluidPage(
                       p(style= "text-align: justify; font-size = 14px",
                         "More information can be found in the following publications",
                         tags$ul(
-                          tags$li("Frank(2000)"),
+                          tags$li("Frank (2000)"),
                           tags$li("Frank et al.(2008)"),
                           tags$li("Frank et al. (2013)")
                         ),
                         "Please see the",
                         em("Documentation"),
                         "tab for more information"),
-                        ),
+             ),
              
              ###### RIR PAGE######
              navbarMenu("RIR", #Menu Tab Title
@@ -42,15 +42,16 @@ shinyUI(fluidPage(
                         ###### RIR: LINEAR MODEL PAGE ######
                         tabPanel(title = "Linear Model", #Submenu Tab Title
                                  "content 2.a"),
+                        
                         navbarMenu("Dichotomous Variables", #Submenu Tab Title
                                    
                                    #2x2 TABLE PAGE
                                    tabPanel(title = "2x2 Table", #Sub-submenu Tab Title
                                             sidebarPanel(tags$h5("Change any of the values below and then click run to see output from KonFound-It!"),
-                                                         numericInput("ctrl_fail", "Control Condition: Result Failure", 18, step = 1),
-                                                         numericInput("ctrl_success", "Control Condition: Result Success", 12, step = 1),
-                                                         numericInput("treat_fail", "Treatment Condition: Result Failure", 12, step = 1),
-                                                         numericInput("treat_success", "Treatment Condition: Result Sucesss", 17, step = 1),
+                                                         numericInput("ctrl_fail", "Control Condition: Result Failure", 35, step = 1),
+                                                         numericInput("ctrl_success", "Control Condition: Result Success", 17, step = 1),
+                                                         numericInput("treat_fail", "Treatment Condition: Result Failure", 17, step = 1),
+                                                         numericInput("treat_success", "Treatment Condition: Result Sucesss", 38, step = 1),
                                                          actionButton("button_t", "Run"),
                                                          width = 2),
                                             
@@ -78,9 +79,8 @@ shinyUI(fluidPage(
                                                       tags$br(),
                                                       tags$li(tags$a(href="https://msu.edu/~kenfrank/Examples%20of%20applications%20of%20indices%20for%20quantifying%20the%20robustness%20of%20causal%20inferences.docx", "Published empirical examples")),
                                                       tags$li(tags$a(href="https://msu.edu/~kenfrank/Quantifying%20the%20Robustness%20of%20the%20Inference%20full%20write%20up%20case%20replacement%20approach.docx", "Full publishable write-up (replacement of cases)")),
-                                                      tags$li(tags$a(href="https://msu.edu/~kenfrank/Quantifying%20the%20Robustness%20of%20the%20Inference%20full%20write%20up%20correlation%20based%20approach.docx", "Full publishable write-up (correlation)"))
-                                              
-                                            )),
+                                                      tags$li(tags$a(href="https://msu.edu/~kenfrank/Quantifying%20the%20Robustness%20of%20the%20Inference%20full%20write%20up%20correlation%20based%20approach.docx", "Full publishable write-up (correlation)")))
+                                   ),
                                    
                                    
                                    tabPanel(title = "Logistic Regression", #Sub-submenu Tab Title
@@ -102,14 +102,14 @@ shinyUI(fluidPage(
                       "content 4"),
              
              ###### BLOG PAGE ######
-              tabPanel(title = "Blog",
+             tabPanel(title = "Blog",
                       "content 5"),
              
              ###### MORE PAGE ######
              navbarMenu(title = "More",
-                      tabPanel(title = "Add to Mobile Device"),
-                      tabPanel(title = "R and Stata"),
-                      tabPanel(title = "More Info & Contact")))
+                        tabPanel(title = "Add to Mobile Device"),
+                        tabPanel(title = "R and Stata"),
+                        tabPanel(title = "More Info & Contact")))
   
   
 )
