@@ -282,3 +282,4 @@ shinyUI(fluidPage(theme = shinythemes::shinytheme("lumen"),
                          a(href="https://github.com/jrosen48/shinykonfound", "here")),
                   tags$hr()
 ))
+
