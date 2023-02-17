@@ -106,13 +106,9 @@ shinyUI(fluidPage(
                                #Printed Results Output (top right)
                                
                                fluidRow(tags$h4("Results (Printed)"), style = "height:300px; background-color: white; border: 2px double black; padding: 10px;",
-                                        htmlOutput("linear_results_print1"),
-                                        htmlOutput("di_results_print1"),
-                                        htmlOutput("two_results_print1"),
-                                        tags$br(),
-                                        htmlOutput("linear_results_print2")),
+                                        htmlOutput("print_results")), #display printed results
                                         
-                               
+                
                                fluidRow(tags$h4("Want to generate code to  use in R or Stata?"), style = "height:300px; white; border: 2px double black;",
                                         checkboxInput("gen_r_code", "Generate R Code", value = FALSE),
                                         checkboxInput("gen_stata_code", "Generate Stata Code"),

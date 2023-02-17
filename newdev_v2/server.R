@@ -67,19 +67,38 @@ server <- function(input, output, session) {
     list(linear_output, linear_plot)
   })
   
-  # Linear printed output
-    output$linear_results_print1 <- renderText({
-    df()[[1]][2:4]
+  ################################### 
+  ###### GENERATE PRINTED OUTPUT ###### 
+  ###################################
+ 
+   r <- reactiveValues(print_results = "") #create empty reactive string for printed results.
+  
+   #If user presses the results button for linear models, paste the linear results
+  observeEvent(input$results_pg_l, {
+    r$print_results <- paste(df()[[1]][2:4], df()[[1]][5:7])
   })
+  
+  #If user presses the results buttono for logistic models, paste the logistic results
+  observeEvent(input$results_pg_di, {
+    r$print_results <- paste(df_log()[[1]][1], df_log()[[2]][1], df_log()[[3]][1])
+    })
+  
+  #If user presses the results button for 2x2 tables, paste the 2x2 results
+  observeEvent(input$results_pg_2x2, {
+    r$print_results <-paste(df_twobytwo()[[1]][1], df_twobytwo()[[2]][1], df_twobytwo()[[3]][1], df_twobytwo()[[4]][1], df_twobytwo()[[5]][1])
+  })
+  
+  #observe event and print results for whichever button the user presses
+  output$print_results <- renderText(r$print_results)
+  
+  
+  
+  ######################################### 
+  ##### GENERATE FIGURES/PLOTS OUTPUT #####
+  ################################### #####
+ 
 
-  
-    
-  # Linear printed output
-    output$linear_results_print2 <- renderText({
-    df()[[1]][5:7]
-  })
-  
-  
+
   #Linear printed plot
     output$plot1 <- renderPlot({
     df()[[2]]
@@ -115,16 +134,7 @@ server <- function(input, output, session) {
     out
   })
   
-  # Logistic printed output
-  output$di_results_print1 <- renderText({
-    paste(df_log()[[1]][1], df_log()[[2]][1], df_log()[[3]][1])
-  })
-  
-  # Logistic printed output
-  output$di_results_print2 <- renderText({
-    df_log()[[2]][1]
-  })
-  
+
   #Logistic printed implied table
   output$log_implied_title <- eventReactive(input$results_pg_di,{ #Title for Implied table
     "Implied Table"
@@ -168,10 +178,7 @@ server <- function(input, output, session) {
     out
 
   })
-  # 2x2 Table printed output
-  output$two_results_print1 <- renderText({
-    paste(df_twobytwo()[[1]][1], df_twobytwo()[[2]][1], df_twobytwo()[[3]][1], df_twobytwo()[[4]][1], df_twobytwo()[[5]][1])
-  })
+
   
   #Two by Two Observed Table Output
   output$two_observed_title <- eventReactive(input$results_pg_2x2,{ #Title for Observed table
