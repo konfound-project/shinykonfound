@@ -1,5 +1,41 @@
 library(shiny)
 
+#CREATING DATAFRAME OF OPTIONS FOR DECISION MAP SELECTION
+map_df <- data.frame(outcome = c("Dichotomous",
+                                 "Dichotomous", 
+                                 "Dichotomous", 
+                                 "Dichotomous",
+                                 "Continuous",
+                                 "Continuous",
+                                 "Continuous",
+                                 "Continuous",
+                                 "Continuous",
+                                 "Continuous",
+                                 "Continuous"),
+                     type = c("2x2 table", 
+                              "2x2 table", 
+                              "Logistic model",
+                              "Logistic model",
+                              "Linear model",
+                              "Linear model",
+                              "Linear model",
+                              "Linear model",
+                              "Linear model",
+                              "Linear model",
+                              "Linear model"),
+                     sensi = c("RIR/ % Bias to Invalidate",
+                               "Fragility",
+                               "RIR/ % Bias to Invalidate",
+                               "Fragility",
+                               "ITCV",
+                               "RIR/ % Bias to Invalidate",
+                               "Correlation: Preserve standard error",
+                               "Replacement: Preserve standard error",
+                               "Coefficient of proportionality",
+                               "Correlation: Mediation",
+                               "Differential attrition"))
+
+
 # Define UI for application that draws a histogram
 shinyUI(fluidPage(
   tags$head(tags$script(src="script.js")),
@@ -15,11 +51,22 @@ shinyUI(fluidPage(
                       # p(style= "text-align: justify; font-size = 14px",
                       #   "SOME LANGUAGE ABOUT THE DECISION MAP. SOME LANGUAGE ABOUT NAVIGATING THE MENU TO CHOOSE THE CORRECT MODEL AND ANALYSIS TECHNIQUE."),
                       
-                      selectInput("selected_framework", "What kind of output do you want?", 
-                                  choices = list("RIR" = 1, "OV" = 2, selected = 1)),
-                      selectInput("selected_model", "What type of model are you using?", 
-                                  choices = list("Linear" = 1, "Other (haha Spiro)" = 2, selected = 1)),
+                      
+                      ###### DECISION MAP SELECTOR ######
+              
+                      selectInput("selected_outcome", "What type of variable is your outcome?", 
+                                  choices = c("", unique(map_df$outcome)), 
+                                  selected = NULL,
+                                  multiple = FALSE),
+                      
+                      selectInput("selected_data-type", "What type of input data do you have?", 
+                                  choices = NULL),
+                      
+                      selectInput("selected_sensitivity", "Which sensitivity measure do you want to output?",
+                                  choices = NULL),
+                      
                       textOutput("suggested_analysis"),
+                      
                       br(),
                       # imageOutput("decisionmap"),
                       br(),

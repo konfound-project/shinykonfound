@@ -1,5 +1,6 @@
 #server sarah
 library(shiny)
+library(tidyverse)
 library(konfound)
 library(shinyjs)
 
@@ -12,6 +13,26 @@ shinyServer(function(input, output, session) {
   }, deleteFile = F)
   
   #DECISION MAP ON HOME PAGE OUTPUT
+  #REACTIVE DECISION MAP ELEMENTS ON HOME PAGE
+  outcome_sel <- reactive({
+    map_df %>% filter(outcome %in% input$selected_outcome)
+  })
+  
+  observeEvent(outcome_sel(),{
+    
+    updateSelectInput(session, 
+                      "selected_data-type",
+                      choices = sort(outcome_sel()$type))
+    
+    data_type_sel <-reactive({outcome_sel() %>% filter(type %in% input$selected_data-type)})
+    
+    observeEvent(data_type_sel(),{
+      updateSelectInput(session, "selected_sensitivity", choices = sort(data_type_sel()$sensi))
+    })
+                         
+    
+  })
+  
   output$suggested_analysis <- renderText( {
     "pkonfound(b = xx, se = xx, df = xx, ncov = xx)"
   })
