@@ -1,7 +1,8 @@
 library(shiny)
+library(shinythemes)
 
 # Define UI for application that draws a histogram
-shinyUI(fluidPage(
+shinyUI(fluidPage(theme = shinythemes::shinytheme("lumen"),
   tags$head(tags$script(src="script.js")),
   navbarPage(title = "KonFound-It!",
              tabPanel(title = "Home",
