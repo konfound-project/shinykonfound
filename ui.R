@@ -1,4 +1,6 @@
 # ui.R
+# NOTE: IF UPDATING APP + REPUBLISHING, FIRST RUN THIS YOUR CONSOLE, THEN RELOAD, AND PUBLISH
+## devtools::install_github("konfound-project/konfound")
 
 library(shiny)
 

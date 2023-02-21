@@ -1,4 +1,6 @@
 # server.R
+# NOTE: IF UPDATING APP + REPUBLISHING, FIRST RUN THIS YOUR CONSOLE, THEN RELOAD, AND PUBLISH
+## devtools::install_github("konfound-project/konfound")
 
 library(shiny)
 library(konfound)
@@ -255,9 +257,10 @@ shinyServer(function(input, output, session) {
     "Transfer Table"
   })
 
-  output$textt5 <- renderTable({
-    df_t()$Transfer_Table
+  output$textt4 <- renderTable({
+    df_t()$User_enter_value
   }, digits = 0, rownames = TRUE, bordered = FALSE)
+  
 
   output$textt6 <- renderText({
     df_t()[[8]]
