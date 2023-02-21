@@ -10,8 +10,6 @@ library(rclipboard)
 
 server <- function(input, output, session) {
   
-
-  
   ################################### 
   ###### GENERATE LINEAR RESULTS ###### 
   ###################################
@@ -67,51 +65,6 @@ server <- function(input, output, session) {
     list(linear_output, linear_plot)
   })
   
-  ################################### 
-  ###### GENERATE PRINTED OUTPUT ###### 
-  ###################################
- 
-   r <- reactiveValues(print_results = "") #create empty reactive string for printed results.
-  
-   #If user presses the results button for linear models, paste the linear results
-  observeEvent(input$results_pg_l, {
-    r$print_results <- paste(df()[[1]][2:4], df()[[1]][5:7])
-  })
-  
-  #If user presses the results button for logistic models, paste the logistic results
-  observeEvent(input$results_pg_di, {
-    r$print_results <- paste(df_log()[[1]][1], df_log()[[2]][1], df_log()[[3]][1])
-    })
-  
-  #If user presses the results button for 2x2 tables, paste the 2x2 results
-  observeEvent(input$results_pg_2x2, {
-    r$print_results <-paste(df_twobytwo()[[1]][1], df_twobytwo()[[2]][1], df_twobytwo()[[3]][1], df_twobytwo()[[4]][1], df_twobytwo()[[5]][1])
-  })
-  
-  #observe event and print results for whichever button the user presses
-  output$print_results <- renderText(r$print_results)
-  
-  
-  
-  ######################################### 
-  ##### GENERATE FIGURES/PLOTS OUTPUT #####
-  ################################### #####
-  #https://groups.google.com/g/shiny-discuss/c/HdCMHN8yjGM
-
-
-  #Linear printed plot
-    output$plot1 <- renderPlot({
-    df()[[2]]
-  })
-  
-  #WORKS
-  #Logistic tables
-  output$di_implied_table <- renderUI({
-    splitDFs <- list(df_log()$Implied_Table, df_log()$Transfer_Table)
-    splitRenders <- lapply(splitDFs, renderTable, digits = 0, rownames = TRUE, bordered = FALSE)
-    return(splitRenders)
-  })
-  
   
   ######################################### 
   ###### GENERATE LOGISTIC RESULTS  ###### 
@@ -141,34 +94,6 @@ server <- function(input, output, session) {
     out
   })
   
-
-  #Logistic printed implied table
-  output$log_implied_title <- eventReactive(input$results_pg_di,{ #Title for Implied table
-    "Implied Table"
-  })
-  
-  output$log_transfer_title <- eventReactive(input$results_pg_di,{ #Title for Transfer table
-    "Transfer Table"
-  })
-  
- # test <- reactive({
- #   split("Implied Table" = df_log()$Implied_Table, "Transfer Table" = df_log()$Transfer_Table)
- # })
-  
-
-  
-  
-  
-  
- # output$di_implied_table <- renderTable({
-  #  test()
- # }, digits = 0, rownames = TRUE, bordered = FALSE)
-  
-  
-  #output$di_transfer_table <- renderTable({
-#    df_log()$Transfer_Table
- # }, digits = 0, rownames = TRUE, bordered = FALSE)
-  
   
   ######################################### 
   ######### GENERATE 2x2 RESULTS  ######### 
@@ -196,22 +121,62 @@ server <- function(input, output, session) {
   })
 
   
-  #Two by Two Observed Table Output
-  output$two_observed_title <- eventReactive(input$results_pg_2x2,{ #Title for Observed table
-    "Values Entered (Observed Table)"
+  
+  ################################### 
+  ###### GENERATE PRINTED OUTPUT ###### 
+  ###################################
+  
+  r <- reactiveValues(print_results = "") #create empty reactive string for printed results.
+  
+  #If user presses the results button for linear models, paste the linear results
+  observeEvent(input$results_pg_l, {
+    r$print_results <- paste(df()[[1]][2:4], df()[[1]][5:7])
   })
   
-  output$two_transfer_title <- eventReactive(input$results_pg_2x2,{ #Title for Transfer table
-    "Transfer Table"
+  #If user presses the results button for logistic models, paste the logistic results
+  observeEvent(input$results_pg_di, {
+    r$print_results <- paste(df_log()[[1]][1], df_log()[[2]][1], df_log()[[3]][1])
   })
   
-  output$two_observed_table <- renderTable({
-    df_twobytwo()$User_enter_value
-  }, digits = 0, rownames = TRUE, bordered = FALSE)
+  #If user presses the results button for 2x2 tables, paste the 2x2 results
+  observeEvent(input$results_pg_2x2, {
+    r$print_results <-paste(df_twobytwo()[[1]][1], df_twobytwo()[[2]][1], df_twobytwo()[[3]][1], df_twobytwo()[[4]][1], df_twobytwo()[[5]][1])
+  })
   
-  output$two_transfer_table <- renderTable({
-    df_twobytwo()$Transfer_Table
-  }, digits = 0, rownames = TRUE, bordered = FALSE)
+  #observe event and print results for whichever button the user presses
+  output$print_results <- renderText(r$print_results)
+  
+  
+  
+  
+  ######################################### 
+  ##### GENERATE FIGURES/PLOTS OUTPUT #####
+  ################################### #####
+  
+  p <- reactiveValues(fig_results = "") #create empty reactive string for figure results.
+  
+  #If user presses the results button for linear models, show the figure results
+  observeEvent(input$results_pg_l, {
+    output$fig_results <- renderPlot(df()[[2]])
+    p$fig_results <- plotOutput("fig_results")
+  })
+  
+  #If user presses the results button for logistic models, show the logistic tables
+  observeEvent(input$results_pg_di, {
+    split_log <- list(df_log()$Implied_Table, df_log()$Transfer_Table)
+    p$fig_results <- lapply(split_log, renderTable, digits = 0, rownames = TRUE, bordered = FALSE)
+  })
+  
+  #If user presses the results button for 2x2 tables, show the 2x2 tables
+  observeEvent(input$results_pg_2x2, {
+    split_t <- list(df_twobytwo()$User_enter_value, df_twobytwo()$Transfer_Table)
+    p$fig_results <- lapply(split_t, renderTable, digits = 0, rownames = TRUE, bordered = FALSE)
+  })
+  
+  #observe event and show figure results for whichever button the user presses
+  output$print_fig <- renderUI(p$fig_results)
+  
+  
   
   
   
@@ -275,17 +240,17 @@ server <- function(input, output, session) {
     
   #If user hits the Run button for linear models, take to results page (linked)
   observeEvent(input$results_pg_l ,{
-    updateNavbarPage(session, "mainpage", "results")
+    updateNavbarPage(session, "mainpage", "Results")
   }) 
   
   #If user hits the Run button for logistic models, take to results page (linked)
   observeEvent(input$results_pg_di ,{
-    updateNavbarPage(session, "mainpage", "results")
+    updateNavbarPage(session, "mainpage", "Results")
   }) 
   
   #If user hits the Run button for 2x2 table, take to results page (linked)
   observeEvent(input$results_pg_2x2 ,{
-    updateNavbarPage(session, "mainpage", "results")
+    updateNavbarPage(session, "mainpage", "Results")
   }) 
   
   

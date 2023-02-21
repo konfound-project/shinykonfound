@@ -16,7 +16,7 @@ shinyUI(fluidPage(
   navbarPage(title = "KonFound-It! Quantify the Robustness of Causal Inferences",
              id = "mainpage",
              
-             tabPanel(title = " ",
+             tabPanel(title = "Home",
                       h4(strong("How do I use KonFound-It?")),
                       p(style= "text-align: justify; font-size = 14px",
                         "SOME LANGUAGE ABOUT THE DECISION MAP. SOME LANGUAGE ABOUT NAVIGATING THE MENU TO CHOOSE THE CORRECT MODEL AND ANALYSIS TECHNIQUE."),
@@ -80,33 +80,23 @@ shinyUI(fluidPage(
                                                    numericInput("treat_success", "Treatment Condition: Result Sucesss", 17, step = 1),
                                                    actionButton("results_pg_2x2", "Run"))))),
              
-             tabPanel(title = "results",
+             tabPanel(title = "Results",
                       p("RESULTS HERE"),
                       
                       #Figure Output panel (top left and bottom)
                       fluidRow(
                         column(7, tags$h4("Figure Output"), style = "height:600px; white; border: 2px double black;",
-                               
-                               #Logistic figure output
-                               span(textOutput("log_implied_title"), style = "font-style: italic"),
-                               span(tableOutput("di_implied_table")),
-                               span(textOutput("log_transfer_title"), style = "font-style: italic"),
-                               tableOutput("di_transfer_table"),
-                               
-                               #Two by two table figure output
-                               span(textOutput("two_observed_title"), style = "font-style: italic"),
-                               tableOutput("two_observed_table"),
-                               span(textOutput("two_transfer_title"), style = "font-style: italic"),
-                               tableOutput("two_transfer_table"),
-                               
-                               #Linear figure output
-                               plotOutput("plot1", width = "50%")),
+
+                               #Figure output
+                               uiOutput("print_fig", width = "50%")),
                         
                         column(5,
                                #Printed Results Output (top right)
                                
                                fluidRow(tags$h4("Results (Printed)"), style = "height:300px; background-color: white; border: 2px double black; padding: 10px;",
-                                        htmlOutput("print_results")), #display printed results
+                                        
+                                        #Printed output
+                                        htmlOutput("print_results")), 
                                         
                 
                                fluidRow(tags$h4("Want to generate code to  use in R or Stata?"), style = "height:300px; white; border: 2px double black;",
