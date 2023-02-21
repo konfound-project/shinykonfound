@@ -78,7 +78,7 @@ server <- function(input, output, session) {
     r$print_results <- paste(df()[[1]][2:4], df()[[1]][5:7])
   })
   
-  #If user presses the results buttono for logistic models, paste the logistic results
+  #If user presses the results button for logistic models, paste the logistic results
   observeEvent(input$results_pg_di, {
     r$print_results <- paste(df_log()[[1]][1], df_log()[[2]][1], df_log()[[3]][1])
     })
@@ -96,7 +96,7 @@ server <- function(input, output, session) {
   ######################################### 
   ##### GENERATE FIGURES/PLOTS OUTPUT #####
   ################################### #####
- 
+  #https://groups.google.com/g/shiny-discuss/c/HdCMHN8yjGM
 
 
   #Linear printed plot
@@ -104,6 +104,13 @@ server <- function(input, output, session) {
     df()[[2]]
   })
   
+  #WORKS
+  #Logistic tables
+  output$di_implied_table <- renderUI({
+    splitDFs <- list(df_log()$Implied_Table, df_log()$Transfer_Table)
+    splitRenders <- lapply(splitDFs, renderTable, digits = 0, rownames = TRUE, bordered = FALSE)
+    return(splitRenders)
+  })
   
   
   ######################################### 
@@ -144,14 +151,23 @@ server <- function(input, output, session) {
     "Transfer Table"
   })
   
-  output$di_implied_table <- renderTable({
-    df_log()$Implied_Table
-  }, digits = 0, rownames = TRUE, bordered = FALSE)
+ # test <- reactive({
+ #   split("Implied Table" = df_log()$Implied_Table, "Transfer Table" = df_log()$Transfer_Table)
+ # })
+  
+
   
   
-  output$di_transfer_table <- renderTable({
-    df_log()$Transfer_Table
-  }, digits = 0, rownames = TRUE, bordered = FALSE)
+  
+  
+ # output$di_implied_table <- renderTable({
+  #  test()
+ # }, digits = 0, rownames = TRUE, bordered = FALSE)
+  
+  
+  #output$di_transfer_table <- renderTable({
+#    df_log()$Transfer_Table
+ # }, digits = 0, rownames = TRUE, bordered = FALSE)
   
   
   ######################################### 
