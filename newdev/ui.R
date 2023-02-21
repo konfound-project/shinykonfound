@@ -1,4 +1,5 @@
 library(shiny)
+library(shinythemes)
 
 #CREATING DATAFRAME OF OPTIONS FOR DECISION MAP SELECTION
 map_df <- data.frame(outcome = c("Dichotomous",
@@ -37,7 +38,7 @@ map_df <- data.frame(outcome = c("Dichotomous",
 
 
 # Define UI for application that draws a histogram
-shinyUI(fluidPage(
+shingityUI(fluidPage(theme = shinythemes::shinytheme("lumen"),
   tags$head(tags$script(src="script.js")),
   navbarPage(title = "KonFound-It!",
              tabPanel(title = "Home",

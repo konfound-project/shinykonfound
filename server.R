@@ -165,15 +165,15 @@ shinyServer(function(input, output, session) {
   })
   
   df_t <- eventReactive(input$button_t, {
-    validate(
-      need(is.numeric(input$ctrl_fail) &
-             is.numeric(input$ctrl_success) &
-             is.numeric(input$treat_fail) &
-             is.numeric(input$treat_success),
-           "Did not run! Did you enter numbers for the estimated effect, standard error, number of observations, and number of covariates? Please change any of these that are not to a number."),
-      need(input$n_obs_nl > (input$n_covariates_nl + 1),
-           "Did not run! There are too few observations relative to the number of observations and covariates. Please specify a less complex model to use KonFound-It.")
-    )
+    # validate(
+    #   need(is.numeric(input$ctrl_fail) &
+    #          is.numeric(input$ctrl_success) &
+    #          is.numeric(input$treat_fail) &
+    #          is.numeric(input$treat_success),
+    #        "Did not run! Did you enter numbers for the estimated effect, standard error, number of observations, and number of covariates? Please change any of these that are not to a number."),
+    #   need(input$n_obs_nl > (input$n_covariates_nl + 1),
+    #        "Did not run! There are too few observations relative to the number of observations and covariates. Please specify a less complex model to use KonFound-It.")
+    # )
     
     out <- pkonfound(a = input$ctrl_fail, 
                      b = input$ctrl_success, 
