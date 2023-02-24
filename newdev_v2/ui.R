@@ -4,8 +4,9 @@
 library(shiny)
 library(rclipboard)
 library(tippy)
+library(shinythemes)
 
-shinyUI(fluidPage(
+shinyUI(fluidPage(theme = shinythemes::shinytheme("lumen"),
   tags$head(tags$script(src="script.js"),
             tags$style(HTML(".tippy-tooltip {
                       font-size: 15px;
