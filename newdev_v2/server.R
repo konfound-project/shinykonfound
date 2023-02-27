@@ -36,7 +36,7 @@ server <- function(input, output, session) {
                                        index = "RIR",
                                        to_return = c(c("print", "corr_plot"))))
     }
-    if(input$AnalysisL == "ITCV"){
+    if(input$AnalysisL == "IT"){
       linear_output <- capture.output(pkonfound(as.numeric(input$unstd_beta), 
                                                 as.numeric(input$std_error), 
                                                 as.numeric(input$n_obs), 
@@ -52,7 +52,7 @@ server <- function(input, output, session) {
                                                 index = "RIR",
                                                 to_return = "thresh_plot")
     }
-    if(input$AnalysisL == "ITCV"){
+    if(input$AnalysisL == "IT"){
       linear_plot <- pkonfound(as.numeric(input$unstd_beta), 
                                                 as.numeric(input$std_error), 
                                                 as.numeric(input$n_obs), 
@@ -186,12 +186,12 @@ server <- function(input, output, session) {
   
   #generate r code for linear models using user input values
   user_est_l <- eventReactive(input$results_pg_l, {
-    paste("pkonfound(", input$unstd_beta, ", ", input$std_error, ", ", input$n_obs, ", ", input$n_covariates, ", ", "index = ", input$AnalysisL, ")", sep = "")
+    paste("pkonfound(", input$unstd_beta, ", ", input$std_error, ", ", input$n_obs, ", ", input$n_covariates, ", ", "index = ", "'", input$AnalysisL, "'", ")", sep = "")
   })
   
   #generate r code for logistic models using user input values
   user_est_di <- eventReactive(input$results_pg_di, {
-    paste("pkonfound(", input$unstd_beta_nl, ", ", input$std_error_nl, ", ", input$n_obs_nl, ", ", input$n_covariates_nl, ", n_treat = ", input$n_trm_nl, ", index = ", input$Analysis, ", model_type = 'logistic')", sep = "")
+    paste("pkonfound(", input$unstd_beta_nl, ", ", input$std_error_nl, ", ", input$n_obs_nl, ", ", input$n_covariates_nl, ", n_treat = ", input$n_trm_nl, ", model_type = 'logistic')", sep = "")
   })
   
   #generate r code for 2x2 tables using user input values
@@ -204,7 +204,7 @@ server <- function(input, output, session) {
   select_r_code <- reactive({
     #req(input$Data, input$Outcome)
     
-    if(input$Outcome == "Linear"){
+    if(input$Outcome == "Continuous"){
       r_code <- user_est_l()
     }
     
