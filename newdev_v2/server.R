@@ -163,20 +163,31 @@ server <- function(input, output, session) {
   
   #If user presses the results button for logistic models, show the logistic tables
   observeEvent(input$results_pg_di, {
-    split_log <- list(df_log()$Implied_Table, df_log()$Transfer_Table)
-    p$fig_results <- lapply(split_log, renderTable, digits = 0, rownames = TRUE, bordered = FALSE)
+    
+    a <- df_log()$Implied_Table
+    b <- df_log()$Transfer_Table
+    
+    p$fig_results <- c(renderUI(HTML(paste("<i>Implied Table</i>"))), renderTable(a, digits = 0, rownames = TRUE, bordered = FALSE, colnames = TRUE),
+                       renderUI(HTML(paste("<i>Transfer Table</>"))), renderTable(b, digits = 0, rownames = TRUE, bordered = FALSE, colnames = TRUE))
+    
   })
   
   #If user presses the results button for 2x2 tables, show the 2x2 tables
   observeEvent(input$results_pg_2x2, {
-    split_t <- list(df_twobytwo()$User_enter_value, df_twobytwo()$Transfer_Table)
-    p$fig_results <- lapply(split_t, renderTable, digits = 0, rownames = TRUE, bordered = FALSE)
+    
+    a <- df_twobytwo()$User_enter_value
+    b <- df_twobytwo()$Transfer_Table
+    
+    p$fig_results <- c(renderUI(HTML(paste("<i>Implied Table</i>"))), renderTable(a, digits = 0, rownames = TRUE, bordered = FALSE, colnames = TRUE),
+                       renderUI(HTML(paste("<i>Transfer Table</>"))), renderTable(b, digits = 0, rownames = TRUE, bordered = FALSE, colnames = TRUE))
+
   })
   
   #observe event and show figure results for whichever button the user presses
   output$print_fig <- renderUI(p$fig_results)
   
   
+  #Display RIR value below figure/output
   
   
   
