@@ -5,6 +5,7 @@ library(shiny)
 library(rclipboard)
 library(tippy)
 library(shinythemes)
+library(shinyBS)
 
 shinyUI(fluidPage(theme = shinythemes::shinytheme("lumen"),
   tags$head(tags$script(src="script.js"),
@@ -20,38 +21,57 @@ shinyUI(fluidPage(theme = shinythemes::shinytheme("lumen"),
              tabPanel(title = "Home",
                       h4(strong("How do I use KonFound-It?")),
                       p(style= "text-align: justify; font-size = 14px",
-                        "SOME LANGUAGE ABOUT THE DECISION MAP. SOME LANGUAGE ABOUT NAVIGATING THE MENU TO CHOOSE THE CORRECT MODEL AND ANALYSIS TECHNIQUE."),
+                        "Konfound is a sensitivity analysis that quantifies the robustness of statistical inferences to concerns about bias and omitted variables."),
                       splitLayout(
-                        wellPanel(p("Step 1"),
-                                  radioButtons("Outcome", "What is your type of outcome?",
+                        wellPanel(p(h4(strong("Step 1"))),
+                                  radioButtons("Outcome", "Type of outcome",
                                                choices = c("Dichotomous", "Continuous"),
                                                selected = character(0))),#no default radio button selected
-                        wellPanel(p("Step 2"),
+                        wellPanel(p(h4(strong("Step 2"))),
                                   conditionalPanel(condition = "input.Outcome == 'Dichotomous'",
                                                    style = "display: none;",
-                                                   radioButtons("Data", "Where is your data coming from?",
+                                                   radioButtons("Data", "Source of data",
                                                                 choices = c("2x2 table", "Logistic model"),
                                                                 selected = character(0))),
                                   conditionalPanel(condition = "input.Outcome == 'Continuous'",
                                                    style = "display: none;",
-                                                   radioButtons("DataL", "Where is your data coming from?",
+                                                   radioButtons("DataL", "Source of data",
                                                                 choices = ("Linear model")))), #no default radio button selected
-                        wellPanel(p("Step 3"),
+                        wellPanel(p(h4(strong("Step 3",
+                                              bsButton("step3info", label = "", icon = icon("info", lib = "font-awesome"), style = "default", size = "extra-small"),
+                                              ))),
+                                  bsPopover(
+                                    id = "step3info",
+                                    title = "More information",
+                                    content = paste0(
+                                      "Any HTML can be here ",
+                                      a("ShinyBS", href = "https://ebailey78.github.io/shinyBS/index.html", target="_blank")
+                                    ),
+                                    placement = "right",
+                                    trigger = "click",
+                                    options = list(container = "body")
+                                  ),
+                                  
                                   conditionalPanel(condition = "(input.Data == 'Logistic model' || input.Data == '2x2 table') && input.Outcome == 'Dichotomous'",
                                                    style = "display: none;",
-                                                   radioButtons("Analysis", "Which analysis would you like to carry out?",
-                                                                choices = c("RIR", "Fragility"),
+                                                   radioButtons("Analysis", "Type of analysis",
+                                                                choices = c("Robustness of Inference to Replacement (RIR)/Fragility" = "RIR"),
                                                                 selected = character(0))),
                                   
                                   conditionalPanel(condition = "input.Outcome == 'Continuous' && input.DataL == 'Linear model'",
                                                    style = "display: none;",
-                                                   radioButtons("AnalysisL", "Which analysis would you like to carry out?",
-                                                                choices = c("ITCV" = "IT", 
-                                                                            "RIR", "Correlation: Preserve standard error",
-                                                                            "Replacement: Preserve standard error", "Coefficient of proportionality",
-                                                                            "Correlation: Mediation","Differential attrition"),
+                                                   radioButtons("AnalysisL", "Type of analysis?",
+                                                                choiceNames = list("ITCV", 
+                                                                            "Robustness of Inference to Replacement (RIR)", 
+                                                                            em(HTML("<font color='gray'>Correlation: Preserve standard error (coming soon)</font>")),
+                                                                            em(HTML("<font color='gray'>Replacement: Preserve standard error (coming soon)</font>")), 
+                                                                            em(HTML("<font color='gray'>Coefficient of proportionality (coming soon)</font>")),
+                                                                            em(HTML("<font color='gray'>Correlation: Mediation (coming soon)</font>")),
+                                                                            em(HTML("<font color='gray'>Differential attrition (coming soon)</font>"))),
+                                                                choiceValues = c("IT", "RIR", "copse", "rpse", "cop", "med", "da"),
+    
                                                                 selected = character(0)))),
-                        wellPanel(p("Step 4"),
+                        wellPanel(p(h4(strong("Step 4"))),
                                   conditionalPanel(condition = "(input.AnalysisL == 'IT' || input.AnalysisL == 'RIR') && input.Outcome == 'Continuous'",
                                                    style = "display: none;",
                                                    h5(strong("Enter these values:")),
@@ -83,25 +103,26 @@ shinyUI(fluidPage(theme = shinythemes::shinytheme("lumen"),
                                                    actionButton("results_pg_2x2", "Run"))))),
              
              tabPanel(title = "Results",
-                      p("RESULTS HERE"),
+                      tags$h4(uiOutput("recap")),
                       
                       #Figure Output panel (top left and bottom)
                       fluidRow(
-                        column(7, tags$h4("Figure Output"), style = "height:600px; white; border: 2px double black;",
-
-                               #Figure output
-                               uiOutput("print_fig", width = "50%")),
+                        column(5, tags$h4("Results (Printed)"), style = "height:800px; background-color: white; border: 2px double black; padding: 10px;",
+                               
+                               #Printed output
+                               htmlOutput("print_results")),
                         
-                        column(5,
+                        column(7,
                                #Printed Results Output (top right)
                                
-                               fluidRow(tags$h4("Results (Printed)"), style = "height:300px; background-color: white; border: 2px double black; padding: 10px;",
+                               fluidRow(tags$h4("Figure Output"), style = "height:500px; white; border: 2px double black; padding: 10px;",
                                         
-                                        #Printed output
-                                        htmlOutput("print_results")), 
+                                        #Figure output
+                                        uiOutput("print_fig", width = "50%"),
+                                        uiOutput("print_rir")), 
                                         
                 
-                               fluidRow(tags$h4("Want to generate code to  use in R or Stata?"), style = "height:300px; white; border: 2px double black;",
+                               fluidRow(tags$h4("Want to generate code to  use in R or Stata?"), style = "height:300px; white; border: 2px double black; padding: 10px;",
                                         checkboxInput("gen_r_code", "Generate R Code", value = FALSE),
                                         checkboxInput("gen_stata_code", "Generate Stata Code"),
                                         conditionalPanel("input.gen_r_code == 1",
@@ -113,7 +134,18 @@ shinyUI(fluidPage(theme = shinythemes::shinytheme("lumen"),
                                                            placement = "right",
                                                            arrow = "true"
                                                          ),
-                                        )
+                                        ),
+                                        
+                                        conditionalPanel("input.gen_stata_code == 1",
+                                                         verbatimTextOutput("stata_code_print"), uiOutput("clip2"),
+                                                         tippy_this(
+                                                           "clip",
+                                                           tooltip = "Copied!",
+                                                           trigger = "click",
+                                                           placement = "right",
+                                                           arrow = "true"
+                                                         ),
+                                                         )
                                      ))
                         
                       ))
