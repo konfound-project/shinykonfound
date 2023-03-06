@@ -1,5 +1,7 @@
 #New development - Conditional panel approach
 #ui
+# NOTE: IF UPDATING APP + REPUBLISHING, FIRST RUN THIS YOUR CONSOLE, THEN RELOAD, AND PUBLISH
+## devtools::install_github("konfound-project/konfound")
 
 library(shiny)
 library(rclipboard)
@@ -44,19 +46,12 @@ shinyUI(fluidPage(theme = shinythemes::shinytheme("lumen"),
                                   bsPopover(
                                     id = "step3info",
                                     title = "More information",
-<<<<<<< Updated upstream
-                                    content = paste0(
-                                      "",
-                                      a("ShinyBS", href = "https://ebailey78.github.io/shinyBS/index.html", target="_blank")
-                                    ),
-=======
                                     content = HTML(paste0(
                                       "The Impact Threshold for a Confounding Variable (ITCV) reports how strongly an omitted variable would have to be correlated with both the predictor of interest and the outcome to make the estimated effect have a p-value of .05.",
                                       br(),
                                       br(),
-                                      "The Robustness of Inference to Replacement  (RIR) quantifies what proportion of the data must be replaced (with cases with zero effect) to make the estimated effect have a p-value of .05."
+                                      "The Robustness of Inference to Replacement (RIR) quantifies what proportion of the data must be replaced (with cases with zero effect) to make the estimated effect have a p-value of .05."
                                     )),
->>>>>>> Stashed changes
                                     placement = "right",
                                     trigger = "hover",
                                     options = list(container = "body")
@@ -71,7 +66,7 @@ shinyUI(fluidPage(theme = shinythemes::shinytheme("lumen"),
                                   conditionalPanel(condition = "input.Outcome == 'Continuous' && input.DataL == 'Linear model'",
                                                    style = "display: none;",
                                                    radioButtons("AnalysisL", "Type of analysis?",
-                                                                choiceNames = list("ITCV", 
+                                                                choiceNames = list("Impact Threshold for a Confounding Variable (ITCV)", 
                                                                             "Robustness of Inference to Replacement (RIR)", 
                                                                             em(HTML("<font color='gray'>Correlation: Preserve standard error (coming soon)</font>")),
                                                                             em(HTML("<font color='gray'>Replacement: Preserve standard error (coming soon)</font>")), 

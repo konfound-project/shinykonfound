@@ -152,17 +152,20 @@ server <- function(input, output, session) {
   
   #If user presses the results button for linear models, paste the linear results
   observeEvent(input$results_pg_l, {
-    r$print_results <- paste(df()[[1]][2:4], df()[[1]][5:7])
+    r$print_results <- paste(df()[[1]][2], df()[[1]][3], df()[[1]][4], "<br>", "<br>", df()[[1]][5], df()[[1]][6], df()[[1]][7])
   })
   
   #If user presses the results button for logistic models, paste the logistic results
   observeEvent(input$results_pg_di, {
-    r$print_results <- paste(df_log()[[1]][1], df_log()[[2]][1], df_log()[[3]][1], "(fragility)")
+    r$print_results <- paste(df_log())
+  
+    
+    #r$print_results <- paste(df_log()[[5]][1], df_log()[[6]][1], "<br>", "<br>", df_log()[[1]][1], df_log()[[2]][1], stringr::str_remove(df_log()[[3]][1], "\\.$"), "(Fragility).")
   })
   
   #If user presses the results button for 2x2 tables, paste the 2x2 results
   observeEvent(input$results_pg_2x2, {
-    r$print_results <-paste(df_twobytwo()[[1]][1], df_twobytwo()[[2]][1], df_twobytwo()[[3]][1], df_twobytwo()[[4]][1], df_twobytwo()[[5]][1], "(fragility)")
+    r$print_results <-paste(df_twobytwo()[[1]][1], df_twobytwo()[[2]][1], df_twobytwo()[[3]][1], df_twobytwo()[[4]][1], stringr::str_remove(df_twobytwo()[[5]][1], "\\.$"), "(Fragility).")
   })
   
   #observe event and print results for whichever button the user presses
