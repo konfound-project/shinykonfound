@@ -6,6 +6,7 @@ library(rclipboard)
 library(tippy)
 library(shinythemes)
 library(shinyBS)
+library(fedmatch)
 
 shinyUI(fluidPage(theme = shinythemes::shinytheme("lumen"),
   tags$head(tags$script(src="script.js"),
@@ -44,7 +45,7 @@ shinyUI(fluidPage(theme = shinythemes::shinytheme("lumen"),
                                     id = "step3info",
                                     title = "More information",
                                     content = paste0(
-                                      "Any HTML can be here ",
+                                      "",
                                       a("ShinyBS", href = "https://ebailey78.github.io/shinyBS/index.html", target="_blank")
                                     ),
                                     placement = "right",
@@ -148,8 +149,8 @@ shinyUI(fluidPage(theme = shinythemes::shinytheme("lumen"),
                                                          )
                                      ))
                         
-                      ))
-             )))
+                      )),
+             tags$p("To cite this application: Rosenberg, J. M., Narvaiz, S., Xu, R., Lin, Q., & Frank, K. A. (2023). Konfound-It!: Quantify the robustness of causal inferences (v. 2.0.0)."))))
 
 
 
