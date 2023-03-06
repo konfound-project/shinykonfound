@@ -44,12 +44,21 @@ shinyUI(fluidPage(theme = shinythemes::shinytheme("lumen"),
                                   bsPopover(
                                     id = "step3info",
                                     title = "More information",
+<<<<<<< Updated upstream
                                     content = paste0(
                                       "",
                                       a("ShinyBS", href = "https://ebailey78.github.io/shinyBS/index.html", target="_blank")
                                     ),
+=======
+                                    content = HTML(paste0(
+                                      "The Impact Threshold for a Confounding Variable (ITCV) reports how strongly an omitted variable would have to be correlated with both the predictor of interest and the outcome to make the estimated effect have a p-value of .05.",
+                                      br(),
+                                      br(),
+                                      "The Robustness of Inference to Replacement  (RIR) quantifies what proportion of the data must be replaced (with cases with zero effect) to make the estimated effect have a p-value of .05."
+                                    )),
+>>>>>>> Stashed changes
                                     placement = "right",
-                                    trigger = "click",
+                                    trigger = "hover",
                                     options = list(container = "body")
                                   ),
                                   
