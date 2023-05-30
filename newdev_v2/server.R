@@ -26,7 +26,8 @@ server <- function(input, output, session) {
              is.numeric(input$std_error) &
              is.numeric(input$n_obs) &
              is.numeric(input$n_covariates), "Did not run! Did you enter numbers for the estimated effect, standard error, number of observations, and number of covariates? Please change any of these that are not to a number."),
-      need(input$n_obs > (input$n_covariates + 1), "Did not run! There are too few observations relative to the number of observations and covariates. Please specify a less complex model to use KonFound-It.")
+      need(input$n_obs > (input$n_covariates + 1), "Did not run! There are too few observations relative to the number of observations and covariates. Please specify a less complex model to use KonFound-It."),
+      need(input$std_error > 0, "Did not run! Standard error needs to be greater than zero.")
     )
     
     
@@ -96,7 +97,8 @@ server <- function(input, output, session) {
              is.numeric(input$eff_thr_cop) &
              is.numeric(input$FR2max_cop) &
              is.numeric(input$n_covariates_cop), "Did not run! Did you enter numbers for the estimated effect, standard error, number of observations, and number of covariates? Please change any of these that are not to a number."),
-      need(input$n_obs > (input$n_covariates_cop + 1), "Did not run! There are too few observations relative to the number of observations and covariates. Please specify a less complex model to use KonFound-It.")
+      need(input$n_obs > (input$n_covariates_cop + 1), "Did not run! There are too few observations relative to the number of observations and covariates. Please specify a less complex model to use KonFound-It."),
+      need(input$std_err_cop > 0, "Did not run! Standard error needs to be greater than zero.")
     )
     
     
@@ -142,13 +144,15 @@ server <- function(input, output, session) {
   df_pse <- eventReactive(input$results_pg_pse, {
     
     #validating user input is numeric
-    # validate(
-    #   need(is.numeric(input$unstd_beta_pse) &
-    #          is.numeric(input$std_err_pse) &
-    #          is.numeric(input$n_obs_pse) &
-    #          is.numeric(input$sdx_pse) &
-    #          is.numeric(input$sdy_pse) &
-    #          is.numeric(input$R2_pse)))
+    validate(
+      need(is.numeric(input$unstd_beta_pse) &
+             is.numeric(input$std_err_pse) &
+             is.numeric(input$n_obs_pse) &
+             is.numeric(input$sdx_pse) &
+             is.numeric(input$sdy_pse) &
+             is.numeric(input$R2_pse), "Did not run! Did you enter numbers for the estimated effect, standard error, number of observations, and number of covariates? Please change any of these that are not to a number."),
+      need(input$std_err_pse > 0, "Did not run! Standard error needs to be greater than zero.")
+      )
     
     
     #if statements needed for linear printed output and figure
@@ -181,7 +185,8 @@ server <- function(input, output, session) {
              is.numeric(input$n_trm_nl),
            "Did not run! Did you enter numbers for the estimated effect, standard error, number of observations, and number of covariates? Please change any of these that are not to a number."),
       need(input$n_obs_nl > (input$n_covariates_nl + 1),
-           "Did not run! There are too few observations relative to the number of observations and covariates. Please specify a less complex model to use KonFound-It.")
+           "Did not run! There are too few observations relative to the number of observations and covariates. Please specify a less complex model to use KonFound-It."),
+      need(input$std_error_nl > 0, "Did not run! Standard error needs to be greater than zero.")
     )
     
     out <- pkonfound(input$unstd_beta_nl, 
@@ -208,7 +213,8 @@ server <- function(input, output, session) {
              is.numeric(input$treat_success),
            "Did not run! Did you enter numbers for the estimated effect, standard error, number of observations, and number of covariates? Please change any of these that are not to a number."),
       need(input$n_obs_nl > (input$n_covariates_nl + 1),
-           "Did not run! There are too few observations relative to the number of observations and covariates. Please specify a less complex model to use KonFound-It.")
+           "Did not run! There are too few observations relative to the number of observations and covariates. Please specify a less complex model to use KonFound-It."),
+      need(input$std_error_nl > 0, "Did not run! Standard error needs to be greater than zero.")
     )
     
     out <- pkonfound(a = input$ctrl_fail, 
@@ -289,7 +295,7 @@ observeEvent(input$results_pg_di, {
   
   #If user presses the results button for pse model, no figure is shown
   observeEvent(input$results_pg_pse, {
-    p$fig_results <- renderUI(HTML(paste(" ")))
+    p$fig_results <- renderUI(HTML(paste("No graphical output for this analysis")))
   })
   
   #If user presses the results button for logistic models, show the logistic tables
@@ -393,12 +399,12 @@ observeEvent(input$results_pg_di, {
     paste0("#install.packages('konfound')","\n", "library(konfound)", "\n","pkonfound(a = ", input$ctrl_fail, ", b = ", input$ctrl_success, ", c = ", input$treat_fail, ", d = ", input$treat_success, ")", sep = "")
   })
   
-  #generate r code for cop
-  
+  #generate r code for COP
   user_est_cop <- eventReactive(input$results_pg_cop, {
     paste0("#install.packages('konfound')", "\n", "library(konfound)", "\n", "pkonfound(est_eff = ", input$unstd_beta_cop, ", std_err = ", input$std_err_cop, ", n_obs = ", input$n_obs_cop, ", n_covariates = ", input$n_covariates_cop, ", sdx = ", input$sdx_cop, ", sdy = ", input$sdy_cop, ", R2 = ", input$R2_cop, ", eff_thr = ", input$eff_thr_cop, ", FR2max = ", input$FR2max_cop, ", index = 'COP')")
   })
   
+  #generate r code for PSE
   user_est_pse <- eventReactive(input$results_pg_pse, {
     paste0("#install.packages('konfound')", "\n", "library(konfound)", "\n", "pkonfound(est_eff = ", input$unstd_beta_pse, ", std_err = ", input$std_err_pse, ", n_obs = ", input$n_obs_pse, ", sdx = ", input$sdx_pse, ", sdy = ", input$sdy_pse, ", R2 = ", input$R2_pse, ", index = 'PSE')")
   })
@@ -472,16 +478,20 @@ observeEvent(input$results_pg_di, {
     paste("pkonfound", input$ctrl_fail, input$ctrl_success, input$treat_fail, input$treat_success, "model_type(2)")
   })
   
+  s_user_est_cop <- eventReactive(input$results_pg_cop, {
+    paste0("Not available")
+  })
+  
+  #generate r code for PSE
+  s_user_est_pse <- eventReactive(input$results_pg_pse, {
+    paste0("Not available")
+  })
+  
   
   #conditional statement to display the correct stata code based on model type
-  
   select_stata_code <- reactive({
-    req(input$Outcome) 
-
-    if(input$Outcome == "Continuous"){
-      stata_code <- s_user_est_l()
-    }
-
+    req(input$Outcome) #need or will get error: argument is of length zero
+    
     if(input$Outcome == "Dichotomous"){
       if(input$Data == "2x2 table"){
         stata_code <- s_user_est_2x2()
@@ -490,8 +500,24 @@ observeEvent(input$results_pg_di, {
         stata_code <- s_user_est_di()
       }
     }
-
+    
+    if(input$Outcome == "Continuous"){
+      if(input$AnalysisL == "IT"){
+        stata_code <- s_user_est_l()
+      }
+      if(input$AnalysisL == "RIR"){
+        stata_code <- s_user_est_l()
+      }
+      if(input$AnalysisL == "COP"){
+        stata_code <- s_user_est_cop()
+      }
+      if(input$AnalysisL == "PSE"){
+        stata_code <- s_user_est_pse()
+      }
+    }
+    
     stata_code
+    
   })
   
   #Render stata code in UI.R to display for user
