@@ -26,7 +26,7 @@ server <- function(input, output, session) {
              is.numeric(input$std_error) &
              is.numeric(input$n_obs) &
              is.numeric(input$n_covariates), "Did not run! Did you enter numbers for the estimated effect, standard error, number of observations, and number of covariates? Please change any of these that are not to a number."),
-      need(input$n_obs > (input$n_covariates + 1), "Did not run! There are too few observations relative to the number of observations and covariates. Please specify a less complex model to use KonFound-It."),
+      need(input$n_obs > (input$n_covariates + 2), "Did not run! There are too few observations relative to the number of observations and covariates. Please specify a less complex model to use KonFound-It."),
       need(input$std_error > 0, "Did not run! Standard error needs to be greater than zero.")
     )
     
@@ -98,13 +98,13 @@ server <- function(input, output, session) {
              is.numeric(input$FR2max_cop) &
              is.numeric(input$n_covariates_cop), "Did not run! Did you enter numbers for the estimated effect, standard error, number of observations, and number of covariates? Please change any of these that are not to a number."),
       need(input$n_obs > (input$n_covariates_cop + 1), "Did not run! There are too few observations relative to the number of observations and covariates. Please specify a less complex model to use KonFound-It."),
-      need(input$std_err_cop > 0, "Did not run! Standard error needs to be greater than zero.")
+      need(input$std_err_cop > 0, "Did not run! Standard error needs to be greater than zero."),
+      need(input$FR2max_cop < 1, "Did not run! R2 Max needs to be less than 1."),
+      need(input$FR2max_cop > input$R2_cop, "Did not run! R2 Max needs to be greater than R2.")
     )
     
-    
     #if statements needed for linear printed output and figure
-    if(input$AnalysisL == "COP"){
-      linear_output <- capture.output(pkonfound(as.numeric(input$unstd_beta_cop),
+    cop_output <- capture.output(pkonfound(as.numeric(input$unstd_beta_cop),
                                                 as.numeric(input$std_err_cop),
                                                 as.numeric(input$n_obs_cop),
                                                 as.numeric(input$n_covariates_cop),
@@ -114,11 +114,9 @@ server <- function(input, output, session) {
                                                 eff_thr = as.numeric(input$eff_thr_cop),
                                                 FR2max = as.numeric(input$FR2max_cop),
                                                 index = "COP",
-                                                to_return = "print"))
-    }
+                                                to_return = c(c("print"))))
     
-    if(input$AnalysisL == "COP"){
-      cop_plot <- pkonfound(as.numeric(input$unstd_beta_cop),
+    cop_plot <- pkonfound(as.numeric(input$unstd_beta_cop),
                                                 as.numeric(input$std_err_cop),
                                                 as.numeric(input$n_obs_cop),
                                                 as.numeric(input$n_covariates_cop),
@@ -129,11 +127,10 @@ server <- function(input, output, session) {
                                                 FR2max = as.numeric(input$FR2max_cop),
                                                 index = "COP",
                                                 to_return = "raw_output")
-    }
     
     
-    print(list(linear_output, cop_plot))
-    list(linear_output, cop_plot)
+    print(list(cop_output, cop_plot))
+    list(cop_output, cop_plot)
   })
   
   ############################################# 
@@ -151,9 +148,14 @@ server <- function(input, output, session) {
              is.numeric(input$sdx_pse) &
              is.numeric(input$sdy_pse) &
              is.numeric(input$R2_pse), "Did not run! Did you enter numbers for the estimated effect, standard error, number of observations, and number of covariates? Please change any of these that are not to a number."),
-      need(input$std_err_pse > 0, "Did not run! Standard error needs to be greater than zero.")
+      need(input$std_err_pse > 0, "Did not run! Standard error needs to be greater than zero."),
+      need(input$sdx_pse > 0, "Did not run! Standard deviation of x needs to be greater than zero."),
+      need(input$sdy_pse > 0, "Did not run! Standard deviation of y needs to be greater than zero."),
+      need(input$R2_pse > 0, "Did not run! R2 needs to be greater than zero."),
+      need(input$R2_pse < 1, "Did not run! R2 needs to be less than one")
       )
     
+    need(input$std_error > 0, "Did not run! Standard error needs to be greater than zero.")
     
     #if statements needed for linear printed output and figure
     if(input$AnalysisL == "PSE"){
@@ -166,7 +168,12 @@ server <- function(input, output, session) {
                                                 index = "PSE",
                                                 to_return = "print"))
     }
-    print(linear_output)
+    
+    if(input$AnalysisL == "PSE"){
+      pse_plot <- HTML(paste("No graphical output for this analysis"))
+    }
+    print(list(linear_output, pse_plot))
+    list(linear_output, pse_plot)
   })
   
 
@@ -214,7 +221,11 @@ server <- function(input, output, session) {
            "Did not run! Did you enter numbers for the estimated effect, standard error, number of observations, and number of covariates? Please change any of these that are not to a number."),
       need(input$n_obs_nl > (input$n_covariates_nl + 1),
            "Did not run! There are too few observations relative to the number of observations and covariates. Please specify a less complex model to use KonFound-It."),
-      need(input$std_error_nl > 0, "Did not run! Standard error needs to be greater than zero.")
+      need(input$std_error_nl > 0, "Did not run! Standard error needs to be greater than zero."),
+      need(input$ctrl_fail > 0, "Did not run! Control Condition: Result Failure needs to be greater than zero"),
+      need(input$ctrl_success > 0, "Did not run! Control Condition: Result Success needs to be greater than zero"),
+      need(input$treat_fail > 0, "Did not run! Treatment Condition: Result Failure needs to be greater than zero"),
+      need(input$treat_success > 0, "Did not run! Treatment Condition: Result Sucesss needs to be greater than zero")
     )
     
     out <- pkonfound(a = input$ctrl_fail, 
@@ -239,23 +250,23 @@ server <- function(input, output, session) {
   
   #If user presses the results button for linear models, paste the linear results
   observeEvent(input$results_pg_l, {
-    r$print_results <- paste(df()[[1]][2], df()[[1]][3], df()[[1]][4], "<br>", "<br>", df()[[1]][5], df()[[1]][6], df()[[1]][7])
+    r$print_results <- renderText(paste0(df()[[1]][2], df()[[1]][3], df()[[1]][4], df()[[1]][5], df()[[1]][6], df()[[1]][7]))
   })
   
   #If user presses the results button for cop models, paste the cop results
   observeEvent(input$results_pg_cop, {
-    r$print_results <- paste(df_cop()[[1]])
+    r$print_results <- renderText(df_cop()[[1]])
   })
   
   #If user presses the results button for cop models, paste the cop results
   observeEvent(input$results_pg_pse, {
-    r$print_results <- paste(df_pse())
+    r$print_results <- renderText(df_pse()[[1]])
   })
   
   
   #If user presses the results button for pse models, paste the pse results
 observeEvent(input$results_pg_di, {
-  r$print_results <- paste(df_log())
+  r$print_results <- renderText(paste0(df_log()[[1]], df_log()[[2]], df_log()[[3]]))
 })
     
   
@@ -266,11 +277,11 @@ observeEvent(input$results_pg_di, {
   
   #If user presses the results button for 2x2 tables, paste the 2x2 results
   observeEvent(input$results_pg_2x2, {
-    r$print_results <-paste(df_twobytwo()[[1]][1], df_twobytwo()[[2]][1], df_twobytwo()[[3]][1], df_twobytwo()[[4]][1], stringr::str_remove(df_twobytwo()[[5]][1], "\\.$"), "(Fragility).")
+    r$print_results <-renderText(paste0(df_twobytwo()[[1]][1], df_twobytwo()[[2]][1], df_twobytwo()[[3]][1], df_twobytwo()[[4]][1], stringr::str_remove(df_twobytwo()[[5]][1], "\\.$"), " (Fragility)."))
   })
   
   #observe event and print results for whichever button the user presses
-  output$print_results <- renderText(r$print_results)
+  output$print_results <- renderUI(r$print_results)
   
   
   
@@ -295,28 +306,27 @@ observeEvent(input$results_pg_di, {
   
   #If user presses the results button for pse model, no figure is shown
   observeEvent(input$results_pg_pse, {
-    p$fig_results <- renderUI(HTML(paste("No graphical output for this analysis")))
+    p$fig_results <- renderUI(df_pse()[[2]])
   })
   
   #If user presses the results button for logistic models, show the logistic tables
   observeEvent(input$results_pg_di, {
     
-    a <- df_log()$Implied_Table
-    b <- df_log()$Transfer_Table
+    a <- renderTable(df_log()$Implied_Table, digits = 0, rownames = TRUE, bordered = FALSE, colnames = TRUE)
+    b <- renderTable(df_log()$Transfer_Table, digits = 0, rownames = TRUE, bordered = FALSE, colnames = TRUE)
+
     
-    p$fig_results <- c(renderUI(HTML(paste("<i>Implied Table</i>"))), renderTable(a, digits = 0, rownames = TRUE, bordered = FALSE, colnames = TRUE),
-                       renderUI(HTML(paste("<i>Transfer Table</>"))), renderTable(b, digits = 0, rownames = TRUE, bordered = FALSE, colnames = TRUE))
+    p$fig_results <- c(renderUI(HTML(paste("<i>Implied Table</i>"))), a,  renderUI(HTML(paste("<i>Transfer Table</>"))), b)
     
   })
   
   #If user presses the results button for 2x2 tables, show the 2x2 tables
   observeEvent(input$results_pg_2x2, {
     
-    a <- df_twobytwo()$User_enter_value
-    b <- df_twobytwo()$Transfer_Table
+    a <- renderTable(df_twobytwo()$User_enter_value, digits = 0, rownames = TRUE, bordered = FALSE, colnames = TRUE)
+    b <- renderTable(df_twobytwo()$Transfer_Table, digits = 0, rownames = TRUE, bordered = FALSE, colnames = TRUE)
     
-    p$fig_results <- c(renderUI(HTML(paste("<i>Implied Table</i>"))), renderTable(a, digits = 0, rownames = TRUE, bordered = FALSE, colnames = TRUE),
-                       renderUI(HTML(paste("<i>Transfer Table</>"))), renderTable(b, digits = 0, rownames = TRUE, bordered = FALSE, colnames = TRUE))
+    p$fig_results <- c(renderUI(HTML(paste("<i>Implied Table</i>"))), a,  renderUI(HTML(paste("<i>Transfer Table</>"))), b)
 
   })
   
@@ -326,55 +336,56 @@ observeEvent(input$results_pg_di, {
 
 
   #Display RIR value below figure/output
-  rir <- reactiveValues(print_rir = " ") #create empty reactive string for printed results.
+  rir <- reactiveValues(print_rir = "") #create empty reactive string for printed results.
 
   #If user presses the results button for linear models, paste the linear results
   observeEvent(input$results_pg_l, {
     if(req(input$AnalysisL) == "RIR"){
       e <- df()[[1]][6] #extracts the printed results with the RIR value (element 1, row 6)
       f <- clean_strings(e) #removes special characters (e.g., /.,)
-      rir$print_rir <- strsplit(f, " ")[[1]][8] #extracts the 8th element which is the RIR value
+      g <- strsplit(f, " ")[[1]][8] #extracts the 8th element which is the RIR value
       rir$print_rir <- 
-        HTML(paste0("<b>Robustness of Inference to Replacement (RIR):</b>", " ", rir$print_rir))
+        renderUI(HTML(paste("<b>Robustness of Inference to Replacement (RIR):</b>", " ", g)))
     }
     else{
-      rir$print_rir <- HTML(paste0(" "))
+      rir$print_rir <- renderUI(paste(" "))
     }
   })
   
   observeEvent(input$results_pg_di, {
     if(req(input$Analysis) == "RIR"){
-      rir$print_rir <- HTML(paste0("<b>Robustness of Inference to Replacement (RIR):</b>", " ", df_log()$RIR[1]))
+      rir$print_rir <- renderUI(HTML(paste("<b>Robustness of Inference to Replacement (RIR):</b>", " ", df_log()$RIR[1])))
     }
     else{
-      rir$print_rir <- HTML(paste0(" "))
+      rir$print_rir <- renderUI(paste(" "))
     }
   })
   
   observeEvent(input$results_pg_2x2, {
     if(req(input$Analysis) == "RIR"){
-      rir$print_rir <- HTML(paste0("<b>Robustness of Inference to Replacement (RIR):</b>", " ", df_twobytwo()$RIR[1]))
+      rir$print_rir <- renderUI(HTML(paste("<b>Robustness of Inference to Replacement (RIR):</b>", " ", df_twobytwo()$RIR[1])))
     }
     else{
-      rir$print_rir <- HTML(paste0(" "))
+      rir$print_rir <- renderUI(paste(" "))
     }
   })
   
   observeEvent(input$results_pg_pse, {
     if(req(input$AnalysisL) == "PSE"){
-      rir$print_rir <- HTML(paste0(" "))
+      rir$print_rir <- renderUI(paste(" "))
     }
   })
   
   observeEvent(input$results_pg_cop, {
     if(req(input$AnalysisL) == "COP"){
-      rir$print_rir <- HTML(paste0(" "))
+      rir$print_rir <- renderUI(paste(" "))
     }
   })
 
 
   #observe event and print results for whichever button the user presses
-  output$print_rir <- renderPrint({HTML(rir$print_rir)})
+  output$print_rir <- renderUI(
+    rir$print_rir)
 
 
 
