@@ -421,39 +421,47 @@ observeEvent(input$results_pg_di, {
   })
   
   
-  #conditional statement to display the correct r code based on model type
-  select_r_code <- reactive({
-    req(input$Outcome) #need or will get error: argument is of length zero
-
-    if(input$Outcome == "Dichotomous"){
-      if(input$Data == "2x2 table"){
-        r_code <- user_est_2x2()
-      }
-      if(input$Data == "Logistic model"){
-        r_code <- user_est_di()
-      }
-    }
-    
-    if(input$Outcome == "Continuous"){
-      if(input$AnalysisL == "IT"){
-        r_code <- user_est_l()
-      }
-      if(input$AnalysisL == "RIR"){
-        r_code <- user_est_l()
-      }
-      if(input$AnalysisL == "COP"){
-        r_code <- user_est_cop()
-      }
-      if(input$AnalysisL == "PSE"){
-        r_code <- user_est_pse()
-      }
-    }
-    
-    r_code
-
-  })
- 
   
+  #conditional statement to display the correct r code based on model type
+   select_r_code <- reactive({
+     req(isTruthy(input$Outcome),
+         isTruthy(input$Data) || isTruthy(input$DataL)) #need or will get error: argument is of length zero
+  
+     if(isTruthy(input$Outcome == "Dichotomous")){
+       if(isTruthy(input$Data == "2x2 table")){
+         r_code <- user_est_2x2()
+       }
+       if(isTruthy(input$Data == "Logistic model")){
+         r_code <- user_est_di()
+       }
+       if(is.null(input$Data)){
+         r_code <- print("")
+       }
+     }
+  
+     if(isTruthy(input$Outcome == "Continuous")){
+       if(isTruthy(input$DataL == "Linear model")){
+         r_code <- print("")
+         if(isTruthy(input$AnalysisL == "IT")){
+           r_code <- user_est_l()
+           }
+         if(isTruthy(input$AnalysisL == "RIR")){
+           r_code <- user_est_l()
+           }
+         if(isTruthy(input$AnalysisL == "COP")){
+           r_code <- user_est_cop()
+           }
+         if(isTruthy(input$AnalysisL == "PSE")){
+           r_code <- user_est_pse()
+         }
+       }
+     }
+     r_code
+     })
+   
+  
+  ##################################
+
   #Render r code in UI.R to display for user
   output$r_code_print <- renderText({
     select_r_code()

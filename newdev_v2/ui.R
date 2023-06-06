@@ -19,6 +19,9 @@ shinyUI(fluidPage(theme = shinythemes::shinytheme("lumen"),
                       font-size: 15px;
     }
                     "))),
+  tags$head(
+    tags$link(rel = "icon", type = "image/png", sizes = "32x32", href = "konfoundlogo-small-new.png")),
+  
   tags$style(' .well  { background-color: #fafafa !important;}'),
   tags$style(' .row  { background-color: #ffffff !important;}'),
   
@@ -27,9 +30,18 @@ shinyUI(fluidPage(theme = shinythemes::shinytheme("lumen"),
   useShinyjs(), #for refresh button
   extendShinyjs(text = jscode, functions = "refresh_page"), #for refresh button
   
-  titlePanel("KonFound-It! Quantify the Robustness of Causal Inferences"),
-  p(style= "text-align: justify; font-size = 14px",
-    "Sensitivity analyses that quantify the robustness of inferences to concerns about omitted variables and other sources of bias."),
+  titlePanel(windowTitle = "konfound-it",
+    fixedRow(
+      column(1, img(height = 90, width = 55, src = "konfoundlogo-small-new.png"), style='padding-top:20px;padding-left:50px;'),
+      column(11, " ", style='padding-left:0px;',
+             fixedRow(
+               column(12, "KonFound-It! Quantify the Robustness of Causal Inferences", offset = 0, style='padding-top:40px;padding-left:0px;'),
+               column(12, h6("Sensitivity analyses that quantify the robustness of inferences to concerns about omitted variables and other sources of bias.", style='padding-left:-10px;'))
+               )
+             )
+      )
+    ),
+
   
   navbarPage("",
              tabPanel("Home",
@@ -89,10 +101,8 @@ shinyUI(fluidPage(theme = shinythemes::shinytheme("lumen"),
                                                        style = "display: none;",
                                                        radioButtons("DataL", "Source of data",
                                                                     
-                                                                    choiceNames = list("Estimates from a linear model",
-                                                                                       em(HTML("<font color='gray'>Estimates from a Poisson model (coming soon)</font>"))),
-                                                                    choiceValues = c("Linear model", "Poisson model"),
-                                                                    selected = character(0)))), #no default radio button selected
+                                                                    choiceNames = list("Estimates from a linear model"),
+                                                                    choiceValues = c("Linear model")))), #no default radio button selected
                             
                             wellPanel(p(h4(strong("Step 3",
                                                   
