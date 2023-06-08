@@ -149,12 +149,9 @@ shinyUI(fluidPage(theme = shinythemes::shinytheme("lumen"),
                                                                     choiceNames = list(
                                                                       list("Impact Threshold for a Confounding Variable (ITCV)", bsButton("itcv-info", label = "", icon = icon("info", lib = "font-awesome"), style = "default", size = "extra-small")),
                                                                       list("Generalized Robustness of Inference to Replacement (RIR)", bsButton("rir-info", label = "", icon = icon("info", lib = "font-awesome"), style = "default", size = "extra-small")),
-                                                                                       em(HTML("<font color='gray'>Conditional RIR (coming soon)</font>")),
                                                                       list("Preserve standard error", bsButton("pse-info", label = "", icon = icon("info", lib = "font-awesome"), style = "default", size = "extra-small")),
-                                                                      list("Coefficient of proportionality",  bsButton("cop-info", label = "", icon = icon("info", lib = "font-awesome"), style = "default", size = "extra-small")),
-                                                                                       em(HTML("<font color='gray'>Correlation: Mediation (coming soon)</font>")),
-                                                                                       em(HTML("<font color='gray'>Differential attrition (coming soon)</font>"))),
-                                                                    choiceValues = c("IT", "RIR", "copse", "PSE", "COP", "med", "da"),
+                                                                      list("Coefficient of proportionality",  bsButton("cop-info", label = "", icon = icon("info", lib = "font-awesome"), style = "default", size = "extra-small"))),
+                                                                    choiceValues = c("IT", "RIR","PSE", "COP"),
                                                                     selected = character(0)))),
                             
                             bsPopover(
