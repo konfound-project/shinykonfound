@@ -341,6 +341,7 @@ shinyUI(fluidPage(theme = shinythemes::shinytheme("lumen"),
                         tags$li(tags$a(href="https://www.dropbox.com/s/2dzkvalwmgr5v5z/Hypothetical%20case%20replacement%20can%20be%20used%20to%20quantify%20the%20robustness%20of%20trial%20results%20submit.docx?dl=0", "*Frank, K. A., *Lin, Q., *Maroulis, S., *Mueller, A. S., Xu, R., Rosenberg, J. M., ... & Zhang, L. 2021. Hypothetical case replacement can be used to quantify the robustness of trial results. Journal of Clinical Epidemiology, 134, 150-159. *authors listed alphabetically.")),
                         p(),
                         tags$b("Publications for Both Frameworks"),
+                        tags$li(tags$a(href ="https://www.researchgate.net/profile/Ran-Xu-6/publication/335956720_konfound_Command_to_quantify_robustness_of_causal_inferences/links/5e49a3d2a6fdccd965ac3564/konfound-Command-to-quantify-robustness-of-causal-inferences.pdf", "Xu, R., Frank, K. A., Maroulis, S. J., & Rosenberg, J. M. (2019). konfound: Command to quantify robustness of causal inferences. The Stata Journal, 19(3), 523-550.")),
                         tags$li(tags$a(href="https://www.dropbox.com/s/rn8a4jbxtiynefh/Quantifying%20the%20Robustness%20of%20Causal%20Inferences%20Frank%20SSR%20final.pdf?dl=0", "Frank, K.A., Lin, Q., Xu, R., Maroulis, S.J., Mueller, A. (on-line first). Quantifying the Robustness of Causal Inferences: Sensitivity Analysis for Pragmatic Social Science.  Social Science Research. 110, 102815.")),
                         p(),
                         tags$b("Contact:"),
@@ -352,7 +353,7 @@ shinyUI(fluidPage(theme = shinythemes::shinytheme("lumen"),
                     
              ),
   
-  tags$p("To cite this application: Rosenberg, J. M., Narvaiz, S., Xu, R., Lin, Q., & Frank, K. A. (2023). Konfound-It!: Quantify the robustness of causal inferences (v. 2.0.0).")
+  tags$p("To cite this application: Rosenberg, J. M., Narvaiz, S., Xu, R., Lin, Q., Maroulis, S., & Frank, K. A. (2023). Konfound-It!: Quantify the robustness of causal inferences (v. 2.0.0).")
   )
   )
 
