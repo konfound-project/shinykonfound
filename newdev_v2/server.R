@@ -97,10 +97,15 @@ server <- function(input, output, session) {
              is.numeric(input$eff_thr_cop) &
              is.numeric(input$FR2max_cop) &
              is.numeric(input$n_covariates_cop), "Did not run! Did you enter numbers for the estimated effect, standard error, number of observations, and number of covariates? Please change any of these that are not to a number."),
-      need(input$n_obs > (input$n_covariates_cop + 1), "Did not run! There are too few observations relative to the number of observations and covariates. Please specify a less complex model to use KonFound-It."),
+      need(input$n_obs_cop > (input$n_covariates_cop + 2), "Did not run! There are too few observations relative to the number of observations and covariates. Please specify a less complex model to use KonFound-It."),
+      need(input$sdx_cop > 0, "Did not run! Standard deviation of x needs to be greater than zero."),
+      need(input$sdy_cop > 0, "Did not run! Standard deviation of y needs to be greater than zero."),
       need(input$std_err_cop > 0, "Did not run! Standard error needs to be greater than zero."),
+      need(input$R2_cop > 0, "Did not run! R2 needs to be greater than zero."),
+      need(input$R2_cop < 1, "Did not run! R2 needs to be less than one"),
       need(input$FR2max_cop < 1, "Did not run! R2 Max needs to be less than 1."),
-      need(input$FR2max_cop > input$R2_cop, "Did not run! R2 Max needs to be greater than R2.")
+      need(input$FR2max_cop > input$R2_cop, "Did not run! R2 Max needs to be greater than R2."),
+      need(1-((input$sdy_cop^2/input$sdx_cop^2)*(1-input$R2_cop)/((input$n_obs_cop - input$n_covariates_cop - 2)*input$std_err_cop^2)) >0, "Did not run! Entered values produced Rxz^2 <0, consider adding more significant digits to your entered values")
     )
     
     #if statements needed for linear printed output and figure
@@ -147,15 +152,15 @@ server <- function(input, output, session) {
              is.numeric(input$n_obs_pse) &
              is.numeric(input$sdx_pse) &
              is.numeric(input$sdy_pse) &
-             is.numeric(input$R2_pse), "Did not run! Did you enter numbers for the estimated effect, standard error, number of observations, and number of covariates? Please change any of these that are not to a number."),
+             is.numeric(input$R2_pse), "Did not run! Did you enter numbers for the estimated effect, standard error, and number of observations? Please change any of these that are not to a number."),
       need(input$std_err_pse > 0, "Did not run! Standard error needs to be greater than zero."),
       need(input$sdx_pse > 0, "Did not run! Standard deviation of x needs to be greater than zero."),
       need(input$sdy_pse > 0, "Did not run! Standard deviation of y needs to be greater than zero."),
       need(input$R2_pse > 0, "Did not run! R2 needs to be greater than zero."),
-      need(input$R2_pse < 1, "Did not run! R2 needs to be less than one")
+      need(input$R2_pse < 1, "Did not run! R2 needs to be less than one"),
+      need(1-((input$sdy_pse^2/input$sdx_pse^2)*(1-input$R2_pse)/(input$n_obs_pse*input$std_err_pse^2)) > 0, "Did not run! Entered values produced Rxz^2 <0, consider adding more significant digits to your entered values")
       )
     
-    need(input$std_error > 0, "Did not run! Standard error needs to be greater than zero.")
     
     #if statements needed for linear printed output and figure
     if(input$AnalysisL == "PSE"){
@@ -191,7 +196,7 @@ server <- function(input, output, session) {
              is.numeric(input$n_covariates_nl) &
              is.numeric(input$n_trm_nl),
            "Did not run! Did you enter numbers for the estimated effect, standard error, number of observations, and number of covariates? Please change any of these that are not to a number."),
-      need(input$n_obs_nl > (input$n_covariates_nl + 1),
+      need(input$n_obs_nl > (input$n_covariates_nl + 2),
            "Did not run! There are too few observations relative to the number of observations and covariates. Please specify a less complex model to use KonFound-It."),
       need(input$std_error_nl > 0, "Did not run! Standard error needs to be greater than zero.")
     )
@@ -218,9 +223,7 @@ server <- function(input, output, session) {
              is.numeric(input$ctrl_success) &
              is.numeric(input$treat_fail) &
              is.numeric(input$treat_success),
-           "Did not run! Did you enter numbers for the estimated effect, standard error, number of observations, and number of covariates? Please change any of these that are not to a number."),
-      need(input$n_obs_nl > (input$n_covariates_nl + 1),
-           "Did not run! There are too few observations relative to the number of observations and covariates. Please specify a less complex model to use KonFound-It."),
+           "Did not run! Did you enter numbers for the input values? Please change any of these that are not to a number."),
       need(input$std_error_nl > 0, "Did not run! Standard error needs to be greater than zero."),
       need(input$ctrl_fail > 0, "Did not run! Control Condition: Result Failure needs to be greater than zero"),
       need(input$ctrl_success > 0, "Did not run! Control Condition: Result Success needs to be greater than zero"),

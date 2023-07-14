@@ -11,7 +11,7 @@ library(shinyBS)
 library(fedmatch)
 library(shinyjs)
 
-jscode <- "shinyjs.refresh_page = function() { history.go(0); }"
+jscode <- "shinyjs.refresh_page = function() { history.go(0); }" 
 
 shinyUI(fluidPage(theme = shinythemes::shinytheme("lumen"),
   tags$head(tags$script(src="script.js"),

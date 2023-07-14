@@ -1,0 +1,131 @@
+{
+  "input": {
+    "Analysis": null,
+    "AnalysisL": "IT",
+    "cop-info": 0,
+    "ctrl_fail": 18,
+    "ctrl_success": 12,
+    "Data": null,
+    "DataL": "Linear model",
+    "eff_thr_cop": 0,
+    "FR2max_cop": 0.61,
+    "fragility-info": 0,
+    "gen_r_code": false,
+    "gen_stata_code": false,
+    "itcv-info": 0,
+    "n_covariates": 100,
+    "n_covariates_cop": 7,
+    "n_covariates_nl": 3,
+    "n_obs": 100,
+    "n_obs_cop": 6265,
+    "n_obs_nl": 20888,
+    "n_obs_pse": 6174,
+    "n_trm_nl": 17888,
+    "Outcome": "Continuous",
+    "pse-info": 0,
+    "R2_cop": 0.251,
+    "R2_pse": 0.3,
+    "results_pg_2x2": 0,
+    "results_pg_cop": 0,
+    "results_pg_di": 0,
+    "results_pg_l": 1,
+    "results_pg_pse": 0,
+    "rir-info": 0,
+    "sdx_cop": 0.217,
+    "sdx_pse": 0.22,
+    "sdy_cop": 0.991,
+    "sdy_pse": 1,
+    "startover_button": 0,
+    "std_err_cop": 0.05,
+    "std_err_pse": 0.056,
+    "std_error": -1,
+    "std_error_nl": 0.103,
+    "step1info": 0,
+    "step2info": 0,
+    "step3info": 0,
+    "step4info": 0,
+    "treat_fail": 12,
+    "treat_success": 17,
+    "unstd_beta": 2,
+    "unstd_beta_cop": -0.125,
+    "unstd_beta_nl": -0.2,
+    "unstd_beta_pse": 0.5
+  },
+  "output": {
+    "clip": {
+      "message": "",
+      "call": "NULL",
+      "type": [
+        "shiny.silent.error",
+        "validation"
+      ]
+    },
+    "clip2": {
+      "message": "",
+      "call": "NULL",
+      "type": [
+        "shiny.silent.error",
+        "validation"
+      ]
+    },
+    "fig_results": {
+      "message": "Did not run! There are too few observations relative to the number of observations and covariates. Please specify a less complex model to use KonFound-It.\nDid not run! Standard error needs to be greater than zero.",
+      "call": "NULL",
+      "type": [
+        "shiny.silent.error",
+        "validation"
+      ]
+    },
+    "out0bfc7bcaf88a9761": {
+      "html": " ",
+      "deps": [
+
+      ]
+    },
+    "outee9055b95f262c4c": {
+      "message": "Did not run! There are too few observations relative to the number of observations and covariates. Please specify a less complex model to use KonFound-It.\nDid not run! Standard error needs to be greater than zero.",
+      "call": "NULL",
+      "type": [
+        "shiny.silent.error",
+        "validation"
+      ]
+    },
+    "print_fig": {
+      "html": "<div id=\"fig_results\" class=\"shiny-plot-output\" style=\"width:100%;height:400px;\"><\/div>",
+      "deps": [
+
+      ]
+    },
+    "print_results": {
+      "html": "<div id=\"outee9055b95f262c4c\" class=\"shiny-text-output\"><\/div>",
+      "deps": [
+
+      ]
+    },
+    "print_rir": {
+      "html": "<div id=\"out0bfc7bcaf88a9761\" class=\"shiny-html-output\"><\/div>",
+      "deps": [
+
+      ]
+    },
+    "r_code_print": {
+      "message": "",
+      "call": "NULL",
+      "type": [
+        "shiny.silent.error",
+        "validation"
+      ]
+    },
+    "stata_code_print": {
+      "message": "",
+      "call": "NULL",
+      "type": [
+        "shiny.silent.error",
+        "validation"
+      ]
+    }
+  },
+  "export": {
+
+  }
+}
