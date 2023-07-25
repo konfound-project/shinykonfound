@@ -106,15 +106,14 @@ shinyUI(fluidPage(theme = shinythemes::shinytheme("lumen"),
                             
                             wellPanel(p(h4(strong("Step 3",
                                                   
-                                                  bsButton("step3info", label = "", icon = icon("info", lib = "font-awesome"), style = "default", size = "extra-small")
+                                                  bsButton("step3info", label = " ", icon = icon("info", lib = "font-awesome"), style = "default", size = "extra-small")
                                                   ))),
                                       
                                       bsPopover(
                                         id = "step3info",
                                         title = "More information",
                                         content = HTML(paste0(
-                                          "Choose which type of sensitivity analysis you prefer based on the framework, constraints, and approach you wish to specify.
-                                          See specific information icons for details", tags$a(href="https://www.dropbox.com/s/accoz5xu82vy27v/KonFound-it%21%20enhanced.xlsx?dl=0", "Spreadsheet for calculating indices (KonFound-it!)")
+                                          "Choose which type of sensitivity analysis you prefer based on the framework, constraints, and approach you wish to specify. See specific information icons for details", tags$a(href="https://www.dropbox.com/s/accoz5xu82vy27v/KonFound-it%21%20enhanced.xlsx?dl=0"), "Spreadsheet for calculating indices (KonFound-it!)"
                                         )),
                                         placement = "right",
                                         trigger = "click",
@@ -149,8 +148,8 @@ shinyUI(fluidPage(theme = shinythemes::shinytheme("lumen"),
                                                                     choiceNames = list(
                                                                       list("Impact Threshold for a Confounding Variable (ITCV)", bsButton("itcv-info", label = "", icon = icon("info", lib = "font-awesome"), style = "default", size = "extra-small")),
                                                                       list("Generalized Robustness of Inference to Replacement (RIR)", bsButton("rir-info", label = "", icon = icon("info", lib = "font-awesome"), style = "default", size = "extra-small")),
-                                                                      list("Preserve standard error", bsButton("pse-info", label = "", icon = icon("info", lib = "font-awesome"), style = "default", size = "extra-small")),
-                                                                      list("Coefficient of proportionality",  bsButton("cop-info", label = "", icon = icon("info", lib = "font-awesome"), style = "default", size = "extra-small"))),
+                                                                      list("Preserve standard error (beta)", bsButton("pse-info", label = "", icon = icon("info", lib = "font-awesome"), style = "default", size = "extra-small")),
+                                                                      list("Coefficient of proportionality (beta)",  bsButton("cop-info", label = "", icon = icon("info", lib = "font-awesome"), style = "default", size = "extra-small"))),
                                                                     choiceValues = c("IT", "RIR","PSE", "COP"),
                                                                     selected = character(0)))),
                             
@@ -221,50 +220,229 @@ shinyUI(fluidPage(theme = shinythemes::shinytheme("lumen"),
                                       conditionalPanel(condition = "(input.AnalysisL == 'IT' || input.AnalysisL == 'RIR') && input.Outcome == 'Continuous'",
                                                        style = "display: none;",
                                                        h5(strong("Enter these values:")),
-                                                       numericInput("unstd_beta", "Estimated Effect", 2, step = .1),
-                                                       numericInput("std_error", "Standard Error", .4, step = .1),
-                                                       numericInput("n_obs", "Number of Observations", 100, step = 1),
-                                                       numericInput("n_covariates", "Number of Covariates", 3, step = 1),
+                                                       numericInput("unstd_beta", list("Estimated Effect", bsButton("unstd_beta-info", label = "", icon = icon("info", lib = "font-awesome"), style = "default", size = "extra-small")), 2, step = .1),
+                                                       numericInput("std_error", list("Standard Error", bsButton("std_error-info", label = "", icon = icon("info", lib = "font-awesome"), style = "default", size = "extra-small")), .4, step = "any"),
+                                                       numericInput("n_obs", list("Number of Observations", bsButton("n_obs-info", label = "", icon = icon("info", lib = "font-awesome"), style = "default", size = "extra-small")), 100, step = 1),
+                                                       numericInput("n_covariates", list("Number of Covariates", bsButton("n_covariates-info", label = "", icon = icon("info", lib = "font-awesome"), style = "default", size = "extra-small")), 3, step = 1),
                                                        p("Note that decimals must be denoted with a period, e.g., 2.1"),
                                                        actionButton("results_pg_l", "Run")),
+                                      
+                                      bsPopover(
+                                        id = "unstd_beta-info",
+                                        title = "More information",
+                                        content = HTML(paste0(
+                                          "This is the estimated coefficient for the predictor of interest in a linear model (i. e., regression) or a difference of means"
+                                        )),
+                                        placement = "right",
+                                        trigger = "hover",
+                                        options = list(container = "body")
+                                      ),
+                                      
+                                      bsPopover(
+                                        id = "std_error-info",
+                                        title = "More information",
+                                        content = HTML(paste0(
+                                          "The standard deviation of the sampling distribution, used to calculate the statistical significance of the estimated effect."
+                                        )),
+                                        placement = "right",
+                                        trigger = "hover",
+                                        options = list(container = "body")
+                                      ),
+                                      
+                                      bsPopover(
+                                        id = "n_obs-info",
+                                        title = "More information",
+                                        content = HTML(paste0(
+                                          "Sample size.  For multilevel models this is the number of units at the level of the focal predictor."
+                                        )),
+                                        placement = "right",
+                                        trigger = "hover",
+                                        options = list(container = "body")
+                                      ),
+                                      
+                                      bsPopover(
+                                        id = "n_covariates-info",
+                                        title = "More information",
+                                        content = HTML(paste0(
+                                          "Number of other variables entered into the model other than the focal predictor."
+                                        )),
+                                        placement = "right",
+                                        trigger = "hover",
+                                        options = list(container = "body")
+                                      ),
                                       
                                       conditionalPanel(condition = "(input.AnalysisL == 'PSE') && input.Outcome == 'Continuous'",
                                                        style = "display: none;",
                                                        h5(strong("Enter these values:")),
-                                                       numericInput("unstd_beta_pse", "Estimated Effect", .5, step = .1),
-                                                       numericInput("std_err_pse", "Standard Error", .056, step = .1),
-                                                       numericInput("n_obs_pse", "Number of Observations", 6174, step = 1),
+                                                       numericInput("unstd_beta_pse", list("Estimated Effect", bsButton("unstd_beta-pse-info", label = "", icon = icon("info", lib = "font-awesome"), style = "default", size = "extra-small")), .5, step = .1),
+                                                       numericInput("std_err_pse", list("Standard Error", bsButton("std_error-pse-info", label = "", icon = icon("info", lib = "font-awesome"), style = "default", size = "extra-small")), .056, step = "any"),
+                                                       numericInput("n_obs_pse", list("Number of Observations", bsButton("n_obs-pse-info", label = "", icon = icon("info", lib = "font-awesome"), style = "default", size = "extra-small")), 6174, step = 1),
+                                                       numericInput("n_covariates_pse", list("Number of Covariates", bsButton("n_covariates-pse-info", label = "", icon = icon("info", lib = "font-awesome"), style = "default", size = "extra-small")), 2, step =1),
                                                        numericInput("sdx_pse", "Standard Deviation of X", .22, step = .1),
                                                        numericInput("sdy_pse", "Standard Deviation of Y", 1, step = .1),
                                                        numericInput("R2_pse", HTML(paste0("R",tags$sup("2"))), .3, step = .1),
+                                                       numericInput("eff_thr_pse", "Threshold for Inference (e.g., 1.96x standard error)", 0, step = .1),
                                                        p("Note that decimals must be denoted with a period, e.g., 2.1"),
                                                        actionButton("results_pg_pse", "Run")),
+                                      
+                                      bsPopover(
+                                        id = "unstd_beta-pse-info",
+                                        title = "More information",
+                                        content = HTML(paste0(
+                                          "This is the estimated coefficient for the predictor of interest in a linear model (i.e., regression) or a difference of means"
+                                        )),
+                                        placement = "right",
+                                        trigger = "hover",
+                                        options = list(container = "body")
+                                      ),
+                                      
+                                      bsPopover(
+                                        id = "std_error-pse-info",
+                                        title = "More information",
+                                        content = HTML(paste0(
+                                          "The standard deviation of the sampling distribution, used to calculate the statistical significance of the estimated effect."
+                                        )),
+                                        placement = "right",
+                                        trigger = "hover",
+                                        options = list(container = "body")
+                                      ),
+                                      
+                                      bsPopover(
+                                        id = "n_obs-pse-info",
+                                        title = "More information",
+                                        content = HTML(paste0(
+                                          "Sample size.  For multilevel models this is the number of units at the level of the focal predictor."
+                                        )),
+                                        placement = "right",
+                                        trigger = "hover",
+                                        options = list(container = "body")
+                                      ),
+                                      
+                                      bsPopover(
+                                        id = "n_covariates-pse-info",
+                                        title = "More information",
+                                        content = HTML(paste0(
+                                          "Number of other variables entered into the model other than the focal predictor."
+                                        )),
+                                        placement = "right",
+                                        trigger = "hover",
+                                        options = list(container = "body")
+                                      ),
+                                      
 
                                       conditionalPanel(condition = "(input.AnalysisL == 'COP') && input.Outcome == 'Continuous'",
                                                        style = "display: none;",
                                                        h5(strong("Enter these values:")),
-                                                       numericInput("unstd_beta_cop", "Estimated Effect", -.125, step = .1),
-                                                       numericInput("std_err_cop", "Standard Error", .050, step = .1),
-                                                       numericInput("n_obs_cop", "Number of Observations", 6265, step = 1),
-                                                       numericInput("n_covariates_cop", "Number of Covariates", 7, step =1),
+                                                       numericInput("unstd_beta_cop", list("Estimated Effect", bsButton("unstd_beta-cop-info", label = "", icon = icon("info", lib = "font-awesome"), style = "default", size = "extra-small")), -.125, step = .1),
+                                                       numericInput("std_err_cop", list("Standard Error", bsButton("std_error-cop-info", label = "", icon = icon("info", lib = "font-awesome"), style = "default", size = "extra-small")), .050, step = "any"),
+                                                       numericInput("n_obs_cop", list("Number of Observations", bsButton("n_obs-cop-info", label = "", icon = icon("info", lib = "font-awesome"), style = "default", size = "extra-small")), 6265, step = 1),
+                                                       numericInput("n_covariates_cop", list("Number of Covariates", bsButton("n_covariates-cop-info", label = "", icon = icon("info", lib = "font-awesome"), style = "default", size = "extra-small")), 7, step =1),
                                                        numericInput("sdx_cop", "Standard Deviation of X", .217, step = .1),
                                                        numericInput("sdy_cop", "Standard Deviation of Y", .991, step = .1),
                                                        numericInput("R2_cop", HTML(paste0("R",tags$sup("2"))), .251, step = .1),
-                                                       numericInput("eff_thr_cop", "Threshold for Inference (e.g., 1.96x standard error)", 0, step = 1),
+                                                       numericInput("eff_thr_cop", "Threshold for Inference (e.g., 1.96x standard error)", 0, step = .1),
                                                        numericInput("FR2max_cop", HTML(paste0("R",tags$sup("2"),"Max")), .61, step = .1),
                                                        p("Note that decimals must be denoted with a period, e.g., 2.1"),
                                                        actionButton("results_pg_cop", "Run")),
+                                      
+                                      bsPopover(
+                                        id = "unstd_beta-cop-info",
+                                        title = "More information",
+                                        content = HTML(paste0(
+                                          "This is the estimated coefficient for the predictor of interest in a linear model (i.e., regression) or a difference of means"
+                                        )),
+                                        placement = "right",
+                                        trigger = "hover",
+                                        options = list(container = "body")
+                                      ),
+                                      
+                                      bsPopover(
+                                        id = "std_error-cop-info",
+                                        title = "More information",
+                                        content = HTML(paste0(
+                                          "The standard deviation of the sampling distribution, used to calculate the statistical significance of the estimated effect."
+                                        )),
+                                        placement = "right",
+                                        trigger = "hover",
+                                        options = list(container = "body")
+                                      ),
+                                      
+                                      bsPopover(
+                                        id = "n_obs-cop-info",
+                                        title = "More information",
+                                        content = HTML(paste0(
+                                          "Sample size.  For multilevel models this is the number of units at the level of the focal predictor."
+                                        )),
+                                        placement = "right",
+                                        trigger = "hover",
+                                        options = list(container = "body")
+                                      ),
+                                      
+                                      bsPopover(
+                                        id = "n_covariates-cop-info",
+                                        title = "More information",
+                                        content = HTML(paste0(
+                                          "Number of other variables entered into the model other than the focal predictor."
+                                        )),
+                                        placement = "right",
+                                        trigger = "hover",
+                                        options = list(container = "body")
+                                      ),
                                                        
                                                        conditionalPanel(condition = "(input.Analysis == 'RIR' || input.Analysis == 'Fragility') &&
                                                                         (input.Data == 'Logistic model' && input.Outcome == 'Dichotomous')",
                                                                         style = "display: none;",
-                                                                        numericInput("unstd_beta_nl", "Estimated Effect (Log Odds)", -.2, step = .1),
-                                                                        numericInput("std_error_nl", "Standard Error (of the Log Odds)", .103, step = .1),
-                                                                        numericInput("n_obs_nl", "Number of Observations", 20888, step = 1),
-                                                                        numericInput("n_covariates_nl", "Number of Covariates", 3, step = 1),
+                                                                        numericInput("unstd_beta_nl", list("Estimated Effect (Log Odds)", bsButton("unstd_beta-log-info", label = "", icon = icon("info", lib = "font-awesome"), style = "default", size = "extra-small")), -.2, step = .1),
+                                                                        numericInput("std_error_nl", list("Standard Error (of the Log Odds)", bsButton("std_error-log-info", label = "", icon = icon("info", lib = "font-awesome"), style = "default", size = "extra-small")), .103, step = "any"),
+                                                                        numericInput("n_obs_nl", list("Number of Observations", bsButton("n_obs-log-info", label = "", icon = icon("info", lib = "font-awesome"), style = "default", size = "extra-small")), 20888, step = 1),
+                                                                        numericInput("n_covariates_nl", list("Number of Covariates", bsButton("n_covariates-log-info", label = "", icon = icon("info", lib = "font-awesome"), style = "default", size = "extra-small")), 3, step = 1),
                                                                         numericInput("n_trm_nl", "Number of cases in treatment condition", 17888, step = 1),
                                                                         p("Note that decimals must be denoted with a period, e.g., 2.1"),
                                                                         actionButton("results_pg_di", "Run")),
+                                      
+                                      bsPopover(
+                                        id = "unstd_beta-log-info",
+                                        title = "More information",
+                                        content = HTML(paste0(
+                                          "This is the estimated coefficient for the predictor of interest in a logistic model."
+                                        )),
+                                        placement = "right",
+                                        trigger = "hover",
+                                        options = list(container = "body")
+                                      ),
+                                      
+                                      bsPopover(
+                                        id = "std_error-log-info",
+                                        title = "More information",
+                                        content = HTML(paste0(
+                                          "The standard deviation of the sampling distribution, used to calculate the statistical significance of the estimated effect."
+                                        )),
+                                        placement = "right",
+                                        trigger = "hover",
+                                        options = list(container = "body")
+                                      ),
+                                      
+                                      bsPopover(
+                                        id = "n_obs-log-info",
+                                        title = "More information",
+                                        content = HTML(paste0(
+                                          "Sample size.  For multilevel models this is the number of units at the level of the focal predictor."
+                                        )),
+                                        placement = "right",
+                                        trigger = "hover",
+                                        options = list(container = "body")
+                                      ),
+                                      
+                                      bsPopover(
+                                        id = "n_covariates-log-info",
+                                        title = "More information",
+                                        content = HTML(paste0(
+                                          "Number of other variables entered into the model other than the focal predictor."
+                                        )),
+                                        placement = "right",
+                                        trigger = "hover",
+                                        options = list(container = "body")
+                                      ),
                                                                         
                                                                         conditionalPanel(condition = "(input.Analysis == 'RIR' || input.Analysis == 'Fragility') &&
                                                                                          (input.Data == '2x2 table' && input.Outcome == 'Dichotomous')",

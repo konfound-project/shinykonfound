@@ -666,12 +666,12 @@ test_that("{shinytest2} recording: 2x2table-general-test", {
 
 # All procedures (if these inputs are asked)
   # standard error > 0
-  # observations > covariates + 2
+  # observations > covariates + 3
   # sdx > 0
   # sdy > 0
 
 # COP
-  # R2 > FR2Max < 1 (FR2Max less than 1 but greater than R2)
+  # R2 < FR2Max < 1 (FR2Max less than 1 but greater than R2)
   # 1-((sdy^2/sdx^2)*(1-R2)/(df*SeB^2))>0 
 
 # PSE

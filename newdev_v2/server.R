@@ -17,7 +17,7 @@ server <- function(input, output, session) {
   ###### GENERATE LINEAR RIR/ITCV RESULTS ###### 
   #############################################
   
-  #validate user input values to make sure they are 1) numeric and 2) more than 1 covariate for all model types
+  #validate user input values to make sure they are 1) numeric and 2) more than 3 covariate for all model types
   df <- eventReactive(input$results_pg_l, {
     
     #validating user input is numeric
@@ -83,7 +83,7 @@ server <- function(input, output, session) {
   ###### GENERATE LINEAR COP RESULTS ###### 
   #############################################
   
-  #validate user input values to make sure they are 1) numeric and 2) more than 1 covariate for all model types
+  #validate user input values to make sure they are 1) numeric and 2) more than 3 covariate for all model types
   df_cop <- eventReactive(input$results_pg_cop, {
     
     #validating user input is numeric
@@ -142,7 +142,7 @@ server <- function(input, output, session) {
   ###### GENERATE LINEAR PSE RESULTS ###### 
   #############################################
   
-  #validate user input values to make sure they are 1) numeric and 2) more than 1 covariate for all model types
+  #validate user input values to make sure they are 1) numeric and 2) more than 3 covariate for all model types
   df_pse <- eventReactive(input$results_pg_pse, {
     
     #validating user input is numeric
@@ -150,15 +150,18 @@ server <- function(input, output, session) {
       need(is.numeric(input$unstd_beta_pse) &
              is.numeric(input$std_err_pse) &
              is.numeric(input$n_obs_pse) &
+             is.numeric(input$n_covariates_pse) &
+             is.numeric(input$eff_thr_pse) &
              is.numeric(input$sdx_pse) &
              is.numeric(input$sdy_pse) &
              is.numeric(input$R2_pse), "Did not run! Did you enter numbers for the estimated effect, standard error, and number of observations? Please change any of these that are not to a number."),
       need(input$std_err_pse > 0, "Did not run! Standard error needs to be greater than zero."),
+      need(input$n_obs_pse > (input$n_covariates_pse + 2), "Did not run! There are too few observations relative to the number of observations and covariates. Please specify a less complex model to use KonFound-It."),
       need(input$sdx_pse > 0, "Did not run! Standard deviation of x needs to be greater than zero."),
       need(input$sdy_pse > 0, "Did not run! Standard deviation of y needs to be greater than zero."),
       need(input$R2_pse > 0, "Did not run! R2 needs to be greater than zero."),
       need(input$R2_pse < 1, "Did not run! R2 needs to be less than one"),
-      need(1-((input$sdy_pse^2/input$sdx_pse^2)*(1-input$R2_pse)/(input$n_obs_pse*input$std_err_pse^2)) > 0, "Did not run! Entered values produced Rxz^2 <0, consider adding more significant digits to your entered values")
+      need(1-((input$sdy_pse^2/input$sdx_pse^2)*(1-input$R2_pse)/((input$n_obs_pse - input$n_covariates_pse - 2)*input$std_err_pse^2)) > 0, "Did not run! Entered values produced Rxz^2 <0, consider adding more significant digits to your entered values")
       )
     
     
@@ -167,6 +170,8 @@ server <- function(input, output, session) {
       linear_output <- capture.output(pkonfound(as.numeric(input$unstd_beta_pse),
                                                 as.numeric(input$std_err_pse),
                                                 as.numeric(input$n_obs_pse),
+                                                n_covariates = as.numeric(input$n_covariates_pse),
+                                                eff_thr = as.numeric(input$eff_thr_pse),
                                                 sdx = as.numeric(input$sdx_pse),
                                                 sdy = as.numeric(input$sdy_pse),
                                                 R2 = as.numeric(input$R2_pse),
@@ -253,7 +258,7 @@ server <- function(input, output, session) {
   
   #If user presses the results button for linear models, paste the linear results
   observeEvent(input$results_pg_l, {
-    r$print_results <- renderText(paste0(df()[[1]][2], df()[[1]][3], df()[[1]][4], df()[[1]][5], df()[[1]][6], df()[[1]][7]))
+    r$print_results <- renderText(paste0(df()[[1]][2], df()[[1]][3], df()[[1]][4], " ", df()[[1]][5], " ", df()[[1]][6], df()[[1]][7]))
   })
   
   #If user presses the results button for cop models, paste the cop results
@@ -261,7 +266,7 @@ server <- function(input, output, session) {
     r$print_results <- renderText(df_cop()[[1]])
   })
   
-  #If user presses the results button for cop models, paste the cop results
+  #If user presses the results button for pse models, paste the pse results
   observeEvent(input$results_pg_pse, {
     r$print_results <- renderText(df_pse()[[1]])
   })
@@ -408,7 +413,7 @@ observeEvent(input$results_pg_di, {
     paste0("#install.packages('konfound')","\n", "library(konfound)", "\n","pkonfound(", input$unstd_beta_nl, ", ", input$std_error_nl, ", ", input$n_obs_nl, ", ", input$n_covariates_nl, ", n_treat = ", input$n_trm_nl, ", model_type = 'logistic')", sep = "")
   })
   
-  #generate r code for 2x2 tables using user input va
+  #generate r code for 2x2 tables using user inputs
   user_est_2x2 <- eventReactive(input$results_pg_2x2, {
     paste0("#install.packages('konfound')","\n", "library(konfound)", "\n","pkonfound(a = ", input$ctrl_fail, ", b = ", input$ctrl_success, ", c = ", input$treat_fail, ", d = ", input$treat_success, ")", sep = "")
   })
@@ -420,7 +425,7 @@ observeEvent(input$results_pg_di, {
   
   #generate r code for PSE
   user_est_pse <- eventReactive(input$results_pg_pse, {
-    paste0("#install.packages('konfound')", "\n", "library(konfound)", "\n", "pkonfound(est_eff = ", input$unstd_beta_pse, ", std_err = ", input$std_err_pse, ", n_obs = ", input$n_obs_pse, ", sdx = ", input$sdx_pse, ", sdy = ", input$sdy_pse, ", R2 = ", input$R2_pse, ", index = 'PSE')")
+    paste0("#install.packages('konfound')", "\n", "library(konfound)", "\n", "pkonfound(est_eff = ", input$unstd_beta_pse, ", std_err = ", input$std_err_pse, ", n_obs = ", input$n_obs_pse, ", n_covariates = ", input$n_covariates_pse, " eff_thr = ", input$eff_thr_pse, ", sdx = ", input$sdx_pse, ", sdy = ", input$sdy_pse, ", R2 = ", input$R2_pse, ", index = 'PSE')")
   })
   
   
@@ -487,26 +492,26 @@ observeEvent(input$results_pg_di, {
   
   #generate r code for linear models using user input values
   s_user_est_l <- eventReactive(input$results_pg_l, {
-    paste0("pkonfound ", input$unstd_beta, " ", input$std_error, " ", input$n_obs, " ", input$n_covariates)
+    paste0("ssc install konfound", "\n", "ssc install indeplist", "\n", "ssc install moss", "\n", "ssc install matsort", "\n","pkonfound ", input$unstd_beta, " ", input$std_error, " ", input$n_obs, " ", input$n_covariates)
   })
   
   #generate r code for logistic models using user input values
   s_user_est_di <- eventReactive(input$results_pg_di, {
-    paste("pkonfound", input$unstd_beta_nl, input$std_error_nl, input$n_obs_nl, input$n_covariates_nl, input$n_trm_nl, "model_type(1)")
+    paste0("Coming soon")
   })
   
   #generate r code for 2x2 tables using user input values
   s_user_est_2x2 <- eventReactive(input$results_pg_2x2, {
-    paste("pkonfound", input$ctrl_fail, input$ctrl_success, input$treat_fail, input$treat_success, "model_type(2)")
+    paste0("Coming soon")
   })
   
   s_user_est_cop <- eventReactive(input$results_pg_cop, {
-    paste0("Not available")
+    paste0("Coming soon")
   })
   
   #generate r code for PSE
   s_user_est_pse <- eventReactive(input$results_pg_pse, {
-    paste0("Not available")
+    paste0("Coming soon")
   })
   
   
