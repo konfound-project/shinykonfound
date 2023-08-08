@@ -1,6 +1,3 @@
-#New development - Conditional panel approach
-#server
-
 library(shiny)
 library(tidyverse)
 library(konfound)
@@ -470,12 +467,12 @@ observeEvent(input$results_pg_di, {
   
   ##################################
 
-  #Render r code in UI.R to display for user
+  # Render r code in UI.R to display for user
   output$r_code_print <- renderText({
     select_r_code()
   })
   
-  #Add clipboard buttons
+  # Add clipboard buttons
   output$clip <- renderUI({
     rclipButton(
       inputId = "clipbtn",
