@@ -19,7 +19,8 @@ shinyUI(
               tags$style(HTML("
               
               /* import Google fonts */
-              @import url('https://fonts.googleapis.com/css2?family=Nanum+Brush+Script&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Victor+Mono&display=swap');
+              @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Victor+Mono&display=swap');
+              @import url('https://fonts.googleapis.com/css2?family=Cardo:wght@400;700&family=Cormorant:wght@400;700&family=Nanum+Myeongjo:wght@400;700;800&family=Playfair+Display+SC:wght@400;700;900&family=Roboto+Slab:wght@100;400;700;800;900&display=swap');
               
               /* change page background as well as header and footer text */
               body {
@@ -32,9 +33,10 @@ shinyUI(
               
               /* change header title */
               h2 {
-                  font-family: 'Nanum Brush Script', serif;
+                  font-family: 'Cardo', serif;
                   font-size: 72px;
                   font-weight: 700;
+                  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
                   color: #93cddd;
               }
               
@@ -63,7 +65,8 @@ shinyUI(
               
               /* change hyperlink text */
               a {
-                    color: #ff8d5c;
+                    color: #0645ad;  /* standard blue hyperlink color */
+                    font-weight: 400;
               }
               
               /* change hyperlink hover text */
@@ -770,48 +773,51 @@ shinyUI(
              
              
              tabPanel(div(icon("screwdriver-wrench", lib = "font-awesome"), " Resources"),
+                      
+                      tags$h4("Explanatory Resources"),
                       tags$ul(
-                        
-                        tags$h4("Explanatory Resources"),
                         tags$li(tags$a(href="https://www.dropbox.com/s/9eymdekym5g50o7/frequently%20asked%20questions%20for%20application%20of%20konfound-it.docx?dl=0", "FAQ")), 
                         tags$li(tags$a(href="https://www.dropbox.com/s/33zkk861g04hocf/Overview%20of%20Konfound%20commands%20with%20inputs%20and%20outputs.docx?dl=0", "Overview of pkonfound commands")),
                         tags$li(tags$a(href="https://drive.google.com/file/d/1qbRx2penqzb7kEJkxJD3ARf26CjXMhzg/view", "Quick examples")), 
                         tags$li(tags$a(href="https://www.dropbox.com/s/o67e7w2sm8uww18/quantifying%20the%20robustness%20of%20causal%20inferences%20combined%20frameworks%20for%20stat%20horizons%20distribute.pptx?dl=0", "Powerpoint quantifying the robustness of causal inferences combined frameworks")),
                         tags$li(tags$a(href="https://www.dropbox.com/s/8t6x00mokkljksh/quantifying%20the%20robustness%20of%20causal%20inferences%20%20comparison%20of%20frameworks.pptx?dl=0", "Powerpoint for comparison of frameworks")),
-                        
-                        hr(),
-                        
-                        tags$h4("Additional Resources for Publication"),
+                      ),
+                      hr(),
+                      
+                      tags$h4("Additional Resources for Publication"),
+                      tags$ul(
                         tags$li(tags$a(href="https://www.dropbox.com/s/bc4ert79kgbsac4/Examples%20of%20applications%20of%20indices%20for%20quantifying%20the%20robustness%20of%20causal%20inferences.docx?dl=0", "Published empirical examples")),
                         tags$li(tags$a(href="https://www.dropbox.com/s/accoz5xu82vy27v/KonFound-it%21%20enhanced.xlsx?dl=0", "Spreadsheet for calculating indices (KonFound-it!)")),
+                      ),
+                      hr(),
                         
-                        hr(),
-                        
-                        tags$h4("Impact Threshold for a Confounding Variable Publications"),
+                      tags$h4("Impact Threshold for a Confounding Variable Publications"),
+                      tags$ul(  
                         tags$li(tags$a(href="https://drive.google.com/file/d/1F7oGYZ8SS8hnZxSI3Dch_w65Qz6KIRdI/view", "Frank, K. 2000. 'Impact of a Confounding Variable on the Inference of a Regression Coefficient.' Sociological Methods and Research, 29(2), 147-194")),
                         tags$li(tags$a(href="https://drive.google.com/file/d/1aOvAXEVnQCe9-dbWkgTqtq56Y3Z1tpkg/view", "Frank, K.A., Gary Sykes, Dorothea Anagnostopoulos, Marisa Cannata, Linda Chard, Ann Krause, Raven McCrory. 2008. Extended Influence: National Board Certified Teachers as Help Providers. Education, Evaluation, and Policy Analysis. Vol 30(1): 3-30.")),
+                      ),
+                      hr(),
                         
-                        hr(),
-                        
-                        tags$h4("Robustness of Inference to Replacement Publications"),
+                      tags$h4("Robustness of Inference to Replacement Publications"),
+                      tags$ul(  
                         tags$li(tags$a(href="https://www.dropbox.com/s/o0rmduhe8pj3khd/INDICES%20OF%20ROBUSTNESS%20FOR%20SAMPLE%20REPRESENTATION.pdf?dl=0", "*Frank, K. A. and Min, K. 2007. Indices of Robustness for Sample Representation. Sociological Methodology. Vol 37, 349-392. * co first authors.")),
                         tags$li(tags$a(href="https://drive.google.com/file/d/1aGhxGjvMvEPVAgOA8rrxvA97uUO5TTMe/view", "Frank, K.A., Maroulis, S., Duong, M., and Kelcey, B. 2013. What would it take to Change an Inference?: Using Rubin’s Causal Model to Interpret the Robustness of Causal Inferences. Education, Evaluation and Policy Analysis. Vol 35: 437-460.")),
                         tags$li(tags$a(href="https://www.dropbox.com/s/2dzkvalwmgr5v5z/Hypothetical%20case%20replacement%20can%20be%20used%20to%20quantify%20the%20robustness%20of%20trial%20results%20submit.docx?dl=0", "*Frank, K. A., *Lin, Q., *Maroulis, S., *Mueller, A. S., Xu, R., Rosenberg, J. M., ... & Zhang, L. 2021. Hypothetical case replacement can be used to quantify the robustness of trial results. Journal of Clinical Epidemiology, 134, 150-159. *authors listed alphabetically.")),
+                      ),                       
+                      hr(),
                         
-                        hr(),
-                        
-                        tags$h4("Publications for Both Frameworks"),
+                      tags$h4("Publications for Both Frameworks"),
+                      tags$ul(  
                         tags$li(tags$a(href ="https://www.researchgate.net/profile/Ran-Xu-6/publication/335956720_konfound_Command_to_quantify_robustness_of_causal_inferences/links/5e49a3d2a6fdccd965ac3564/konfound-Command-to-quantify-robustness-of-causal-inferences.pdf", "Xu, R., Frank, K. A., Maroulis, S. J., & Rosenberg, J. M. (2019). konfound: Command to quantify robustness of causal inferences. The Stata Journal, 19(3), 523-550.")),
                         tags$li(tags$a(href="https://www.dropbox.com/s/rn8a4jbxtiynefh/Quantifying%20the%20Robustness%20of%20Causal%20Inferences%20Frank%20SSR%20final.pdf?dl=0", "Frank, K.A., Lin, Q., Xu, R., Maroulis, S.J., Mueller, A. (on-line first). Quantifying the Robustness of Causal Inferences: Sensitivity Analysis for Pragmatic Social Science.  Social Science Research. 110, 102815.")),
+                      ),
+                      hr(),
                         
-                        hr(),
-                        
-                        tags$h4("Contact"),
-                        tags$li(tags$a(href="https://msu.edu/~kenfrank/research.htm#causal", "Ken Frank's homepage")),
-                        tags$li(tags$a(href = "mailto:kenfrank@msu.edu", "Email Ken Frank")),
-                        tags$li(tags$a(href="https://groups.google.com/forum/#!forum/konfound-it", "Google Groups mailing list for Konfound-It!"))
-                      )
-             )
+                      tags$h4("Contact"),
+                      tags$p(icon("house", lib = "font-awesome"), tags$a(href="https://msu.edu/~kenfrank/research.htm#causal", "Ken Frank's homepage")),
+                      tags$p(icon("envelope", lib = "font-awesome"), tags$a(href = "mailto:kenfrank@msu.edu", "Email Ken Frank")),
+                      tags$p(icon("paper-plane", lib = "font-awesome"), tags$a(href="https://groups.google.com/forum/#!forum/konfound-it", "Google Groups mailing list for Konfound-It!"))
+             ),            
   ),
   
   hr(),
@@ -824,5 +830,3 @@ shinyUI(
   
   )
 )
-
-  
