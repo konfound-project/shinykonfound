@@ -1,6 +1,7 @@
 library(shiny)
 library(tidyverse)
 library(konfound)
+library(shinyDarkmode)
 library(shinyjs)
 library(rclipboard)
 library(fedmatch)
@@ -9,6 +10,16 @@ jscode <- "shinyjs.refresh_page = function() { history.go(0); }"
 
 
 server <- function(input, output, session) {
+  
+  darkmode(buttonColorDark = "#999",  # Background color of the button while in lightmode
+           buttonColorLight = "#fff",  # Background color of the button while in darkmode
+           backgroundColor = "#fff",  # Background color of the page while in lightmode
+           mixColor = "#fff",  # Color used to generate darkmode: lighter colors create darker darkmode
+           label = "<strong>|</strong",  # Text that shows up on the darkmode button
+           bottom = "32px",
+           right = "16px",
+           autoMatchOsTheme = TRUE
+  )
   
   ############################################# 
   ###### GENERATE LINEAR RIR/ITCV RESULTS ###### 
@@ -465,14 +476,17 @@ observeEvent(input$results_pg_di, {
      })
    
   
-  ##################################
+   
+   ###################################### 
+   ########## CREATE BUTTONS ############ 
+   ######################################
 
   # Render r code in UI.R to display for user
   output$r_code_print <- renderText({
     select_r_code()
   })
   
-  # Add clipboard buttons
+  # Add clipboard button
   output$clip <- renderUI({
     rclipButton(
       inputId = "clipbtn",
@@ -483,7 +497,7 @@ observeEvent(input$results_pg_di, {
     
   
   
-  ##################################### 
+  ###################################### 
   ######### GENERATE STATA CODE ######## 
   ######################################
   

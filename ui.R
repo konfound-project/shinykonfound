@@ -1,19 +1,25 @@
 # NOTE: IF UPDATING APP + REPUBLISHING, FIRST RUN THIS YOUR CONSOLE, THEN RELOAD, AND PUBLISH
 ## devtools::install_github("konfound-project/konfound")
 
+# install.packages("remotes")
+#remotes::install_github("deepanshu88/shinyDarkmode")
+
 library(shiny)
 library(rclipboard)
 library(tippy)
 library(shinythemes)
+library(shinyDarkmode)
 library(shinyBS)
 library(fedmatch)
 library(shinyjs)
+library(shinyscreenshot)
 
 jscode <- "shinyjs.refresh_page = function() { history.go(0); }" 
 
 shinyUI(
   fluidPage(
     theme = shinythemes::shinytheme("lumen"),
+    use_darkmode(),
     
     tags$head(tags$script(src="script.js"),
               tags$style(HTML("
@@ -27,17 +33,17 @@ shinyUI(
                     background-color: #fff;
                     font-family: 'Roboto', sans-serif;
                     font-size: 18px;
-                    font-weight: 200;
+                    font-weight: 300;
                     color: #000;
               }
               
               /* change header title */
               h2 {
                   font-family: 'Cardo', serif;
-                  font-size: 72px;
+                  font-size: 76px;
                   font-weight: 700;
-                  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
                   color: #93cddd;
+                  text-shadow: -.5px 0 black, 0 .5px black, .5px 0 black, 0 -.5px black;
               }
               
               /* change page first-level headings (e.g., Specification, Results) */
@@ -77,9 +83,62 @@ shinyUI(
               
               /* change multiple choice text */
               .shiny-input-container {
-                    color: #3b9eba;
+                    color: #000;
                     font-size: 16px;
               }
+              
+              /* change radio buttons */
+              label > input[type='radio'] {
+                        opacity: 0;
+                        position: absolute;
+              }
+              
+              label > input[type='radio'] + *::before {
+                        content: '';
+                        margin: 4px 0 0;
+                        width: 13px;
+                        height: 13px;
+                        position: absolute;
+                        margin-left: -20px;
+                        border-radius: 50%;
+                        border-style: solid;
+                        border-width: 0.1rem;
+                        border-color: #93cddd;
+              }
+                    
+              label > input[type='radio']:checked + *::before {
+                        background: radial-gradient(#9bbb59 0%, #9bbb59 50%, transparent 50%);
+                        border-color: #93cddd;
+              }
+                    
+              label > input[type='checkbox'] {
+                        opacity: 0;
+                        position: absolute;
+              }
+                    
+              label > input[type='checkbox'] + *::before {
+                      content: '';
+                      position: absolute;
+                      margin: 4px 0 0;
+                      margin-left: -20px;
+                      align: center;
+                      width: 13px;
+                      height: 13px;
+                      margin-right: 1rem;
+                      border-radius: 0%;
+                      border-style: solid;
+                      border-width: 0.1rem;
+                      border-color: #93cddd;
+              }
+                    
+              label > input[type='checkbox']:checked + *::before {
+                      content: '';
+                      width: 13px;
+                      height: 13px;
+                      border-color: #93cddd;
+                      background: #9bbb59;
+              }
+
 
               /* change color of all buttons */
               #startover_button, #results_pg_l, 
@@ -95,10 +154,27 @@ shinyUI(
               #startover_button:hover, #results_pg_l:hover, 
               #results_pg_pse:hover, #results_pg_cop:hover, 
               #results_pg_di:hover, #results_pg_2x2:hover {
-                    background-color: #698235;
+                    background-color: #465723;
                     color: #fff;
                     font-family: 'Roboto', sans-serif;
               }
+              
+              
+              /* change color of screenshot button */
+              [id*=screenshot] {
+                    background-color: #9bbb59;
+                    color: #fff;
+                    font-family: 'Roboto', sans-serif;
+                    font-size: 22px;
+              }
+              
+              /* change hover color of screenshot button */
+              [id*=screenshot]:hover {
+                    background-color: #465723;
+                    color: #fff;
+                    font-family: 'Roboto', sans-serif;
+              }
+
               
               /* change color of copy source code buttons */
               #clipbtn {
@@ -123,7 +199,7 @@ shinyUI(
               
               /* change navigation bar */
               .navbar-default {
-                    background-color: #93cddd !important;
+                    background-color: #93cddd;
                     border-color: #000;
                     font-size: 18px;
                     font-weight: 300;
@@ -157,8 +233,8 @@ shinyUI(
     
     
     
-    
-    titlePanel(title = div(img(height = 75, src = "konfound-logo.png"), 
+    titlePanel(title = div(img(style = "height:0.75em; vertical-align:center; margin-bottom: 18px;",
+                               src = "konfound-logo.png"), 
                            "KonFound-It!")),
     h3("Quantify the Robustness of Causal Inferences"),
     p("Sensitivity analyses that quantify the robustness of inferences to concerns about omitted variables and other sources of bias."),
@@ -719,11 +795,6 @@ shinyUI(
                             
                             
                             
-                            
-                            
-                            
-                            
-                            
                             wellPanel(p(h4("Would you like to generate source code?")),
                                       checkboxInput("gen_r_code", "Generate R Code"),
                                       conditionalPanel(condition = "input.gen_r_code == 1",
@@ -751,14 +822,10 @@ shinyUI(
                          
                             
                             
-                            
-                            
-                            
-                            
-                              
                              
                             column(12,
-                                   actionButton("startover_button", 
+                                   screenshotButton(inputId = "screenshot_button"),
+                                   actionButton(inputId = "startover_button", 
                                                 div(icon("rotate-right", lib = "font-awesome"), 
                                                     " Start Over")),
                                    align = "right"
