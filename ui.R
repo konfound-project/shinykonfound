@@ -140,7 +140,7 @@ shinyUI(
               }
 
 
-              /* change color of all buttons */
+              /* change color of most buttons */
               #startover_button, #results_pg_l, 
               #results_pg_pse, #results_pg_cop, 
               #results_pg_di, #results_pg_2x2 {
@@ -150,7 +150,7 @@ shinyUI(
                     font-size: 22px;
               }
               
-              /* change hover color of all buttons */
+              /* change hover color of most buttons */
               #startover_button:hover, #results_pg_l:hover, 
               #results_pg_pse:hover, #results_pg_cop:hover, 
               #results_pg_di:hover, #results_pg_2x2:hover {
