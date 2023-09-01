@@ -11,8 +11,8 @@ jscode <- "shinyjs.refresh_page = function() { history.go(0); }"
 
 server <- function(input, output, session) {
   
-  darkmode(buttonColorDark = "#9bbb59",  # Background color of the button while in lightmode
-           buttonColorLight = "#93cddd",  # Background color of the button while in darkmode
+  darkmode(buttonColorDark = "#7f9f3d",  # Background color of the button while in lightmode
+           buttonColorLight = "#639dad",  # Background color of the button while in darkmode
            backgroundColor = "#fff",  # Background color of the page while in lightmode
            mixColor = "#fff",  # Color used to generate darkmode: lighter colors create darker darkmode
            label = "<strong>|</strong>",  # Text that shows up on the darkmode button

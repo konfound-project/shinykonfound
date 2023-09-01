@@ -27,6 +27,8 @@ shinyUI(
               /* import Google fonts */
               @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Victor+Mono&display=swap');
               @import url('https://fonts.googleapis.com/css2?family=Cardo:wght@400;700&family=Cormorant:wght@400;700&family=Nanum+Myeongjo:wght@400;700;800&family=Playfair+Display+SC:wght@400;700;900&family=Roboto+Slab:wght@100;400;700;800;900&display=swap');
+  
+  
               
               /* change page background as well as header and footer text */
               body {
@@ -36,37 +38,39 @@ shinyUI(
                     font-weight: 300;
                     color: #000;
               }
+  
+  
               
-              /* change header title */
+              /* change page title */
               h2 {
-                  font-family: 'Cardo', serif;
-                  font-size: 76px;
-                  font-weight: 700;
-                  color: #93cddd;
-                  text-shadow: -.5px 0 black, 0 .5px black, .5px 0 black, 0 -.5px black;
+                    font-family: 'Cardo', serif;
+                    font-size: 76px;
+                    font-weight: 700;
+                    color: #639dad;
+                    text-shadow: -.5px 0 black, 0 .5px black, .5px 0 black, 0 -.5px black;
               }
               
               /* change page first-level headings (e.g., Specification, Results) */
               h3 {
-                  font-family: 'Roboto', sans-serif;
-                  font-size: 32px;
-                  font-weight: 700;
-                  color: #9bbb59;
+                    font-family: 'Roboto', sans-serif;
+                    font-size: 32px;
+                    font-weight: 700;
+                    color: #7f9f3d;
               }
 
               /* change page second-level headings */
               h4 {
-                  font-family: 'Roboto', sans-serif;
-                  font-size: 24px;
-                  font-weight: 700;
-                  color: #000;
+                    font-family: 'Roboto', sans-serif;
+                    font-size: 24px;
+                    font-weight: 700;
+                    color: #000;
               }
               
               /* change page third-level headings */
               h5 {
-                  font-family: 'Roboto', sans-serif;
-                  font-size: 18px;
-                  color: #000;
+                    font-family: 'Roboto', sans-serif;
+                    font-size: 18px;
+                    color: #000;
               }
               
               /* change hyperlink text */
@@ -87,65 +91,50 @@ shinyUI(
                     font-size: 16px;
               }
               
-              /* change radio buttons */
-              label > input[type='radio'] {
-                        opacity: 0;
-                        position: absolute;
+              
+              
+              /* change navigation bar */
+              .navbar-default {
+                    background-color: #639dad;
+                    border-color: #999;
+                    font-size: 18px;
+                    font-weight: 300;
               }
               
-              label > input[type='radio'] + *::before {
-                        content: '';
-                        margin: 4px 0 0;
-                        width: 13px;
-                        height: 13px;
-                        position: absolute;
-                        margin-left: -20px;
-                        border-radius: 50%;
-                        border-style: solid;
-                        border-width: 0.1rem;
-                        border-color: #93cddd;
+              .navbar-nav > .active {
+                    background-color: #7f9f3d;
               }
-                    
-              label > input[type='radio']:checked + *::before {
-                        background: radial-gradient(#9bbb59 0%, #9bbb59 50%, transparent 50%);
-                        border-color: #93cddd;
+              
+              /* change text in navigation bar: active tab */
+              .navbar-nav > .active > a {
+                    color: #fff !important;
               }
-                    
-              label > input[type='checkbox'] {
-                        opacity: 0;
-                        position: absolute;
+              
+              /* change text in navigation bar: inactive tab */
+              .navbar-nav > li > a {
+                    color: #eee !important;
               }
-                    
-              label > input[type='checkbox'] + *::before {
-                      content: '';
-                      position: absolute;
-                      margin: 4px 0 0;
-                      margin-left: -20px;
-                      align: center;
-                      width: 13px;
-                      height: 13px;
-                      margin-right: 1rem;
-                      border-radius: 0%;
-                      border-style: solid;
-                      border-width: 0.1rem;
-                      border-color: #93cddd;
-              }
-                    
-              label > input[type='checkbox']:checked + *::before {
-                      content: '';
-                      width: 13px;
-                      height: 13px;
-                      border-color: #93cddd;
-                      background: #9bbb59;
-              }
+              
 
-
+              
+              /* change background of area for user input */
+              .well { 
+                    background-color: #fff !important;
+              }
+              
+              /* change rows in area for user input */
+              .row { 
+                    background-color: #fff !important;
+              }
+              
+              
+              
               /* change color of most buttons */
               #startover_button, #results_pg_l, 
               #results_pg_pse, #results_pg_cop, 
               #results_pg_di, #results_pg_2x2 {
-                    background-color: #9bbb59;
-                    color: #fff;
+                    background-color: #7f9f3d !important;
+                    color: #fff !important;
                     font-family: 'Roboto', sans-serif;
                     font-size: 22px;
               }
@@ -154,31 +143,99 @@ shinyUI(
               #startover_button:hover, #results_pg_l:hover, 
               #results_pg_pse:hover, #results_pg_cop:hover, 
               #results_pg_di:hover, #results_pg_2x2:hover {
-                    background-color: #465723;
-                    color: #fff;
+                    background-color: #465723 !important;
+                    color: #fff !important;
                     font-family: 'Roboto', sans-serif;
               }
               
               
+              
+              /* change radio buttons */
+              label > input[type='radio'] {
+                    opacity: 0;
+                    position: absolute;
+              }
+              
+              label > input[type='radio'] + *::before {
+                    content: '';
+                    margin: 4px 0 0;
+                    width: 13px;
+                    height: 13px;
+                    position: absolute;
+                    margin-left: -20px;
+                    border-radius: 50%;
+                    border-style: solid;
+                    border-width: 0.1rem;
+                    border-color: #639dad;
+              }
+                    
+              label > input[type='radio']:checked + *::before {
+                    background: radial-gradient(#7f9f3d 0%, #7f9f3d 50%, transparent 50%) !important;
+                    border-color: #639dad !important;
+              }
+              
+              
+                    
+              label > input[type='checkbox'] {
+                    opacity: 0;
+                    position: absolute;
+              }
+                    
+              label > input[type='checkbox'] + *::before {
+                    content: '';
+                    position: absolute;
+                    margin: 4px 0 0;
+                    margin-left: -20px;
+                    align: center;
+                    width: 13px;
+                    height: 13px;
+                    margin-right: 1rem;
+                    border-radius: 0%;
+                    border-style: solid;
+                    border-width: 0.1rem;
+                    border-color: #639dad !important;
+              }
+                    
+              label > input[type='checkbox']:checked + *::before {
+                    content: '';
+                    width: 13px;
+                    height: 13px;
+                    border-color: #639dad !important;
+                    background: #7f9f3d !important;
+              }
+
+
+
+              /* change text on info button */
+              [id*=info] {
+                    background-color: #639dad !important;
+                    color: #fff !important;
+                    font-family: 'Roboto', sans-serif;
+                    text-shadow: -.0px 0 #fff, 0 .0px #fff, .0px 0 #fff, 0 -.0px #fff;
+              }
+              
+              
+              
               /* change color of screenshot button */
               [id*=screenshot] {
-                    background-color: #9bbb59;
-                    color: #fff;
+                    background-color: #7f9f3d !important;
+                    color: #fff !important;
                     font-family: 'Roboto', sans-serif;
                     font-size: 22px;
               }
               
               /* change hover color of screenshot button */
               [id*=screenshot]:hover {
-                    background-color: #465723;
-                    color: #fff;
+                    background-color: #465723 !important;
+                    color: #fff !important;
                     font-family: 'Roboto', sans-serif;
               }
 
               
+              
               /* change color of copy source code buttons */
               #clipbtn {
-                    background-color: #9bbb59;
+                    background-color: #7f9f3d;
                     color: #fff;
                     font-family: 'Roboto', sans-serif;
                     font-size: 14px;
@@ -192,33 +249,11 @@ shinyUI(
                     font-size: 14px;
               }
               
-              /* change text on info button */
-              .fa-info {
-                    color: #fff !important;
-              }
               
-              /* change navigation bar */
-              .navbar-default {
-                    background-color: #93cddd;
-                    border-color: #000;
-                    font-size: 18px;
-                    font-weight: 300;
-                    color: #000;
-              }
-              
-              /* change wells */
-              .well { 
-                    background-color: #fff !important;
-              }
-              
-              /* change rows */
-              .row { 
-                    background-color: #fff !important;
-              }
               
               /* change source code output */
               #r_code, #stata_code, pre {
-                    background-color: #000;
+                    background-color: #444;
                     color: #fff;
                     font-family: 'Courier', mono;
                     font-size: 14px;
@@ -234,7 +269,8 @@ shinyUI(
     
     
     titlePanel(title = div(img(style = "height:0.75em; vertical-align:center; margin-bottom: 18px;",
-                               src = "konfound-logo.png"), 
+                               src = "konfound-logo.png",
+                               alt = "Konfound R package logo"), 
                            "KonFound-It!")),
     h3("Quantify the Robustness of Causal Inferences"),
     p("Sensitivity analyses that quantify the robustness of inferences to concerns about omitted variables and other sources of bias."),
@@ -263,7 +299,6 @@ shinyUI(
                                                     label = "", 
                                                     icon = icon("info", 
                                                                 lib = "font-awesome"), 
-                                                    style = "info", 
                                                     size = "extra-small"
                                            ))),
                             
@@ -290,7 +325,6 @@ shinyUI(
                                                     label = "",
                                                     icon = icon("info", 
                                                                 lib = "font-awesome"), 
-                                                    style = "info", 
                                                     size = "extra-small"
                                            ))),
                                       
@@ -326,7 +360,6 @@ shinyUI(
                                                     label = "", 
                                                     icon = icon("info", 
                                                                 lib = "font-awesome"), 
-                                                    style = "info", 
                                                     size = "extra-small"
                                            ))),
                                       
@@ -351,7 +384,6 @@ shinyUI(
                                                                                     label = "", 
                                                                                     icon = icon("info", 
                                                                                                 lib = "font-awesome"), 
-                                                                                    style = "info", 
                                                                                     size = "extra-small"
                                                                            ))),
                                                                     choiceValues = c("RIR"),
@@ -377,7 +409,6 @@ shinyUI(
                                                                                     label = "", 
                                                                                     icon = icon("info", 
                                                                                                 lib = "font-awesome"), 
-                                                                                    style = "info",
                                                                                     size = "extra-small"
                                                                            )),
                                                                       list("Generalized Robustness of Inference to Replacement (RIR)", 
@@ -385,7 +416,6 @@ shinyUI(
                                                                                     label = "", 
                                                                                     icon = icon("info", 
                                                                                                 lib = "font-awesome"), 
-                                                                                    style = "info", 
                                                                                     size = "extra-small"
                                                                            )),
                                                                       list("Preserve standard error (beta)", 
@@ -393,7 +423,6 @@ shinyUI(
                                                                                     label = "", 
                                                                                     icon = icon("info", 
                                                                                                 lib = "font-awesome"), 
-                                                                                    style = "info", 
                                                                                     size = "extra-small"
                                                                            )),
                                                                       list("Coefficient of proportionality (beta)",  
@@ -401,7 +430,6 @@ shinyUI(
                                                                                     label = "", 
                                                                                     icon = icon("info", 
                                                                                                 lib = "font-awesome"), 
-                                                                                    style = "info", 
                                                                                     size = "extra-small"
                                                                            ))
                                                                     ),
@@ -459,7 +487,6 @@ shinyUI(
                                                     label = "", 
                                                     icon = icon("info", 
                                                                 lib = "font-awesome"), 
-                                                    style = "info", 
                                                     size = "extra-small"
                                            ))),
                                       
@@ -483,7 +510,6 @@ shinyUI(
                                                                                   label = "", 
                                                                                   icon = icon("info", 
                                                                                               lib = "font-awesome"), 
-                                                                                  style = "info", 
                                                                                   size = "extra-small")), 
                                                                     2, step = .1),
                                                        numericInput("std_error", 
@@ -492,7 +518,6 @@ shinyUI(
                                                                                   label = "", 
                                                                                   icon = icon("info", 
                                                                                               lib = "font-awesome"), 
-                                                                                  style = "info", 
                                                                                   size = "extra-small")), 
                                                                     .4, step = "any"),
                                                        numericInput("n_obs", 
@@ -501,7 +526,6 @@ shinyUI(
                                                                                   label = "", 
                                                                                   icon = icon("info", 
                                                                                               lib = "font-awesome"), 
-                                                                                  style = "info", 
                                                                                   size = "extra-small")), 
                                                                     100, step = 1),
                                                        numericInput("n_covariates", 
@@ -510,7 +534,6 @@ shinyUI(
                                                                                   label = "", 
                                                                                   icon = icon("info", 
                                                                                               lib = "font-awesome"), 
-                                                                                  style = "info", 
                                                                                   size = "extra-small")), 
                                                                     3, step = 1),
                                                        p("Note that decimals must be denoted with a period, e.g., 2.1"),
@@ -827,7 +850,7 @@ shinyUI(
                                    screenshotButton(inputId = "screenshot_button"),
                                    actionButton(inputId = "startover_button", 
                                                 div(icon("rotate-right", lib = "font-awesome"), 
-                                                    " Start Over")),
+                                                    "Start Over")),
                                    align = "right"
                             )
                             
