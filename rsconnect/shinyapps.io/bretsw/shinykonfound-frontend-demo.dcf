@@ -5,7 +5,7 @@ account: bretsw
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 9617274
-bundleId: 7635461
+bundleId: 7681624
 url: https://bretsw.shinyapps.io/shinykonfound-frontend-demo/
 version: 1
 asMultiple: FALSE

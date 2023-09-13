@@ -26,8 +26,9 @@ shinyUI(
               
               /* import Google fonts */
               @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Victor+Mono&display=swap');
+              @import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100;0,200;0,300;0,400;1,100;1,200;1,300;1,400');
               @import url('https://fonts.googleapis.com/css2?family=Cardo:wght@400;700&family=Cormorant:wght@400;700&family=Nanum+Myeongjo:wght@400;700;800&family=Playfair+Display+SC:wght@400;700;900&family=Roboto+Slab:wght@100;400;700;800;900&display=swap');
-  
+
   
               
               /* change page background as well as header and footer text */
@@ -43,11 +44,10 @@ shinyUI(
               
               /* change page title */
               h2 {
-                    font-family: 'Cardo', serif;
+                    font-family: 'Raleway', serif;
                     font-size: 76px;
-                    font-weight: 700;
+                    font-weight: 200;
                     color: #639dad;
-                    text-shadow: -.5px 0 black, 0 .5px black, .5px 0 black, 0 -.5px black;
               }
               
               /* change page first-level headings (e.g., Specification, Results) */
