@@ -46,7 +46,7 @@ shinyUI(
               h2 {
                     font-family: 'Raleway', serif;
                     font-size: 76px;
-                    font-weight: 200;
+                    font-weight: 400;
                     color: #639dad;
               }
               
