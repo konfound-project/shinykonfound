@@ -1,0 +1,13 @@
+name: shinykonfound-test
+title: shinykonfound-test
+username:
+account: jmichaelrosenberg
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 10260479
+bundleId: 7846029
+url: https://jmichaelrosenberg.shinyapps.io/shinykonfound-test/
+when: 1698159067.26535
+lastSyncTime: 1698159067.26536
+asMultiple: FALSE
+asStatic: FALSE

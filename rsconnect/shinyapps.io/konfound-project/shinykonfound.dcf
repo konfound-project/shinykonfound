@@ -1,0 +1,13 @@
+name: shinykonfound
+title: shinykonfound
+username:
+account: konfound-project
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 10260297
+bundleId: 7846198
+url: https://konfound-project.shinyapps.io/shinykonfound/
+when: 1698161351.34677
+lastSyncTime: 1698161351.34678
+asMultiple: FALSE
+asStatic: FALSE
