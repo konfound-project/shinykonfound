@@ -21,7 +21,8 @@ shinyUI(
     theme = shinythemes::shinytheme("lumen"),
     use_darkmode(),
     
-    tags$head(tags$script(src="script.js"),
+    tags$head(HTML("<title>KonFound Shiny App</title><link rel='icon' href='konfound-icon-square.png' type='image/gif/png'>"),
+              tags$script(src="script.js"),
               tags$style(HTML("
               
               /* import Google fonts */
