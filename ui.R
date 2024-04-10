@@ -8,11 +8,18 @@ library(shiny)
 library(rclipboard)
 library(tippy)
 library(shinythemes)
-library(shinyDarkmode)
 library(shinyBS)
 library(fedmatch)
 library(shinyjs)
 library(shinyscreenshot)
+
+# install.packages("remotes")
+#remotes::install_github("deepanshu88/shinyDarkmode")
+library(shinyDarkmode)
+
+
+################################################################################
+
 
 jscode <- "shinyjs.refresh_page = function() { history.go(0); }" 
 
@@ -267,14 +274,15 @@ shinyUI(
     ),
     
     
-    
+################################################################################    
     
     titlePanel(title = div(img(style = "height:0.75em; vertical-align:center; margin-bottom: 18px;",
                                src = "konfound-logo.png",
                                alt = "Konfound R package logo"), 
                            "KonFound-It!")),
     h3("Quantify the Robustness of Causal Inferences"),
-    p("Sensitivity analyses that quantify the robustness of inferences to concerns about omitted variables and other sources of bias."),
+    tags$p("Sensitivity analyses that quantify the robustness of inferences to concerns about omitted variables and other sources of bias."),
+    tags$p(tags$i(paste("Currently built on version", packageVersion('konfound'), "of the konfound R package."))),
   
   
   rclipboardSetup(),
@@ -914,9 +922,10 @@ shinyUI(
   hr(),
   
   tags$p(tags$b("To cite this application: "), 
-         "Rosenberg, J. M., Narvaiz, S., Xu, R., Lin, Q., Maroulis, S., & Frank, K. A. (2023).",
+         "Rosenberg, J. M., Narvaiz, S., Xu, R., Lin, Q., Maroulis, S., Frank, K. A., Saw, G., & Staudt Willet, K. B. (2023).",
          tags$i("Konfound-It!: Quantify the robustness of causal inferences"), 
-          "(v. 2.0.0)."
+          "(v. 2.0.0).",
+  tags$p(tags$b(paste("\u00A9", format(Sys.Date(), "%Y"))), "by KonFound-It!")
   )
   
   )
