@@ -1,10 +1,17 @@
 library(shiny)
 library(tidyverse)
 library(konfound)
-library(shinyDarkmode)
 library(shinyjs)
 library(rclipboard)
 library(fedmatch)
+
+# install.packages("remotes")
+# remotes::install_github("deepanshu88/shinyDarkmode")
+library(shinyDarkmode)
+
+
+################################################################################
+
 
 jscode <- "shinyjs.refresh_page = function() { history.go(0); }" 
 
