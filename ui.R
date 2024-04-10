@@ -28,7 +28,7 @@ shinyUI(
     theme = shinythemes::shinytheme("lumen"),
     use_darkmode(),
     
-    tags$head(HTML("<title>KonFound Shiny App</title><link rel='icon' href='konfound-icon-square.png' type='image/gif/png'>"),
+    tags$head(HTML("<title>KonFound Shiny App</title><link rel='icon' href='konfound-logo-rectangle.png' type='image/gif/png'>"),
               tags$script(src="script.js"),
               tags$style(HTML("
               
@@ -55,7 +55,7 @@ shinyUI(
                     font-family: 'Raleway', serif;
                     font-size: 76px;
                     font-weight: 400;
-                    color: #639dad;
+                    color: #639dad; /* theme blue color */
               }
               
               /* change page first-level headings (e.g., Specification, Results) */
@@ -63,7 +63,7 @@ shinyUI(
                     font-family: 'Roboto', sans-serif;
                     font-size: 32px;
                     font-weight: 700;
-                    color: #7f9f3d;
+                    color: #7f9f3d;  /* theme green color */
               }
 
               /* change page second-level headings */
@@ -160,7 +160,7 @@ shinyUI(
               
               /* change radio buttons */
               label > input[type='radio'] {
-                    opacity: 0;
+                    opacity: 1;
                     position: absolute;
               }
               
@@ -185,7 +185,7 @@ shinyUI(
               
                     
               label > input[type='checkbox'] {
-                    opacity: 0;
+                    opacity: 1;
                     position: absolute;
               }
                     
@@ -276,13 +276,14 @@ shinyUI(
     
 ################################################################################    
     
+
     titlePanel(title = div(img(style = "height:0.75em; vertical-align:center; margin-bottom: 18px;",
-                               src = "konfound-logo.png",
+                               src = "konfound-logo-rectangle.png",
                                alt = "Konfound R package logo"), 
                            "KonFound-It!")),
     h3("Quantify the Robustness of Causal Inferences"),
     tags$p("Sensitivity analyses that quantify the robustness of inferences to concerns about omitted variables and other sources of bias."),
-    tags$p(tags$i(paste("Currently built on version", packageVersion('konfound'), "of the konfound R package."))),
+    tags$p(tags$i(paste("Currently built with version", packageVersion('konfound'), "of the konfound R package."))),
   
   
   rclipboardSetup(),
@@ -856,10 +857,11 @@ shinyUI(
                             
                              
                             column(12,
-                                   screenshotButton(inputId = "screenshot_button"),
+                                   screenshotButton(inputId = "screenshot_button",
+                                                    label = " Take Screenshot"),
                                    actionButton(inputId = "startover_button", 
-                                                div(icon("rotate-right", lib = "font-awesome"), 
-                                                    "Start Over")),
+                                                label = div(icon("rotate-right", lib = "font-awesome"), 
+                                                            " Start Over")),
                                    align = "right"
                             )
                             
@@ -869,13 +871,39 @@ shinyUI(
                       )
              ),
              
-             
+ 
+################################################################################
+
              
              tabPanel(div(icon("screwdriver-wrench", lib = "font-awesome"), " Resources"),
                       
+                      tags$h4("Overall"),
+                      tags$ul(
+                        tags$li(icon("house", lib = "font-awesome"), 
+                                "Learn more on",
+                                tags$a(href="https://konfound-it.org/", "the KonFound-It website.")),
+                        tags$li(icon("paper-plane", lib = "font-awesome"), 
+                             "Questions? Issues? Suggestions? Reach out through the",
+                             tags$a(href="https://groups.google.com/g/konfound-it", "KounFound-It! Google Group.")
+                             )
+                        ),
+                      hr(),
+                      
+                      
+                      tags$h4("Tools"),
+                      tags$ul(
+                        tags$li(tags$a(href="https://CRAN.R-project.org/package=konfound", "R package (CRAN version)")),
+                        tags$li(tags$a(href="https://github.com/konfound-project/konfound", "R package (development version)")),
+                        tags$li(tags$a(href="https://konfound-project.shinyapps.io/konfound-it/", "R Shiny app")),
+                        tags$li(tags$a(href="https://doi.org/10.1177/1536867X19874223", "Stata package")),
+                        tags$li(tags$a(href="", "Benchmarks: What Works Clearinghouse"), "[COMING SOON]")
+                      ),
+                      hr(),
+                      
+                      
                       tags$h4("Explanatory Resources"),
                       tags$ul(
-                        tags$li(tags$a(href="https://www.dropbox.com/s/9eymdekym5g50o7/frequently%20asked%20questions%20for%20application%20of%20konfound-it.docx?dl=0", "FAQ")), 
+                        tags$li(tags$a(href="https://konfound-it.org/page/faq/", "FAQ")), 
                         tags$li(tags$a(href="https://www.dropbox.com/s/33zkk861g04hocf/Overview%20of%20Konfound%20commands%20with%20inputs%20and%20outputs.docx?dl=0", "Overview of pkonfound commands")),
                         tags$li(tags$a(href="https://drive.google.com/file/d/1qbRx2penqzb7kEJkxJD3ARf26CjXMhzg/view", "Quick examples")), 
                         tags$li(tags$a(href="https://www.dropbox.com/s/o67e7w2sm8uww18/quantifying%20the%20robustness%20of%20causal%20inferences%20combined%20frameworks%20for%20stat%20horizons%20distribute.pptx?dl=0", "Powerpoint quantifying the robustness of causal inferences combined frameworks")),
@@ -883,50 +911,122 @@ shinyUI(
                       ),
                       hr(),
                       
-                      tags$h4("Additional Resources for Publication"),
+                      
+                      tags$h4("Resources for Publication"),
                       tags$ul(
                         tags$li(tags$a(href="https://www.dropbox.com/s/bc4ert79kgbsac4/Examples%20of%20applications%20of%20indices%20for%20quantifying%20the%20robustness%20of%20causal%20inferences.docx?dl=0", "Published empirical examples")),
                         tags$li(tags$a(href="https://www.dropbox.com/s/accoz5xu82vy27v/KonFound-it%21%20enhanced.xlsx?dl=0", "Spreadsheet for calculating indices (KonFound-it!)")),
                       ),
                       hr(),
                         
-                      tags$h4("Impact Threshold for a Confounding Variable Publications"),
+                      
+                      tags$h4("Publications: Impact Threshold for a Confounding Variable"),
                       tags$ul(  
-                        tags$li(tags$a(href="https://drive.google.com/file/d/1F7oGYZ8SS8hnZxSI3Dch_w65Qz6KIRdI/view", "Frank, K. 2000. 'Impact of a Confounding Variable on the Inference of a Regression Coefficient.' Sociological Methods and Research, 29(2), 147-194")),
-                        tags$li(tags$a(href="https://drive.google.com/file/d/1aOvAXEVnQCe9-dbWkgTqtq56Y3Z1tpkg/view", "Frank, K.A., Gary Sykes, Dorothea Anagnostopoulos, Marisa Cannata, Linda Chard, Ann Krause, Raven McCrory. 2008. Extended Influence: National Board Certified Teachers as Help Providers. Education, Evaluation, and Policy Analysis. Vol 30(1): 3-30.")),
+                        tags$li("Frank, K. (2000). Impact of a confounding variable on the inference of a regression coefficient.",
+                                tags$i("Sociological Methods and Research, 29"),
+                                "(2), 147-194. | ",
+                                tags$a(href="https://drive.google.com/file/d/1F7oGYZ8SS8hnZxSI3Dch_w65Qz6KIRdI/view", icon("file-pdf", lib = "font-awesome"), "PDF post-print"), " | ",
+                                tags$a(href="https://doi.org/10.1177/0049124100029002001", icon("globe", lib = "font-awesome"), "Web version"),
+                        ),
+                        tags$li("Frank, K. A., Sykes, G., Anagnostopoulos, D., Cannata, M., Chard, L., Krause, A., & McCrory, R. (2008). Does NBPTS certification affect the number of colleagues a teacher helps with instructional matters?.",
+                                tags$i("Educational Evaluation and Policy Analysis, 30"),
+                                "(1), 3-30. | ",
+                                tags$a(href="https://drive.google.com/file/d/1aOvAXEVnQCe9-dbWkgTqtq56Y3Z1tpkg/view", icon("file-pdf", lib = "font-awesome"), "PDF post-print"), " | ",
+                                tags$a(href="https://doi.org/10.3102/0162373707313781", icon("globe", lib = "font-awesome"), "Web version"),
+                        )
                       ),
                       hr(),
                         
-                      tags$h4("Robustness of Inference to Replacement Publications"),
+                      
+                      tags$h4("Publications: Robustness of Inference to Replacement"),
                       tags$ul(  
-                        tags$li(tags$a(href="https://www.dropbox.com/s/o0rmduhe8pj3khd/INDICES%20OF%20ROBUSTNESS%20FOR%20SAMPLE%20REPRESENTATION.pdf?dl=0", "*Frank, K. A. and Min, K. 2007. Indices of Robustness for Sample Representation. Sociological Methodology. Vol 37, 349-392. * co first authors.")),
-                        tags$li(tags$a(href="https://drive.google.com/file/d/1aGhxGjvMvEPVAgOA8rrxvA97uUO5TTMe/view", "Frank, K.A., Maroulis, S., Duong, M., and Kelcey, B. 2013. What would it take to Change an Inference?: Using Rubin’s Causal Model to Interpret the Robustness of Causal Inferences. Education, Evaluation and Policy Analysis. Vol 35: 437-460.")),
-                        tags$li(tags$a(href="https://www.dropbox.com/s/2dzkvalwmgr5v5z/Hypothetical%20case%20replacement%20can%20be%20used%20to%20quantify%20the%20robustness%20of%20trial%20results%20submit.docx?dl=0", "*Frank, K. A., *Lin, Q., *Maroulis, S., *Mueller, A. S., Xu, R., Rosenberg, J. M., ... & Zhang, L. 2021. Hypothetical case replacement can be used to quantify the robustness of trial results. Journal of Clinical Epidemiology, 134, 150-159. *authors listed alphabetically.")),
+                        tags$li("Frank, K. A., Lin, Q., Maroulis, S., Mueller, A. S., Xu, R., Rosenberg, J. M., Hayter, C. S., Mahmoud, R. A., Kolak, M., Dietz, T., & Zhang, L. (2021). Hypothetical case replacement can be used to quantify the robustness of trial results.",
+                                tags$i("Journal of Clinical Epidemiology, 134"),
+                                ", 150-159. (authors listed alphabetically.)  | ",
+                                tags$a(href="https://www.dropbox.com/s/2dzkvalwmgr5v5z/Hypothetical%20case%20replacement%20can%20be%20used%20to%20quantify%20the%20robustness%20of%20trial%20results%20submit.docx?dl=0", icon("file-pdf", lib = "font-awesome"), "PDF post-print"), " | ",
+                                tags$a(href="https://doi.org/10.1016/j.jclinepi.2021.01.025", icon("globe", lib = "font-awesome"), "Web version"),
+                        ),
+                        tags$li("Frank, K. A., Maroulis, S. J., Duong, M. Q., & Kelcey, B. M. (2013). What would it take to change an inference? Using Rubin’s causal model to interpret the robustness of causal inferences.",
+                                tags$i("Educational Evaluation and Policy Analysis, 35"),
+                                "(4), 437-460. | ",
+                                tags$a(href="https://drive.google.com/file/d/1aGhxGjvMvEPVAgOA8rrxvA97uUO5TTMe/view", icon("file-pdf", lib = "font-awesome"), "PDF post-print"), " | ",
+                                tags$a(href="https://doi.org/10.3102/0162373713493129", icon("globe", lib = "font-awesome"), "Web version"),
+                        ),
+                        tags$li("Frank, K. A., & Min, K. (2007). Indices of robustness for sample representation.",
+                                tags$i("Sociological Methodology. 37"),
+                                "(1). 349-392. (equal first authors.) | ",
+                                tags$a(href="https://www.dropbox.com/s/o0rmduhe8pj3khd/INDICES%20OF%20ROBUSTNESS%20FOR%20SAMPLE%20REPRESENTATION.pdf?dl=0", icon("file-pdf", lib = "font-awesome"), "PDF post-print"), " | ",
+                                tags$a(href="https://doi.org/10.1111/j.1467-9531.2007.00186.x", icon("globe", lib = "font-awesome"), "Web version"),
+                        )
                       ),                       
                       hr(),
                         
+                      
                       tags$h4("Publications for Both Frameworks"),
-                      tags$ul(  
-                        tags$li(tags$a(href ="https://www.researchgate.net/profile/Ran-Xu-6/publication/335956720_konfound_Command_to_quantify_robustness_of_causal_inferences/links/5e49a3d2a6fdccd965ac3564/konfound-Command-to-quantify-robustness-of-causal-inferences.pdf", "Xu, R., Frank, K. A., Maroulis, S. J., & Rosenberg, J. M. (2019). konfound: Command to quantify robustness of causal inferences. The Stata Journal, 19(3), 523-550.")),
-                        tags$li(tags$a(href="https://www.dropbox.com/s/rn8a4jbxtiynefh/Quantifying%20the%20Robustness%20of%20Causal%20Inferences%20Frank%20SSR%20final.pdf?dl=0", "Frank, K.A., Lin, Q., Xu, R., Maroulis, S.J., Mueller, A. (on-line first). Quantifying the Robustness of Causal Inferences: Sensitivity Analysis for Pragmatic Social Science.  Social Science Research. 110, 102815.")),
+                      tags$ul(
+                        tags$li("Frank, K.A., Lin, Q., Xu, R., Maroulis, S.J., Mueller, A. (2023). Quantifying the robustness of causal inferences: Sensitivity analysis for pragmatic social science.",
+                                tags$i("Social Science Research, 110"),
+                                ", 102815. | ",
+                                tags$a(href="https://www.dropbox.com/s/rn8a4jbxtiynefh/Quantifying%20the%20Robustness%20of%20Causal%20Inferences%20Frank%20SSR%20final.pdf?dl=0", icon("file-pdf", lib = "font-awesome"), "PDF post-print"), " | ",
+                                tags$a(href="https://doi.org/10.1016/j.ssresearch.2022.102815", icon("globe", lib = "font-awesome"), "Web version"),
+                        ),
+                        tags$li("Narvaiz, S., Lin, Q., Rosenberg, J. M., Frank, K. A., Maroulis, S. J., Wang, W., & Xu, R. (2024). konfound: An R sensitivity analysis package to quantify the robustness of causal inferences.",
+                                tags$i("Journal of Open Source Software, 9"),
+                                "(95), 5779. | ",
+                                tags$a(href="https://doi.org/10.21105/joss.05779", icon("globe", lib = "font-awesome"), "Web version"),
+                        ),
+                        tags$li("Xu, R., Frank, K. A., Maroulis, S. J., & Rosenberg, J. M. (2019). konfound: Command to quantify robustness of causal inferences.",
+                                tags$i("The Stata Journal, 19"),
+                                "(3), 523–550. | ",
+                                tags$a(href="https://www.researchgate.net/profile/Ran-Xu-6/publication/335956720_konfound_Command_to_quantify_robustness_of_causal_inferences/links/5e49a3d2a6fdccd965ac3564/konfound-Command-to-quantify-robustness-of-causal-inferences.pdf", icon("file-pdf", lib = "font-awesome"), "PDF post-print"), " | ",
+                                tags$a(href="https://doi.org/10.1177/1536867X19874223", icon("globe", lib = "font-awesome"), "Web version"),
+                        )
                       ),
                       hr(),
-                        
-                      tags$h4("Contact"),
-                      tags$p(icon("house", lib = "font-awesome"), tags$a(href="https://msu.edu/~kenfrank/research.htm#causal", "Ken Frank's homepage")),
-                      tags$p(icon("envelope", lib = "font-awesome"), tags$a(href = "mailto:kenfrank@msu.edu", "Email Ken Frank")),
-                      tags$p(icon("paper-plane", lib = "font-awesome"), tags$a(href="https://groups.google.com/forum/#!forum/konfound-it", "Google Groups mailing list for Konfound-It!"))
+                      
+                      tags$h4("Connect"),
+                      tags$ul(
+                        tags$li("Project Overview and Details: Peruse the", 
+                                tags$a(href="https://konfound-it.org/", "KonFound-It! Website")),
+                        tags$li("Frequently Asked Questions: Check the", 
+                                tags$a(href="https://konfound-it.org/page/faq/", "FAQ page"),
+                                "|",
+                                tags$a(href="https://www.dropbox.com/s/9eymdekym5g50o7/frequently%20asked%20questions%20for%20application%20of%20konfound-it.docx?dl=0", "FAQ dev version")),
+                        tags$li("Specific Questions: Ask in the", tags$a(href="https://groups.google.com/g/konfound-it", "KounFound-It! Google Group")),
+                        tags$li("Issues with the konfound R Package: Post to", tags$a(href="https://github.com/konfound-project/konfound/issues", "konfound GitHub Issues")),
+                        tags$li("Overall KonFound-It! Project Inquiries: Contact", tags$a(href="https://msu.edu/~kenfrank/", "Ken Frank")),
+                        tags$li("Benchmarks: What Works Clearinghouse: Contact", tags$a(href="http://www.public.asu.edu/~smarouli/Spiro_Maroulis/Home.html", "Spiro Maroulis")),
+                        tags$li("R Package: Contact", tags$a(href="https://www.linkedin.com/in/qinyun-lin-b72763112/", "Qinyun Lin")),
+                        tags$li("R Shiny App: Contact", tags$a(href="https://joshuamrosenberg.com/", "Joshua Rosenberg")),
+                        tags$li("Stata Package: Contact", tags$a(href="https://sites.google.com/site/ranxupersonalweb/", "Ran Xu")),
+                        tags$li("User Guide: Contact", tags$a(href="https://www.cgu.edu/people/guan-saw/", "Guan Saw")),
+                        tags$li("Website: Contact", tags$a(href="https://bretsw.com", "Bret Staudt Willet"))
+                        ),
+                      
              ),            
   ),
-  
   hr(),
   
-  tags$p(tags$b("To cite this application: "), 
-         "Rosenberg, J. M., Narvaiz, S., Xu, R., Lin, Q., Maroulis, S., Frank, K. A., Saw, G., & Staudt Willet, K. B. (2023).",
-         tags$i("Konfound-It!: Quantify the robustness of causal inferences"), 
-          "(v. 2.0.0).",
-  tags$p(tags$b(paste("\u00A9", format(Sys.Date(), "%Y"))), "by KonFound-It!")
-  )
-  
+
+################################################################################
+
+
+tags$p(tags$b("To cite this application: "),
+       "Rosenberg, J. M., Narvaiz, S., Xu, R., Lin, Q., Maroulis, S., Frank, K. A., Saw, G., & Staudt Willet, K. B. (2023).",
+       tags$i("Konfound-It!: Quantify the robustness of causal inferences"), 
+       "(v. 2.0.0)."
+),
+
+hr(),
+
+tags$image(style = "height:3.5em; vertical-align:center;", src = "ies-logo.jpg", alt = "Konfound-It! logo"),
+tags$p("KonFound-It! is supported by IES Grant",
+       tags$a(href="https://ies.ed.gov/funding/grantsearch/details.asp?ID=5723", "#R305D220022"),
+       "— 'Quantifying the Robustness of Causal Inferences: Extensions and Application to Existing Databases' "),
+
+hr(),
+
+tags$p(tags$b(paste("\u00A9", format(Sys.Date(), "%Y"))), "by KonFound-It!")
+
   )
 )
