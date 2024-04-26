@@ -224,6 +224,23 @@ shinyUI(
               
               
               
+              /* change color of visit website button */
+              #visit_website_button {
+                    background-color: #7f9f3d !important;
+                    color: #fff !important;
+                    font-family: 'Roboto', sans-serif;
+                    font-size: 16px;
+              }
+              
+              /* change hover color of visit website button */
+              #visit_website_button:hover {
+                    background-color: #465723 !important;
+                    color: #fff !important;
+                    font-family: 'Roboto', sans-serif;
+              }
+              
+              
+              
               /* change color of screenshot button */
               [id*=screenshot] {
                     background-color: #7f9f3d !important;
@@ -283,6 +300,11 @@ shinyUI(
                            "KonFound-It!")),
     h3("Quantify the Robustness of Causal Inferences"),
     tags$p("Sensitivity analyses that quantify the robustness of inferences to concerns about omitted variables and other sources of bias."),
+    tags$p(actionButton("visit_website_button",
+                  icon = icon("globe", lib = "font-awesome"),
+                  label = "KonFound-It website",
+                  onclick = "window.open('https://konfound-it.org/', '_blank')")
+           ),    
     tags$p(tags$i(paste("Currently built with version", packageVersion('konfound'), "of the konfound R package."))),
   
   
@@ -879,9 +901,9 @@ shinyUI(
                       
                       tags$h4("Overall"),
                       tags$ul(
-                        tags$li(icon("house", lib = "font-awesome"), 
-                                "Learn more on",
-                                tags$a(href="https://konfound-it.org/", "the KonFound-It website.")),
+                        tags$li(icon("globe", lib = "font-awesome"), 
+                                "Learn more on the",
+                                tags$a(href="https://konfound-it.org/", "KonFound-It website.")),
                         tags$li(icon("paper-plane", lib = "font-awesome"), 
                              "Questions? Issues? Suggestions? Reach out through the",
                              tags$a(href="https://groups.google.com/g/konfound-it", "KounFound-It! Google Group.")
@@ -896,7 +918,7 @@ shinyUI(
                         tags$li(tags$a(href="https://github.com/konfound-project/konfound", "R package (development version)")),
                         tags$li(tags$a(href="https://konfound-project.shinyapps.io/konfound-it/", "R Shiny app")),
                         tags$li(tags$a(href="https://doi.org/10.1177/1536867X19874223", "Stata package")),
-                        tags$li(tags$a(href="", "Benchmarks: What Works Clearinghouse"), "[COMING SOON]")
+                        tags$li(tags$a(href="https://konfound-project.shinyapps.io/wwc-sensitivity-benchmark/", "Benchmarks: What Works Clearinghouse"), "[BETA]")
                       ),
                       hr(),
                       
@@ -1003,10 +1025,13 @@ shinyUI(
                         tags$li("Website: Contact", tags$a(href="https://bretsw.com", "Bret Staudt Willet"))
                         ),
                       
-             ),            
+             ),
+
+
+################################################################################
+
   ),
-  hr(),
-  
+hr(),
 
 ################################################################################
 
