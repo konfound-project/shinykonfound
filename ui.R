@@ -284,6 +284,8 @@ shinyUI(
                     font-size: 14px;
                     font-weight: 300;
               }
+
+       
               
     "
                               
@@ -831,7 +833,9 @@ shinyUI(
                             )
                           )
                         ),
-                        
+
+################################################################################
+
                         mainPanel(
                           verticalLayout(
                             fluidRow(
@@ -839,17 +843,23 @@ shinyUI(
                               align = "center",
                               h3("Results")),
                               
-                              wellPanel(p(h4("Text Output")),
-                                        htmlOutput("print_results")
+                              wellPanel(
+                                p(h4("Text Output")),
+                                htmlOutput("print_results1")
+                              ),
+                            
+                              wellPanel(
+                                p(h4("Block Output")),
+                                verbatimTextOutput("print_results2")
                               ),
                               
-                              wellPanel(p(h4("Graphic Output")),
-                                        uiOutput("print_fig", width = "50%"),
-                                        uiOutput("print_rir")
+                              wellPanel(
+                                p(h4("Graphic Output")),
+                                plotOutput("fig_results")
                               ),
-                            
-                            
-                            
+
+################################################################################
+
                             wellPanel(p(h4("Would you like to generate source code?")),
                                       checkboxInput("gen_r_code", "Generate R Code"),
                                       conditionalPanel(condition = "input.gen_r_code == 1",
@@ -875,9 +885,8 @@ shinyUI(
                                                          placement = "right",
                                                          arrow = "true"))),
                          
-                            
-                            
-                             
+################################################################################
+
                             column(12,
                                    screenshotButton(inputId = "screenshot_button",
                                                     label = " Take Screenshot"),
@@ -892,11 +901,15 @@ shinyUI(
                         )
                       )
              ),
-             
- 
-################################################################################
+    
 
-             
+         
+################################################################################
+###  SECOND TAB  ###
+################################################################################
+ 
+
+            
              tabPanel(div(icon("screwdriver-wrench", lib = "font-awesome"), " Resources"),
                       
                       tags$h4("Overall"),
