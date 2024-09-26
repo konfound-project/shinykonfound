@@ -137,6 +137,17 @@ shinyUI(
               
               
               
+              /* change color of user input labels */
+              .label-style {
+                    font-style: italic;
+                    background-color: #fff;
+                    font-family: 'Roboto', sans-serif;
+                    font-size: 14px;
+                    font-weight: 300;
+                    color: #000;
+              }
+              
+              
               /* change color of most buttons */
               #startover_button, #results_pg_l, 
               #results_pg_pse, #results_pg_cop, 
@@ -348,7 +359,7 @@ shinyUI(
                                       ),
                             
                                       radioButtons("Outcome", 
-                                                   "Type of outcome:",
+                                                   div(class = "label-style", "Select type of outcome:"),
                                                    choices = c("Dichotomous", "Continuous"),
                                                    selected = character(0))), # No default radio button selected
                             
@@ -376,14 +387,14 @@ shinyUI(
                                       conditionalPanel(condition = "input.Outcome == 'Dichotomous'",
                                                        style = "display: none;",
                                                        radioButtons("Data", 
-                                                                    "Source of data:",
+                                                                    div(class = "label-style", "Select source of data:"),
                                                                     choices = c("2x2 table", "Logistic model"),
                                                                     selected = character(0))),
                                       
                                       conditionalPanel(condition = "input.Outcome == 'Continuous'",
                                                        style = "display: none;",
                                                        radioButtons("DataL", 
-                                                                    "Source of data:",
+                                                                    div(class = "label-style", "Select source of data:"),
                                                                     choiceNames = list("Estimates from a linear model"),
                                                                     choiceValues = c("Linear model")))), # No default radio button selected
                             
@@ -411,9 +422,10 @@ shinyUI(
                                       conditionalPanel(condition = "(input.Data == 'Logistic model' || input.Data == '2x2 table') && input.Outcome == 'Dichotomous'",
                                                        style = "display: none;",
                                                        radioButtons("Analysis", 
-                                                                    "Type of analysis:",
+                                                                    div(class = "label-style", "Select type of analysis:"),
                                                                     choiceNames = list(
-                                                                      list("Generalized Robustness of Inference to Replacement (RIR)/Fragility", 
+                                                                      list(strong("RIR:"),
+                                                                           "Generalized Robustness of Inference to Replacement/Fragility", 
                                                                            bsButton("fragility-info", 
                                                                                     label = "", 
                                                                                     icon = icon("info", 
@@ -435,31 +447,37 @@ shinyUI(
                                       
                                       conditionalPanel(condition = "input.Outcome == 'Continuous' && input.DataL == 'Linear model'",
                                                        style = "display: none;",
-                                                       radioButtons("AnalysisL", 
-                                                                    "Type of analysis:",
+                                                       radioButtons("AnalysisL",
+                                                                    div(class = "label-style", "Select type of analysis:"),
                                                                     choiceNames = list(
-                                                                      list("Impact Threshold for a Confounding Variable (ITCV)", 
+                                                                      list(strong("ITCV:"), 
+                                                                           "Impact Threshold for a Confounding Variable", 
+                                                                           em("(Basic Analysis)"), 
                                                                            bsButton("itcv-info", 
                                                                                     label = "", 
                                                                                     icon = icon("info", 
                                                                                                 lib = "font-awesome"), 
                                                                                     size = "extra-small"
                                                                            )),
-                                                                      list("Generalized Robustness of Inference to Replacement (RIR)", 
+                                                                      list(strong("RIR:"), 
+                                                                           "Generalized Robustness of Inference to Replacement", 
+                                                                           em("(Basic Analysis)"),
                                                                            bsButton("rir-info", 
                                                                                     label = "", 
                                                                                     icon = icon("info", 
                                                                                                 lib = "font-awesome"), 
                                                                                     size = "extra-small"
                                                                            )),
-                                                                      list("Preserve standard error (beta)", 
+                                                                      list("Preserve standard error", 
+                                                                           em("(Advanced Analysis)"),
                                                                            bsButton("pse-info", 
                                                                                     label = "", 
                                                                                     icon = icon("info", 
                                                                                                 lib = "font-awesome"), 
                                                                                     size = "extra-small"
                                                                            )),
-                                                                      list("Coefficient of proportionality (beta)",  
+                                                                      list("Coefficient of proportionality",
+                                                                           em("(Advanced Analysis; in beta)"),
                                                                            bsButton("cop-info", 
                                                                                     label = "", 
                                                                                     icon = icon("info", 
@@ -470,49 +488,49 @@ shinyUI(
                                                                     choiceValues = c("IT", "RIR","PSE", "COP"),
                                                                     selected = character(0)))),
                             
-                            bsPopover(
-                              id = "itcv-info",
-                              title = "More information",
-                              content = HTML(paste0(
-                                "The Impact Threshold for a Confounding Variable (ITCV) reports how strongly an omitted variable would have to be correlated with both the predictor of interest and the outcome to make the estimated effect have a p-value of .05. For alternative thresholds use the  R or Stata Konfound commands or the Konfound-it spreadsheet."
-                              )),
-                              placement = "right",
-                              trigger = "hover",
-                              options = list(container = "body")
-                            ),
+                                      bsPopover(
+                                        id = "itcv-info",
+                                        title = "More information",
+                                        content = HTML(paste0(
+                                          "The Impact Threshold for a Confounding Variable (ITCV) reports how strongly an omitted variable would have to be correlated with both the predictor of interest and the outcome to make the estimated effect have a p-value of .05. For alternative thresholds use the  R or Stata Konfound commands or the Konfound-it spreadsheet."
+                                        )),
+                                        placement = "right",
+                                        trigger = "hover",
+                                        options = list(container = "body")
+                                      ),
                             
-                            bsPopover(
-                              id = "rir-info",
-                              title = "More information",
-                              content = HTML(paste0(
-                                "The Robustness of Inference to Replacement (RIR) quantifies what proportion of the data must be replaced (with cases with zero effect) to make the estimated effect have a p-value of .05. For alternative thresholds use the  R or Stata Konfound commands or the Konfound-it spreadsheet."
-                              )),
-                              placement = "right",
-                              trigger = "hover",
-                              options = list(container = "body")
-                            ),
+                                      bsPopover(
+                                        id = "rir-info",
+                                        title = "More information",
+                                        content = HTML(paste0(
+                                          "The Robustness of Inference to Replacement (RIR) quantifies what proportion of the data must be replaced (with cases with zero effect) to make the estimated effect have a p-value of .05. For alternative thresholds use the  R or Stata Konfound commands or the Konfound-it spreadsheet."
+                                        )),
+                                        placement = "right",
+                                        trigger = "hover",
+                                        options = list(container = "body")
+                                      ),
                             
-                            bsPopover(
-                              id = "pse-info",
-                              title = "More information",
-                              content = HTML(paste0(
-                                "This calculates the correlation between the omitted variable and the focal predictor and between the omitted variable and the outcome necessary to make the estimated effect of the focal predictor have a p-value of .05 while Preserving the Standard Error (PSE) of the original analysis. PSE requires extra inputs including the threshold for inference (e.g., 1.96 x standard error), standard deviation of the outcome (Y), the standard deviation of the focal predictor (X) and the observed R2."
-                              )),
-                              placement = "right",
-                              trigger = "hover",
-                              options = list(container = "body")
-                            ),
+                                      bsPopover(
+                                        id = "pse-info",
+                                        title = "More information",
+                                        content = HTML(paste0(
+                                          "This calculates the correlation between the omitted variable and the focal predictor and between the omitted variable and the outcome necessary to make the estimated effect of the focal predictor have a p-value of .05 while Preserving the Standard Error (PSE) of the original analysis. PSE requires extra inputs including the threshold for inference (e.g., 1.96 x standard error), standard deviation of the outcome (Y), the standard deviation of the focal predictor (X) and the observed R2."
+                                        )),
+                                        placement = "right",
+                                        trigger = "hover",
+                                        options = list(container = "body")
+                                      ),
                             
-                            bsPopover(
-                              id = "cop-info",
-                              title = "More information",
-                              content = HTML(paste0(
-                                "This calculates the correlation between the omitted variable and the focal predictor and between the omitted variable and the outcome necessary to make the estimated effect of the focal predictor be zero and an R2 as specified on input. These correlations also generate the Coefficient of Proportionality (COP) , the proportion selection on unobservables (omitted covariates) relative to observables (observed covariates) necessary to reduce the effect of the focal predictor to zero for a specified R2.  COP requires extra inputs including the standard deviation of the outcome (Y), of the focal predictor (X), the observed R2, and the desired final R2 (FR2MAX)."
-                              )),
-                              placement = "right",
-                              trigger = "hover",
-                              options = list(container = "body")
-                            ),
+                                       bsPopover(
+                                         id = "cop-info",
+                                         title = "More information",
+                                         content = HTML(paste0(
+                                           "This calculates the correlation between the omitted variable and the focal predictor and between the omitted variable and the outcome necessary to make the estimated effect of the focal predictor be zero and an R2 as specified on input. These correlations also generate the Coefficient of Proportionality (COP) , the proportion selection on unobservables (omitted covariates) relative to observables (observed covariates) necessary to reduce the effect of the focal predictor to zero for a specified R2.  COP requires extra inputs including the standard deviation of the outcome (Y), of the focal predictor (X), the observed R2, and the desired final R2 (FR2MAX)."
+                                         )),
+                                         placement = "right",
+                                         trigger = "hover",
+                                         options = list(container = "body")
+                                       ),
                             
                             
                             
@@ -537,7 +555,7 @@ shinyUI(
                                       
                                       conditionalPanel(condition = "(input.AnalysisL == 'IT' || input.AnalysisL == 'RIR') && input.Outcome == 'Continuous'",
                                                        style = "display: none;",
-                                                       h5("Enter these values:"),
+                                                       div(class = "label-style", "Enter these values (Note that decimals must be denoted with a period, e.g., 2.1):"),
                                                        numericInput("unstd_beta", 
                                                                     list("Estimated Effect", 
                                                                          bsButton("unstd_beta-info", 
@@ -570,7 +588,6 @@ shinyUI(
                                                                                               lib = "font-awesome"), 
                                                                                   size = "extra-small")), 
                                                                     3, step = 1),
-                                                       p("Note that decimals must be denoted with a period, e.g., 2.1"),
                                                        column(12,
                                                               actionButton("results_pg_l", 
                                                                            div(icon("play", lib = "font-awesome"), 
@@ -625,7 +642,7 @@ shinyUI(
                                       
                                       conditionalPanel(condition = "(input.AnalysisL == 'PSE') && input.Outcome == 'Continuous'",
                                                        style = "display: none;",
-                                                       h5("Enter these values:"),
+                                                       div(class = "label-style", "Enter these values (Note that decimals must be denoted with a period, e.g., 2.1):"),
                                                        numericInput("unstd_beta_pse", list("Estimated Effect", bsButton("unstd_beta-pse-info", label = "", icon = icon("info", lib = "font-awesome"), style = "default", size = "extra-small")), .5, step = .1),
                                                        numericInput("std_err_pse", list("Standard Error", bsButton("std_error-pse-info", label = "", icon = icon("info", lib = "font-awesome"), style = "default", size = "extra-small")), .056, step = "any"),
                                                        numericInput("n_obs_pse", list("Number of Observations", bsButton("n_obs-pse-info", label = "", icon = icon("info", lib = "font-awesome"), style = "default", size = "extra-small")), 6174, step = 1),
@@ -634,7 +651,6 @@ shinyUI(
                                                        numericInput("sdy_pse", "Standard Deviation of Y", 1, step = .1),
                                                        numericInput("R2_pse", HTML(paste0("R",tags$sup("2"))), .3, step = .1),
                                                        numericInput("eff_thr_pse", "Threshold for Inference (e.g., 1.96x standard error)", 0, step = .1),
-                                                       p("Note that decimals must be denoted with a period, e.g., 2.1"),
                                                        column(12,
                                                               actionButton("results_pg_pse", 
                                                                            div(icon("play", lib = "font-awesome"), 
@@ -690,7 +706,7 @@ shinyUI(
 
                                       conditionalPanel(condition = "(input.AnalysisL == 'COP') && input.Outcome == 'Continuous'",
                                                        style = "display: none;",
-                                                       h5("Enter these values:"),
+                                                       div(class = "label-style", "Enter these values (Note that decimals must be denoted with a period, e.g., 2.1):"),
                                                        numericInput("unstd_beta_cop", list("Estimated Effect", bsButton("unstd_beta-cop-info", label = "", icon = icon("info", lib = "font-awesome"), style = "default", size = "extra-small")), -.125, step = .1),
                                                        numericInput("std_err_cop", list("Standard Error", bsButton("std_error-cop-info", label = "", icon = icon("info", lib = "font-awesome"), style = "default", size = "extra-small")), .050, step = "any"),
                                                        numericInput("n_obs_cop", list("Number of Observations", bsButton("n_obs-cop-info", label = "", icon = icon("info", lib = "font-awesome"), style = "default", size = "extra-small")), 6265, step = 1),
@@ -700,7 +716,6 @@ shinyUI(
                                                        numericInput("R2_cop", HTML(paste0("R",tags$sup("2"))), .251, step = .1),
                                                        numericInput("eff_thr_cop", "Threshold for Inference (e.g., 1.96x standard error)", 0, step = .1),
                                                        numericInput("FR2max_cop", HTML(paste0("R",tags$sup("2"),"Max")), .61, step = .1),
-                                                       p("Note that decimals must be denoted with a period, e.g., 2.1"),
                                                        column(12,
                                                               actionButton("results_pg_cop", 
                                                                            div(icon("play", lib = "font-awesome"), 
@@ -757,12 +772,12 @@ shinyUI(
                                       conditionalPanel(condition = "(input.Analysis == 'RIR' || input.Analysis == 'Fragility') &&
                                                                         (input.Data == 'Logistic model' && input.Outcome == 'Dichotomous')",
                                                        style = "display: none;",
+                                                       div(class = "label-style", "Enter these values (Note that decimals must be denoted with a period, e.g., 2.1):"),
                                                        numericInput("unstd_beta_nl", list("Estimated Effect (Log Odds)", bsButton("unstd_beta-log-info", label = "", icon = icon("info", lib = "font-awesome"), style = "default", size = "extra-small")), -.2, step = .1),
                                                        numericInput("std_error_nl", list("Standard Error (of the Log Odds)", bsButton("std_error-log-info", label = "", icon = icon("info", lib = "font-awesome"), style = "default", size = "extra-small")), .103, step = "any"),
                                                        numericInput("n_obs_nl", list("Number of Observations", bsButton("n_obs-log-info", label = "", icon = icon("info", lib = "font-awesome"), style = "default", size = "extra-small")), 20888, step = 1),
                                                        numericInput("n_covariates_nl", list("Number of Covariates", bsButton("n_covariates-log-info", label = "", icon = icon("info", lib = "font-awesome"), style = "default", size = "extra-small")), 3, step = 1),
                                                        numericInput("n_trm_nl", "Number of cases in treatment condition", 17888, step = 1),
-                                                       p("Note that decimals must be denoted with a period, e.g., 2.1"),
                                                        column(12,
                                                               actionButton("results_pg_di", 
                                                                            div(icon("play", lib = "font-awesome"), 
@@ -819,6 +834,7 @@ shinyUI(
                                       conditionalPanel(condition = "(input.Analysis == 'RIR' || input.Analysis == 'Fragility') &&
                                                                                          (input.Data == '2x2 table' && input.Outcome == 'Dichotomous')",
                                                        style = "display: none;",
+                                                       div(class = "label-style", "Enter these values:"),
                                                        numericInput("ctrl_fail", "Control Condition: Result Failure", 18, step = 1),
                                                        numericInput("ctrl_success", "Control Condition: Result Success", 12, step = 1),
                                                        numericInput("treat_fail", "Treatment Condition: Result Failure", 12, step = 1),
