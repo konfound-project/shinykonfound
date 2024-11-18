@@ -553,6 +553,8 @@ shinyUI(
                                         options = list(container = "body")
                                       ),
                                       
+                                      
+                                                
                                       conditionalPanel(condition = "(input.AnalysisL == 'IT' || input.AnalysisL == 'RIR') && input.Outcome == 'Continuous'",
                                                        style = "display: none;",
                                                        div(class = "label-style", "Enter these values (Note that decimals must be denoted with a period, e.g., 2.1):"),
