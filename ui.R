@@ -1071,16 +1071,17 @@ hr(),
 ################################################################################
 
 
-tags$p(tags$b("To cite this application: "),
-       "Rosenberg, J. M., Narvaiz, S., Xu, R., Lin, Q., Maroulis, S., Frank, K. A., Saw, G., & Staudt Willet, K. B. (2023).",
+tags$p(tags$b("To cite this application: ")),
+tags$p(
+       "Rosenberg, J. M., Narvaiz, S., Xu, R., Lin, Q., Maroulis, S., Frank, K. A., Saw, G., & Staudt Willet, K. B. (2024).",
        tags$i("Konfound-It!: Quantify the robustness of causal inferences"), 
-       "(v. 2.0.0)."
+       "[R Shiny app built on konfound R package version 1.0.2]."
 ),
 
 hr(),
 
 tags$image(style = "height:3.5em; vertical-align:center;", src = "ies-logo.jpg", alt = "Konfound-It! logo"),
-tags$p("KonFound-It! is supported by IES Grant",
+tags$p("KonFound-It! is supported by", tags$b("IES Grant"),
        tags$a(href="https://ies.ed.gov/funding/grantsearch/details.asp?ID=5723", "#R305D220022"),
        "— 'Quantifying the Robustness of Causal Inferences: Extensions and Application to Existing Databases' "),
 

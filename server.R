@@ -27,13 +27,15 @@ server <- function(input, output, session) {
            autoMatchOsTheme = TRUE
   )
   
-  ################################################################################
+################################################################################
   
   
   
-  ############################################## 
-  ###### GENERATE LINEAR RIR/ITCV RESULTS ###### 
-  ##############################################
+  
+  
+################################################################################
+###### GENERATE LINEAR RIR/ITCV RESULTS ########################################
+################################################################################
   
   #validate user input values to make sure they are 1) numeric and 2) more than 3 covariate for all model types
   df <- eventReactive(input$results_pg_l, {
@@ -84,14 +86,20 @@ server <- function(input, output, session) {
     }
     
     # Return both text and plot separately
-    list(text = linear_output, plot = linear_plot)
+    list(text = linear_output, 
+         
+         
+         
+         
+         
+         plot = linear_plot)
   })
   
   
   
-  ############################################# 
-  ###### GENERATE LINEAR COP RESULTS ########## 
-  #############################################
+################################################################################
+###### GENERATE LINEAR COP RESULTS #############################################
+################################################################################
   
   #validate user input values to make sure they are 1) numeric and 2) more than 3 covariate for all model types
   df_cop <- eventReactive(input$results_pg_cop, {
@@ -166,9 +174,9 @@ server <- function(input, output, session) {
   
   
   
-  ############################################# 
-  ###### GENERATE LINEAR PSE RESULTS ###### 
-  #############################################
+################################################################################ 
+###### GENERATE LINEAR PSE RESULTS #############################################
+################################################################################
   
   #validate user input values to make sure they are 1) numeric and 2) more than 3 covariate for all model types
   df_pse <- eventReactive(input$results_pg_pse, {
@@ -214,9 +222,9 @@ server <- function(input, output, session) {
   
   
   
-  ######################################### 
-  ###### GENERATE LOGISTIC RESULTS  ###### 
-  ######################################### 
+################################################################################
+###### GENERATE LOGISTIC RESULTS  ##############################################
+################################################################################
   
   # non-linear model
   df_log <- eventReactive(input$results_pg_di, {
@@ -249,9 +257,9 @@ server <- function(input, output, session) {
   
   
   
-  ######################################### 
-  ######### GENERATE 2x2 RESULTS  ######### 
-  ######################################### 
+################################################################################
+######### GENERATE 2x2 RESULTS  ################################################
+################################################################################
   
   # If user presses the results button for 2x2 tables, show the 2x2 tables
   df_twobytwo <- eventReactive(input$results_pg_2x2, {
@@ -282,9 +290,9 @@ server <- function(input, output, session) {
   
   
   
-  ##################################### 
-  ###### GENERATE PRINTED OUTPUT ###### 
-  #####################################
+################################################################################
+###### GENERATE PRINTED OUTPUT #################################################
+################################################################################
   
   r <- reactiveValues(print_results1 = "") # Create empty reactive string for printed results.
   r <- reactiveValues(print_results2 = "") # Create empty reactive string for printed results.
@@ -383,9 +391,9 @@ server <- function(input, output, session) {
   
   
   
-  ################################### 
-  ######### GENERATE R CODE ######## 
-  ###################################
+################################################################################
+######### GENERATE R CODE ######################################################
+################################################################################
   
   # Generate R code for linear models using user input values
   user_est_l <- eventReactive(input$results_pg_l, {
@@ -471,9 +479,9 @@ server <- function(input, output, session) {
   
   
   
-  ###################################### 
-  ########## CREATE BUTTONS ############ 
-  ######################################
+################################################################################
+########## CREATE BUTTONS ######################################################
+################################################################################
   
   # Render R code in UI.R to display for user
   output$r_code_print <- renderText({
@@ -491,9 +499,9 @@ server <- function(input, output, session) {
   
   
   
-  ###################################### 
-  ######### GENERATE STATA CODE ######## 
-  ######################################
+################################################################################
+######### GENERATE STATA CODE ##################################################
+################################################################################
   
   # Generate Stata code for linear models using user input values
   s_user_est_l <- eventReactive(input$results_pg_l, {
