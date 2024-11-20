@@ -865,16 +865,20 @@ shinyUI(
                                 p(h4("Text Output")),
                                 htmlOutput("print_results1")
                               ),
-                            
-                              wellPanel(
-                                p(h4("Block Output")),
-                                verbatimTextOutput("print_results2")
-                              ),
                               
                               wellPanel(
                                 p(h4("Graphic Output")),
                                 plotOutput("fig_results")
                               ),
+
+################################################################################
+                            
+                            wellPanel(p(h4("Would you like to view full R output?")),
+                                      checkboxInput("gen_r_output", "View Full Output from R Command"),
+                                      conditionalPanel(condition = "input.gen_r_output == 1",
+                                                       id = "r_output",
+                                                       verbatimTextOutput("print_results2")
+                                                       )),
 
 ################################################################################
 

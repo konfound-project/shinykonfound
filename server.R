@@ -1,6 +1,5 @@
 library(shiny)
 library(tidyverse)
-library(konfound)
 library(shinyjs)
 library(rclipboard)
 library(fedmatch)
@@ -9,6 +8,7 @@ library(fedmatch)
 # remotes::install_github("deepanshu88/shinyDarkmode")
 library(shinyDarkmode)
 
+library(konfound)
 
 ################################################################################
 
@@ -390,7 +390,7 @@ server <- function(input, output, session) {
   # Generate R code for linear models using user input values
   user_est_l <- eventReactive(input$results_pg_l, {
     paste0("#install.packages('konfound')", "\n", 
-           "library(konfound)", "  # konfound R package version: ", packageVersion("konfound"), "\n", 
+           "library(konfound)  # konfound R package version: ", packageVersion("konfound"), "\n", 
            "pkonfound(", input$unstd_beta, ", ", input$std_error, ", ", input$n_obs, ", ", input$n_covariates, ", ", "index = ", "'", input$AnalysisL, "'", ")"
     )
   })
@@ -399,7 +399,7 @@ server <- function(input, output, session) {
   # Generate R code for logistic models using user input values
   user_est_di <- eventReactive(input$results_pg_di, {
     paste0("#install.packages('konfound')", "\n", 
-           "library(konfound)", "  # konfound R package version: ", packageVersion("konfound"), "\n", 
+           "library(konfound)  # konfound R package version: ", packageVersion("konfound"), "\n", 
            "pkonfound(", input$unstd_beta_nl, ", ", input$std_error_nl, ", ", input$n_obs_nl, ", ", input$n_covariates_nl, ", n_treat = ", input$n_trm_nl, ", model_type = 'logistic')"
     )
   })
@@ -408,7 +408,7 @@ server <- function(input, output, session) {
   # Generate R code for 2x2 tables using user inputs
   user_est_2x2 <- eventReactive(input$results_pg_2x2, {
     paste0("#install.packages('konfound')", "\n", 
-           "library(konfound)", "  # konfound R package version: ", packageVersion("konfound"), "\n", 
+           "library(konfound)  # konfound R package version: ", packageVersion("konfound"), "\n", 
            "pkonfound(a = ", input$ctrl_fail, ", b = ", input$ctrl_success, ", c = ", input$treat_fail, ", d = ", input$treat_success, ")"
     )
   })
@@ -417,7 +417,7 @@ server <- function(input, output, session) {
   # Generate R code for COP
   user_est_cop <- eventReactive(input$results_pg_cop, {
     paste0("#install.packages('konfound')", "\n", 
-           "library(konfound)", "  # konfound R package version: ", packageVersion("konfound"), "\n", 
+           "library(konfound)  # konfound R package version: ", packageVersion("konfound"), "\n", 
            "pkonfound(est_eff = ", input$unstd_beta_cop, ", std_err = ", input$std_err_cop, ", n_obs = ", input$n_obs_cop, ", n_covariates = ", input$n_covariates_cop, ", sdx = ", input$sdx_cop, ", sdy = ", input$sdy_cop, ", R2 = ", input$R2_cop, ", eff_thr = ", input$eff_thr_cop, ", FR2max = ", input$FR2max_cop, ", index = 'COP')"
     )
   })
@@ -426,7 +426,7 @@ server <- function(input, output, session) {
   # Generate R code for PSE
   user_est_pse <- eventReactive(input$results_pg_pse, {
     paste0("#install.packages('konfound')", "\n", 
-           "library(konfound)", "  # konfound R package version: ", packageVersion("konfound"), "\n", 
+           "library(konfound)  # konfound R package version: ", packageVersion("konfound"), "\n", 
            "pkonfound(est_eff = ", input$unstd_beta_pse, ", std_err = ", input$std_err_pse, ", n_obs = ", input$n_obs_pse, ", n_covariates = ", input$n_covariates_pse, " eff_thr = ", input$eff_thr_pse, ", sdx = ", input$sdx_pse, ", sdy = ", input$sdy_pse, ", R2 = ", input$R2_pse, ", index = 'PSE')"
     )
   })
