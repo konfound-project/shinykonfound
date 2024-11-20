@@ -5,7 +5,7 @@ account: konfound-project
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 13386593
-bundleId: 9386429
+bundleId: 9389395
 url: https://konfound-project.shinyapps.io/shinykonfound/
 version: 1
 asMultiple: FALSE
