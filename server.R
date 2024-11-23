@@ -37,7 +37,7 @@ server <- function(input, output, session) {
 ###### GENERATE LINEAR RIR/ITCV RESULTS ########################################
 ################################################################################
   
-  #validate user input values to make sure they are 1) numeric and 2) more than 3 covariate for all model types
+  # Validate user input values to make sure they are 1) numeric and 2) more than 3 covariate for all model types
   df <- eventReactive(input$results_pg_l, {
     
     #validating user input is numeric
@@ -49,25 +49,108 @@ server <- function(input, output, session) {
       need(input$n_obs > (input$n_covariates + 2), "Did not run! There are too few observations relative to the number of observations and covariates. Please specify a less complex model to use KonFound-It."),
       need(input$std_error > 0, "Did not run! Standard error needs to be greater than zero.")
     )
-    
+
+        
+################################################################################
+
     
     #if statements needed for linear printed output and figure (displays the correct information for RIR, ITCV)
-    if(input$AnalysisL == "RIR"){
-      linear_output <- capture.output(pkonfound(as.numeric(input$unstd_beta), 
-                                                as.numeric(input$std_error), 
-                                                as.numeric(input$n_obs), 
-                                                as.numeric(input$n_covariates),
-                                                index = "RIR",
-                                                to_return = "print"))
-    }
+    
+    r_output <- 
+      capture.output(
+        pkonfound(as.numeric(input$unstd_beta), 
+                  as.numeric(input$std_error), 
+                  as.numeric(input$n_obs), 
+                  as.numeric(input$n_covariates),
+                  index = "RIR",
+                  to_return = "print")
+      )
+    
+    raw_calc <- 
+      pkonfound(as.numeric(input$unstd_beta), 
+                as.numeric(input$std_error), 
+                as.numeric(input$n_obs), 
+                as.numeric(input$n_covariates),
+                index = "RIR",
+                to_return = "raw_output")
+    
+    linear_output <-
+      HTML(
+        paste0(
+          "<strong>Robustness of Inference to Replacement (RIR):</strong><br>",
+          "RIR = ", raw_calc$RIR_primary, "<br><br>",
+          "To invalidate the inference of an effect using the threshold of ", 
+          round(raw_calc$beta_threshold, 3),
+          " for statistical significance (with null hypothesis = 0 and alpha = 0.05), ", 
+          round(raw_calc$perc_bias_to_change, 3),
+          "% of the (2) estimate would have to be due to bias. This implies that to invalidate the inference one would expect to have to replace ", 
+          raw_calc$RIR_primary, " (", round(raw_calc$perc_bias_to_change, 3), "%) ",
+          "observations with data points for which the effect is 0 (RIR = ", 
+          raw_calc$RIR_primary, ").<br><br>",
+          "See Frank et al. (2013) for a description of the method.<br><br>",
+          "<strong>Citation:</strong><br>",
+          "Frank, K.A., Maroulis, S., Duong, M., and Kelcey, B. (2013). What would it take to change an inference? Using Rubin's causal model to interpret the robustness of causal inferences. <em>Education, Evaluation and Policy Analysis, 35</em>, 437-460.<br><br>",
+          "Accuracy of results increases with the number of decimals reported.<br><br>",
+          "<em>Calculated with konfound R package version </em>", packageVersion("konfound")
+        )
+      )
+    
+    
+################################################################################
+  
+  
     if(input$AnalysisL == "IT"){
-      linear_output <- capture.output(pkonfound(as.numeric(input$unstd_beta), 
-                                                as.numeric(input$std_error), 
-                                                as.numeric(input$n_obs), 
-                                                as.numeric(input$n_covariates),
-                                                index = "IT",
-                                                to_return = "print"))
+      
+      r_output <- 
+        capture.output(
+          pkonfound(as.numeric(input$unstd_beta), 
+                    as.numeric(input$std_error), 
+                    as.numeric(input$n_obs), 
+                    as.numeric(input$n_covariates),
+                    index = "IT",
+                    to_return = "print")
+        )
+      
+      raw_calc <- 
+        pkonfound(as.numeric(input$unstd_beta), 
+                  as.numeric(input$std_error), 
+                  as.numeric(input$n_obs), 
+                  as.numeric(input$n_covariates),
+                  index = "IT",
+                  to_return = "raw_output")
+      
+      linear_output <-
+        HTML(
+          paste(
+            "<strong>Impact Threshold for a Confounding Variable (ITCV):</strong><br><br>",
+            "The minimum impact of an omitted variable to invalidate an inference for a null hypothesis of an effect of nu (0) is based on a correlation of", 
+            round(raw_calc$rxcvGz, 3), 
+            "with the outcome and", 
+            round(raw_calc$rxcvGz, 3), 
+            "with the predictor of interest (conditioning on all observed covariates in the model; signs are interchangeable). This is based on a threshold effect of a threshold effect of", 
+            round(raw_calc$critical_r, 2),
+            "for statistical significance (alpha = 0.05).<br><br>", 
+            "Correspondingly, the impact of an omitted variable (as defined in Frank [2000]) must be", 
+            round(raw_calc$rxcvGz, 3), "X", round(raw_calc$rxcvGz, 3), "=", 
+            round(raw_calc$rxcvGz * raw_calc$rxcvGz, 3),
+            "to invalidate an inference for a null hypothesis of an effect of nu (0).<br><br>",
+            "For calculation of unconditional ITCV using pkonfound(), additionally include the <em>R</em><sup>2</sup>, <em>sd</em><sub>x</sub>, and <em>sd</em><sub>y</sub> as input, and request raw output.<br><br>",
+            "See Frank (2000) for a description of the method.<br><br>",
+            "<strong>Citation:</strong><br>",
+            "Frank, K. (2000). Impact of a confounding variable on the inference of a regression coefficient. <em>Sociological Methods and Research, 29</em>(2), 147-194.<br><br>",
+            "Accuracy of results increases with the number of decimals reported.<br><br>",
+            "The ITCV analysis was originally derived for OLS standard errors. If the standard errors reported in the table were not based on OLS, some caution should be used to interpret the ITCV.<br><br>",
+            "<em>Calculated with konfound R package version</em>", packageVersion("konfound")
+          )
+        )
+      
+      
     }
+
+        
+################################################################################   
+    
+    
     if(input$AnalysisL == "RIR"){
       linear_plot <- pkonfound(as.numeric(input$unstd_beta), 
                                as.numeric(input$std_error), 
@@ -76,6 +159,8 @@ server <- function(input, output, session) {
                                index = "RIR",
                                to_return = "thresh_plot")
     }
+    
+    
     if(input$AnalysisL == "IT"){
       linear_plot <- pkonfound(as.numeric(input$unstd_beta), 
                                as.numeric(input$std_error), 
@@ -84,16 +169,19 @@ server <- function(input, output, session) {
                                index = "IT",
                                to_return = "corr_plot")
     }
-    
+
+        
+################################################################################   
+
+        
     # Return both text and plot separately
-    list(text = linear_output, 
-         
-         
-         
-         
-         
-         plot = linear_plot)
+    list(text = linear_output,
+         plot = linear_plot,
+         raw = r_output)
+    
   })
+  
+  
   
   
   
@@ -169,7 +257,8 @@ server <- function(input, output, session) {
     )
     
     # Return both text and plot outputs as a list
-    list(text = cop_output, plot = cop_plot)
+    list(text = cop_output, 
+         plot = cop_plot)
   })
   
   
@@ -217,7 +306,8 @@ server <- function(input, output, session) {
       )
     )
     
-    list(text = pse_output, plot_message = "No graphical output for this analysis.")
+    list(text = pse_output, 
+         plot_message = "No graphical output for this analysis.")
   })
   
   
@@ -252,7 +342,8 @@ server <- function(input, output, session) {
     )
     
     # Return a list containing both the raw and print outputs
-    list(text = log_output, plot_message = "No graphical output for this analysis.")
+    list(text = log_output, 
+         plot_message = "No graphical output for this analysis.")
   })
   
   
@@ -276,17 +367,111 @@ server <- function(input, output, session) {
     )
     
     # Capture the full output of the pkonfound function as a single string with proper line breaks
-    twobytwo_output <- capture.output(
+    twobytwo_output_raw <- 
+      capture.output(
+        pkonfound(a = input$ctrl_fail, 
+                  b = input$ctrl_success, 
+                  c = input$treat_fail, 
+                  d = input$treat_success,
+                  to_return = "print")
+    )
+    
+    raw_calc <- 
       pkonfound(a = input$ctrl_fail, 
                 b = input$ctrl_success, 
                 c = input$treat_fail, 
                 d = input$treat_success,
-                to_return = "print")
-    )
+                to_return = "raw_output")
+    
+    # get odds ratio for exact fisher p test 
+    fisher_oddsratio <- function(a, b, c, d){
+      table <- matrix(c(a,b,c,d), byrow = TRUE, 2, 2)
+      value <- suppressWarnings(fisher.test(table)$estimate)
+      return(value)
+    }
+    
+    # get p value for exact fisher p test
+    fisher_p <- function(a, b, c, d){
+      table <- matrix(c(a,b,c,d), byrow = TRUE, 2, 2)
+      p <- suppressWarnings(fisher.test(table)$p.value)
+      return(p)
+    }
+    
+    twobytwo_output <-
+      HTML(
+        paste0(
+          "<strong>Robustness of Inference to Replacement (RIR):</strong><br>",
+          "RIR = ", raw_calc$RIR_primary, "<br>",
+          "Fragility = ", raw_calc$fragility_primary, "<br><br>",
+          "This function calculates the number of data points that would have to be replaced with zero effect data points (RIR) to invalidate the inference made about the association between the rows and columns in a 2x2 table.<br><br>", 
+          "One can also interpret this as switches (Fragility) from one cell to another, such as from the treatment success cell to the treatment failure cell.<br><br>",
+          "To sustain an inference that the effect is different from 0 (alpha = 0.05), one would need to transfer ",
+          raw_calc$fragility_primary,
+          " data points from treatment failure to treatment success as shown, from the User-Entered Table to the Transfer Table (Fragility = ",
+          raw_calc$fragility_primary,
+          ").<br><br>",
+          "This is equivalent to replacing ", raw_calc$RIR_primary, " (", round(raw_calc$RIR_perc, 3), "%) treatment failure data points with data points for which the probability of success in the control group (",
+          raw_calc$starting_table$Success_Rate[1],
+          ") applies (RIR = ",
+          raw_calc$RIR_primary, ").<br><br>",
+          "RIR = Fragility / P(destination)<br>",
+          "<hr>",
+          "For the User-Entered Table, the estimated odds ratio is ",
+          round(fisher_oddsratio(a = raw_calc$starting_table[1,1], 
+                                 b = raw_calc$starting_table[1,2], 
+                                 c = raw_calc$starting_table[2,1], 
+                                 d = raw_calc$starting_table[2,2]), 
+                3),
+          ", with a <em>p</em>-value of ",
+         round(fisher_p(a = raw_calc$starting_table[1,1], 
+                        b = raw_calc$starting_table[1,2], 
+                        c = raw_calc$starting_table[2,1], 
+                        d = raw_calc$starting_table[2,2]), 
+               3),
+         "<br>",
+         "<strong><u>User-Entered Table:</u></strong><br>",
+         knitr::kable(raw_calc$starting_table, format = "html", align = "c",
+                      table.attr = "style='width:100%;'",
+                      col.names = c("Group", "Failures", "Successes", "Success Rate")), 
+         "<hr>",
+         "For the Transfer Table, the estimated odds ratio is ",
+         round(fisher_oddsratio(a = raw_calc$final_table[1,1], 
+                                b = raw_calc$final_table[1,2], 
+                                c = raw_calc$final_table[2,1], 
+                                d = raw_calc$final_table[2,2]), 
+               3),
+         ", with a <em>p</em>-value of ",
+         round(fisher_p(a = raw_calc$final_table[1,1], 
+                        b = raw_calc$final_table[1,2], 
+                        c = raw_calc$final_table[2,1], 
+                        d = raw_calc$final_table[2,2]), 
+               3),
+         "<br>",
+         "<strong><u>Transfer Table:</u></strong><br>",
+         knitr::kable(raw_calc$starting_table, format = "html", align = "c",
+                      table.attr = "style='width:100%;'",
+                      col.names = c("Group", "Failures", "Successes", "Success Rate")), 
+         "<hr>",
+         "See Frank et al. (2021) for a description of the method.<br><br>",
+         "<strong>Citation:</strong><br>",
+         "*Frank, K. A., *Lin, Q., *Maroulis, S., *Mueller, A. S., Xu, R., Rosenberg, J. M., ... & Zhang, L. (2021). Hypothetical case replacement can be used to quantify the robustness of trial results. <em>Journal of Clinical Epidemiology, 134</em>, 150-159.<br>",
+         "*<em>Authors are listed alphabetically.</em><br><br>",
+         "<em>Calculated with konfound R package version </em>", packageVersion("konfound")
+        )
+      )
+
+        
+################################################################################
     
     # Return the full output as a single concatenated string with line breaks
-    list(text = twobytwo_output, plot_message = "No graphical output for this analysis.")
+    list(text = twobytwo_output, 
+         plot_message = "No graphical output for this analysis.",
+         raw = twobytwo_output_raw)
   })
+  
+  
+  
+  
   
   
   
@@ -298,31 +483,32 @@ server <- function(input, output, session) {
   r <- reactiveValues(print_results2 = "") # Create empty reactive string for printed results.
   
   
+  
   # If user presses the results button for linear models, paste the linear results
   observeEvent(input$results_pg_l, {
+    
     output$print_results1 <- renderText({
-      df_l_text <- df()$text
-      paste(df_l_text, collapse = "\n")  # Combine text output lines
-    })
-    output$print_results2 <- renderText({
-      df_l_text <- df()$text
-      paste(df_l_text, collapse = "\n")  # Combine text output lines
+      df()$text # Combine text output lines
     })
     output$fig_results <- renderPlot({
       df()$plot  # Render the plot output 
     })
+    
+    output$print_results2 <- renderText({
+      paste(df()$raw , collapse = "\n")  # Combine text output lines
+    })
+        
   })
+  
   
   
   #If user presses the results button for COP models, paste the COP results
   observeEvent(input$results_pg_cop, {
     output$print_results1 <- renderText({
-      df_cop_text <- df_cop()$text
-      paste(df_cop_text, collapse = "\n")  # Combine text output lines
+      paste(df_cop()$text, collapse = "\n")  # Combine text output lines
     })
     output$print_results2 <- renderText({
-      df_cop_text <- df_cop()$text
-      paste(df_cop_text, collapse = "\n")  # Combine text output lines
+      paste(df_cop()$text, collapse = "\n")  # Combine text output lines
     })
     output$fig_results <- renderPlot({
       df_cop()$plot  # Render the plot output 
@@ -330,15 +516,14 @@ server <- function(input, output, session) {
   })
   
   
+  
   #If user presses the results button for PSE models, paste the PSE results
   observeEvent(input$results_pg_pse, {
     output$print_results1 <- renderText({
-      df_pse_text <- df_pse()$text
-      paste(df_pse_text, collapse = "\n")  # Combine text output lines
+      paste(df_pse()$text, collapse = "\n")  # Combine text output lines
     })
     output$print_results2 <- renderText({
-      df_pse_text <- df_pse()$text
-      paste(df_pse_text, collapse = "\n")  # Combine text output lines
+      paste(df_pse()$text, collapse = "\n")  # Combine text output lines
     })
     
     # Render a dummy plot with text message
@@ -353,12 +538,10 @@ server <- function(input, output, session) {
   #If user presses the results button for logistic models, paste the logistic results
   observeEvent(input$results_pg_di, {
     output$print_results1 <- renderText({
-      df_log_text <- df_log()$text
-      paste(df_log_text, collapse = "\n")  # Combine text output lines
+      paste(df_log()$text, collapse = "\n")  # Combine text output lines
     })
     output$print_results2 <- renderText({
-      df_log_text <- df_log()$text
-      paste(df_log_text, collapse = "\n")  # Combine text output lines
+      paste(df_log()$text, collapse = "\n")  # Combine text output lines
     })
     
     # Render a dummy plot with text message
@@ -370,23 +553,23 @@ server <- function(input, output, session) {
   })
   
   
+  
   # Generate 2x2 results when button is pressed
   observeEvent(input$results_pg_2x2, {
-    output$print_results1 <- renderText({
-      df_twobytwo_text <- df_twobytwo()$text
-      paste(df_twobytwo_text, collapse = "\n")  # Combine text output lines
-    })
-    output$print_results2 <- renderText({
-      df_twobytwo_text <- df_twobytwo()$text
-      paste(df_twobytwo_text, collapse = "\n")  # Combine text output lines
-    })
     
-    # Render a dummy plot with text message
+    output$print_results1 <- renderText({
+      df_twobytwo()$text # Combine text output lines
+    })
     output$fig_results <- renderPlot({
       message <- df_twobytwo()$plot_message
       plot.new()
-      text(0.5, 0.5, message, cex = 1.5, col = "black", font = 1.8)    
+      text(0.5, 0.5, message, cex = 1.5, col = "black", font = 1.8)
     })
+    
+    output$print_results2 <- renderText({
+      paste(df_twobytwo()$raw , collapse = "\n")  # Combine text output lines
+    })
+    
   })
   
   
