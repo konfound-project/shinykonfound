@@ -35,9 +35,7 @@ shinyUI(
               /* import Google fonts */
               @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Victor+Mono&display=swap');
               @import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100;0,200;0,300;0,400;1,100;1,200;1,300;1,400');
-              @import url('https://fonts.googleapis.com/css2?family=Cardo:wght@400;700&family=Cormorant:wght@400;700&family=Nanum+Myeongjo:wght@400;700;800&family=Playfair+Display+SC:wght@400;700;900&family=Roboto+Slab:wght@100;400;700;800;900&display=swap');
-
-  
+              
               
               /* change page background as well as header and footer text */
               body {
@@ -852,6 +850,10 @@ shinyUI(
                           )
                         ),
 
+                        
+ 
+                        
+                                               
 ################################################################################
 
                         mainPanel(
@@ -871,6 +873,8 @@ shinyUI(
                                 plotOutput("fig_results")
                               ),
 
+                            
+                            
 ################################################################################
                             
                             wellPanel(p(h4("Would you like to view full R output?")),
@@ -879,6 +883,8 @@ shinyUI(
                                                        id = "r_output",
                                                        verbatimTextOutput("print_results2")
                                                        )),
+
+
 
 ################################################################################
 
@@ -906,6 +912,8 @@ shinyUI(
                                                          trigger = "click",
                                                          placement = "right",
                                                          arrow = "true"))),
+
+
                          
 ################################################################################
 
@@ -923,7 +931,9 @@ shinyUI(
                         )
                       )
              ),
-    
+   
+
+ 
 
          
 ################################################################################
@@ -936,10 +946,10 @@ shinyUI(
                       
                       tags$h4("Overall"),
                       tags$ul(
-                        tags$li(icon("globe", lib = "font-awesome"), 
+                        tags$li(icon("globe", lib = "font-awesome", style = "color: #639dad"), 
                                 "Learn more on the",
                                 tags$a(href="https://konfound-it.org/", "KonFound-It website.")),
-                        tags$li(icon("paper-plane", lib = "font-awesome"), 
+                        tags$li(icon("paper-plane", lib = "font-awesome", style = "color: #639dad"), 
                              "Questions? Issues? Suggestions? Reach out through the",
                              tags$a(href="https://groups.google.com/g/konfound-it", "KounFound-It! Google Group.")
                              )
@@ -949,11 +959,21 @@ shinyUI(
                       
                       tags$h4("Tools"),
                       tags$ul(
-                        tags$li(tags$a(href="https://CRAN.R-project.org/package=konfound", "R package (CRAN version)")),
-                        tags$li(tags$a(href="https://github.com/konfound-project/konfound", "R package (development version)")),
-                        tags$li(tags$a(href="https://konfound-project.shinyapps.io/konfound-it/", "R Shiny app")),
-                        tags$li(tags$a(href="https://doi.org/10.1177/1536867X19874223", "Stata package")),
-                        tags$li(tags$a(href="https://konfound-project.shinyapps.io/wwc-sensitivity-benchmark/", "Benchmarks: What Works Clearinghouse"), "[BETA]")
+                        tags$li(icon("r-project", lib = "font-awesome", style = "color: #639dad"),
+                                tags$a(href="https://CRAN.R-project.org/package=konfound", 
+                                       "R package (CRAN version)")),
+                        tags$li(icon("r-project", lib = "font-awesome", style = "color: #639dad"),
+                                tags$a(href="https://github.com/konfound-project/konfound", 
+                                       "R package (development version)")),
+                        tags$li(icon("calculator", lib = "font-awesome", style = "color: #639dad"),
+                                tags$a(href="https://konfound-project.shinyapps.io/konfound-it/", 
+                                       "R Shiny app")),
+                        tags$li(icon("stripe-s", lib = "font-awesome", style = "color: #639dad"),
+                                tags$a(href="https://doi.org/10.1177/1536867X19874223", 
+                                       "Stata package")),
+                        tags$li(icon("warehouse", lib = "font-awesome", style = "color: #639dad"),
+                                tags$a(href="https://konfound-project.shinyapps.io/wwc-sensitivity-benchmark/", 
+                                       "Benchmarks: What Works Clearinghouse"))
                       ),
                       hr(),
                       
@@ -1071,16 +1091,17 @@ hr(),
 ################################################################################
 
 
-tags$p(tags$b("To cite this application: "),
-       "Rosenberg, J. M., Narvaiz, S., Xu, R., Lin, Q., Maroulis, S., Frank, K. A., Saw, G., & Staudt Willet, K. B. (2023).",
+tags$p(tags$b("To cite this application: ")),
+tags$p(
+       "Rosenberg, J. M., Narvaiz, S., Xu, R., Lin, Q., Maroulis, S., Frank, K. A., Saw, G., & Staudt Willet, K. B. (2024).",
        tags$i("Konfound-It!: Quantify the robustness of causal inferences"), 
-       "(v. 2.0.0)."
+       "[R Shiny app built on konfound R package version 1.0.2]."
 ),
 
 hr(),
 
 tags$image(style = "height:3.5em; vertical-align:center;", src = "ies-logo.jpg", alt = "Konfound-It! logo"),
-tags$p("KonFound-It! is supported by IES Grant",
+tags$p("KonFound-It! is supported by", tags$b("IES Grant"),
        tags$a(href="https://ies.ed.gov/funding/grantsearch/details.asp?ID=5723", "#R305D220022"),
        "— 'Quantifying the Robustness of Causal Inferences: Extensions and Application to Existing Databases' "),
 
