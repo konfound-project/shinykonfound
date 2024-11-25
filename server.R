@@ -448,7 +448,7 @@ server <- function(input, output, session) {
                3),
          "<br>",
          "<strong><u>Transfer Table:</u></strong><br>",
-         knitr::kable(raw_calc$starting_table, format = "html", align = "c",
+         knitr::kable(raw_calc$final_table, format = "html", align = "c",
                       table.attr = "style='width:100%;'",
                       col.names = c("Group", "Failures", "Successes", "Success Rate")), 
          "<hr>",
