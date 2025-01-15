@@ -37,7 +37,8 @@ server <- function(input, output, session) {
 ###### GENERATE LINEAR RIR/ITCV RESULTS ########################################
 ################################################################################
   
-  # Validate user input values to make sure they are 1) numeric and 2) more than 3 covariate for all model types
+  # Validate user input values to make sure they are 1) numeric and 2) more than 3 covariates for all model types
+  
   df <- eventReactive(input$results_pg_l, {
     
     #validating user input is numeric
@@ -96,8 +97,10 @@ server <- function(input, output, session) {
       )
     
     
-################################################################################
-  
+
+
+        
+######## GENERATE LINEAR ITCV RESULTS ##########################################
   
     if(input$AnalysisL == "IT"){
       
@@ -148,8 +151,10 @@ server <- function(input, output, session) {
     }
 
         
-################################################################################   
     
+    
+    
+######## GENERATE LINEAR RIR RESULTS ###########################################
     
     if(input$AnalysisL == "RIR"){
       linear_plot <- pkonfound(as.numeric(input$unstd_beta), 
@@ -173,13 +178,67 @@ server <- function(input, output, session) {
         
 ################################################################################   
 
-        
     # Return both text and plot separately
     list(text = linear_output,
          plot = linear_plot,
          raw = r_output)
     
   })
+  
+  
+  
+  
+  
+  
+  
+  ################################################################################ 
+  ###### GENERATE LINEAR PSE RESULTS #############################################
+  ################################################################################
+  
+  #validate user input values to make sure they are 1) numeric and 2) more than 3 covariate for all model types
+  df_pse <- eventReactive(input$results_pg_pse, {
+    
+    #validating user input is numeric
+    validate(
+      need(is.numeric(input$unstd_beta_pse) &
+             is.numeric(input$std_err_pse) &
+             is.numeric(input$n_obs_pse) &
+             is.numeric(input$n_covariates_pse) &
+             is.numeric(input$eff_thr_pse) &
+             is.numeric(input$sdx_pse) &
+             is.numeric(input$sdy_pse) &
+             is.numeric(input$R2_pse), "Did not run! Did you enter numbers for the estimated effect, standard error, and number of observations? Please change any of these that are not to a number."),
+      need(input$std_err_pse > 0, "Did not run! Standard error needs to be greater than zero."),
+      need(input$n_obs_pse > (input$n_covariates_pse + 2), "Did not run! There are too few observations relative to the number of observations and covariates. Please specify a less complex model to use KonFound-It."),
+      need(input$sdx_pse > 0, "Did not run! Standard deviation of x needs to be greater than zero."),
+      need(input$sdy_pse > 0, "Did not run! Standard deviation of y needs to be greater than zero."),
+      need(input$R2_pse > 0, "Did not run! R2 needs to be greater than zero."),
+      need(input$R2_pse < 1, "Did not run! R2 needs to be less than one"),
+      need(1-((input$sdy_pse^2/input$sdx_pse^2)*(1-input$R2_pse)/((input$n_obs_pse - input$n_covariates_pse - 2)*input$std_err_pse^2)) > 0, "Did not run! Entered values produced Rxz^2 <0, consider adding more significant digits to your entered values")
+    )
+    
+    
+    # Generate the printed output
+    pse_output <- capture.output(
+      pkonfound(
+        as.numeric(input$unstd_beta_pse),
+        as.numeric(input$std_err_pse),
+        as.numeric(input$n_obs_pse),
+        n_covariates = as.numeric(input$n_covariates_pse),
+        eff_thr = as.numeric(input$eff_thr_pse),
+        sdx = as.numeric(input$sdx_pse),
+        sdy = as.numeric(input$sdy_pse),
+        R2 = as.numeric(input$R2_pse),
+        index = "PSE",
+        to_return = "print"
+      )
+    )
+    
+    list(text = pse_output, 
+         plot_message = "No graphical output for this analysis.")
+  })
+  
+  
   
   
   
@@ -260,55 +319,10 @@ server <- function(input, output, session) {
     list(text = cop_output, 
          plot = cop_plot)
   })
+
   
   
   
-################################################################################ 
-###### GENERATE LINEAR PSE RESULTS #############################################
-################################################################################
-  
-  #validate user input values to make sure they are 1) numeric and 2) more than 3 covariate for all model types
-  df_pse <- eventReactive(input$results_pg_pse, {
-    
-    #validating user input is numeric
-    validate(
-      need(is.numeric(input$unstd_beta_pse) &
-             is.numeric(input$std_err_pse) &
-             is.numeric(input$n_obs_pse) &
-             is.numeric(input$n_covariates_pse) &
-             is.numeric(input$eff_thr_pse) &
-             is.numeric(input$sdx_pse) &
-             is.numeric(input$sdy_pse) &
-             is.numeric(input$R2_pse), "Did not run! Did you enter numbers for the estimated effect, standard error, and number of observations? Please change any of these that are not to a number."),
-      need(input$std_err_pse > 0, "Did not run! Standard error needs to be greater than zero."),
-      need(input$n_obs_pse > (input$n_covariates_pse + 2), "Did not run! There are too few observations relative to the number of observations and covariates. Please specify a less complex model to use KonFound-It."),
-      need(input$sdx_pse > 0, "Did not run! Standard deviation of x needs to be greater than zero."),
-      need(input$sdy_pse > 0, "Did not run! Standard deviation of y needs to be greater than zero."),
-      need(input$R2_pse > 0, "Did not run! R2 needs to be greater than zero."),
-      need(input$R2_pse < 1, "Did not run! R2 needs to be less than one"),
-      need(1-((input$sdy_pse^2/input$sdx_pse^2)*(1-input$R2_pse)/((input$n_obs_pse - input$n_covariates_pse - 2)*input$std_err_pse^2)) > 0, "Did not run! Entered values produced Rxz^2 <0, consider adding more significant digits to your entered values")
-    )
-    
-    
-    # Generate the printed output
-    pse_output <- capture.output(
-      pkonfound(
-        as.numeric(input$unstd_beta_pse),
-        as.numeric(input$std_err_pse),
-        as.numeric(input$n_obs_pse),
-        n_covariates = as.numeric(input$n_covariates_pse),
-        eff_thr = as.numeric(input$eff_thr_pse),
-        sdx = as.numeric(input$sdx_pse),
-        sdy = as.numeric(input$sdy_pse),
-        R2 = as.numeric(input$R2_pse),
-        index = "PSE",
-        to_return = "print"
-      )
-    )
-    
-    list(text = pse_output, 
-         plot_message = "No graphical output for this analysis.")
-  })
   
   
   
@@ -345,6 +359,9 @@ server <- function(input, output, session) {
     list(text = log_output, 
          plot_message = "No graphical output for this analysis.")
   })
+  
+  
+  
   
   
   
