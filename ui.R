@@ -29,7 +29,7 @@ shinyUI(
     theme = shinythemes::shinytheme("lumen"),
     use_darkmode(),
     
-    tags$head(HTML("<title>KonFound Shiny App</title><link rel='icon' href='konfound-logo-rectangle.png' type='image/gif/png'>"),
+    tags$head(HTML("<title>KonFound-It! Shiny App</title><link rel='icon' href='KonFoundit!-mark.png' type='image/gif/png'>"),
               tags$script(src="script.js"),
               tags$style(HTML("
               
@@ -310,10 +310,16 @@ shinyUI(
 ############################### Header #########################################
 ################################################################################   
 
-    titlePanel(title = div(img(style = "height:0.75em; vertical-align:center; margin-bottom: 18px;",
-                               src = "konfound-logo-rectangle.png",
-                               alt = "Konfound R package logo"), 
-                           "KonFound-It!")),
+    titlePanel(title = div(img(style = "height:3.0em; 
+                                        vertical-align:top;
+                                        margin-left: -48px;
+                                        margin-top: -48px;
+                                        margin-bottom: -48px;",
+                               src = "KonFoundit!.png",
+                               alt = "Konfound-It! logo"
+                               )
+                           )
+               ),
     h3("Quantify the Robustness of Causal Inferences"),
     tags$p("Sensitivity analyses that quantify the robustness of inferences to concerns about omitted variables and other sources of bias."),
     tags$p(actionButton("visit_website_button",
@@ -330,6 +336,8 @@ shinyUI(
   ### For refresh button: 
   useShinyjs(),
   extendShinyjs(text = jscode, functions = "refresh_page"),
+
+
 
   
   navbarPage("",
@@ -1105,7 +1113,7 @@ tags$p(
 
 hr(),
 
-tags$image(style = "height:3.5em; vertical-align:center;", src = "ies-logo.jpg", alt = "Konfound-It! logo"),
+tags$image(style = "height:3.5em; vertical-align:center;", src = "ies-logo.jpg", alt = "IES logo"),
 tags$p("KonFound-It! is supported by", tags$b("IES Grant"),
        tags$a(href="https://ies.ed.gov/funding/grantsearch/details.asp?ID=5723", "#R305D220022"),
        "— 'Quantifying the Robustness of Causal Inferences: Extensions and Application to Existing Databases' "),
