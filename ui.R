@@ -479,7 +479,7 @@ shinyUI(
                                                                                                 lib = "font-awesome"), 
                                                                                     size = "extra-small"
                                                                            )),
-                                                                      list("Preserve standard error", 
+                                                                      list("Preserve Standard Error", 
                                                                            em("(Advanced Analysis)"),
                                                                            bsButton("pse-info", 
                                                                                     label = "", 
@@ -487,7 +487,7 @@ shinyUI(
                                                                                                 lib = "font-awesome"), 
                                                                                     size = "extra-small"
                                                                            )),
-                                                                      list("Coefficient of proportionality",
+                                                                      list("Coefficient of Proportionality",
                                                                            em("(Advanced Analysis; in beta)"),
                                                                            bsButton("cop-info", 
                                                                                     label = "", 
