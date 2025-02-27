@@ -51,10 +51,11 @@ server <- function(input, output, session) {
       need(input$std_error > 0, "Did not run! Standard error needs to be greater than zero.")
     )
 
-        
-################################################################################
 
+            
+######## GENERATE LINEAR RIR RESULTS ##########################################
     
+
     
     r_output <- 
       capture.output(
@@ -87,6 +88,7 @@ server <- function(input, output, session) {
           raw_calc$RIR_primary, " (", sprintf("%.3f", raw_calc$perc_bias_to_change), "%) ",
           "observations with data points for which the effect is 0 (RIR = ", 
           raw_calc$RIR_primary, ").<br><br>",
+          "Use <code>to_return = \"raw_output\"</code> to see more specific results.<br>",
           
           "<hr>",
           "See Frank et al. (2013) for a description of the method.<br><br>",
@@ -141,6 +143,7 @@ server <- function(input, output, session) {
             sprintf("%.3f", raw_calc$rxcvGz * raw_calc$rxcvGz),
             "to invalidate an inference for a null hypothesis of an effect of nu (0).<br><br>",
             "For calculation of unconditional ITCV using pkonfound(), additionally include the <em>R</em><sup>2</sup>, <em>sd</em><sub>x</sub>, and <em>sd</em><sub>y</sub> as input, and request raw output.<br><br>",
+            "Use <code>to_return = \"raw_output\"</code> to see more specific results.<br>",
             
             "<hr>",
             "See Frank (2000) for a description of the method.<br><br>",
@@ -273,11 +276,11 @@ server <- function(input, output, session) {
           sprintf("%.3f", raw_calc$`correlation between Y and CV conditional on Z`),
           ".<br><br>",
           "Including such a CV, the coefficient changes to ", 
-          sprintf("%.3f", raw_calc$Table["coef_X", "M3:X,Z,CV"]),
+          sprintf("%.3f", raw_calc$eff_M3),
           ", with standard error of ", 
-          sprintf("%.3f", raw_calc$Table["SE_X", "M3:X,Z,CV"]),
+          sprintf("%.3f", raw_calc$se_M3),
           ".<br><br>", 
-          "Use <code>to_return = \"raw_output\"</code> to see more specific results.<br><br>",
+          "Use <code>to_return = \"raw_output\"</code> to see more specific results.<br>",
           
           "<hr>",
           "<em>Calculated with konfound R package version </em>", packageVersion("konfound")
@@ -386,23 +389,14 @@ server <- function(input, output, session) {
           "%.<br>",
           "Note that %bias = (delta* - delta) / delta.<br><br>",
           "With delta*, the coefficient in the final model will be ",
-          sprintf("%.3f", cop_plot$Figure$data$coef_X[5]),
+          sprintf("%.3f", cop_plot$eff_x_M3_oster),
           ".<br>",
           "With the correlation-based delta, the coefficient will be ",
-          sprintf("%.3f", cop_plot$Figure$data$coef_X[3]),
+          sprintf("%.3f", cop_plot$eff_x_M3),
           ".<br><br>",
           "Use <code>to_return = \"raw_output\"</code> to see more specific results and graphic
 presentation of the result.<br><br>",
-          "This function also calculates conditional RIR that invalidates the statistical inference.<br><br>",
-          "If the replacement data points have a fixed value, then, RIR = ",
-          sprintf("%.3f", cop_plot$`conditional RIR (fixed y)`),
-          ".<br>",
-          "If the replacement data points follow a null distribution, then RIR = ",
-          sprintf("%.3f", cop_plot$`conditional RIR (null)`),
-          ".<br>",
-          "If the replacement data points satisfy rxy|Z = 0, then RIR = ",
-          sprintf("%.3f", cop_plot$`conditional RIR (rxyGz)`),
-          ".<br><br>",
+          
           "<hr>",
           "<em>Calculated with konfound R package version </em>", packageVersion("konfound")
         )
@@ -462,59 +456,9 @@ presentation of the result.<br><br>",
                 to_return = "raw_output"
       )
 
-################################################################################    
-    starting_total_row <- 
-      colSums(raw_calc$starting_table)
-    raw_calc$expanded_starting_table <- 
-      rbind(raw_calc$starting_table, Total = starting_total_row)
-    success_rate <- 
-      round(100 * raw_calc$expanded_starting_table[, "Success"] / 
-              (raw_calc$expanded_starting_table[, "Fail"] + 
-                 raw_calc$expanded_starting_table[, "Success"]),
-            2)
-    raw_calc$expanded_starting_table <- 
-      cbind(raw_calc$expanded_starting_table, Success_Rate = success_rate)
     
-    final_total_row <- 
-      colSums(raw_calc$final_table)
-    raw_calc$expanded_final_table <- 
-      rbind(raw_calc$final_table, Total = final_total_row)
-    success_rate <- 
-      round(100 * raw_calc$expanded_final_table[, "Success"] / 
-              (raw_calc$expanded_final_table[, "Fail"] + 
-                 raw_calc$expanded_final_table[, "Success"]),
-            2)
-    raw_calc$expanded_final_table <- 
-      cbind(raw_calc$expanded_final_table, Success_Rate = success_rate)
-    
-    control_failure_rate <- 
-      round(100 * raw_calc$expanded_starting_table["Control", "Fail"] / 
-              (raw_calc$expanded_starting_table["Control", "Fail"] + 
-                 raw_calc$expanded_starting_table["Control", "Success"]),
-            2)
-    
-    t_start <- 
-      konfound:::get_t_kfnl(raw_calc$starting_table[1,1], 
-                            raw_calc$starting_table[1,2], 
-                            raw_calc$starting_table[2,1], 
-                            raw_calc$starting_table[2,2])
-    p_start <- 
-      2 * stats::pt(abs(t_start), 
-                    input$n_obs - input$n_covariates - 2, 
-                    lower.tail = FALSE)
-    t_final <- 
-      konfound:::get_t_kfnl(raw_calc$final_table[1,1], 
-                            raw_calc$final_table[1,2], 
-                            raw_calc$final_table[2,1], 
-                            raw_calc$final_table[2,2])
-    p_final <- 
-      2 * stats::pt(abs(t_final), 
-                    input$n_obs -input$n_covariates - 2, 
-                    lower.tail = FALSE)
     
 ################################################################################   
-    
-    
   
     log_output <- 
       HTML(
@@ -525,9 +469,9 @@ presentation of the result.<br><br>",
           "The table implied by the parameter estimates and sample sizes you entered:<br><br>",
           
           "<strong><u>User-Entered Table:</u></strong><br>",
-          knitr::kable(raw_calc$expanded_starting_table, format = "html", align = "c",
+          knitr::kable(raw_calc$table_start_3x3, format = "html", align = "c",
                        table.attr = "style='width:100%;'",
-                       col.names = c("", "Failures", "Successes", "Success Rate (%)")), 
+                       col.names = c("", "Failures", "Successes", "Success Rate")), 
           
           "<hr>",
           
@@ -536,7 +480,7 @@ presentation of the result.<br><br>",
           ", SE = ",
           sprintf("%.3f", input$std_error_nl),
           ", and p-value = ",
-          sprintf("%.3f", p_start),
+          sprintf("%.3f", raw_calc$p_start),
           ".<br>",
           
           "Note that values in the table have been rounded to the nearest integer. ",
@@ -556,10 +500,10 @@ presentation of the result.<br><br>",
           sprintf("%.3f", raw_calc$RIR_perc),
           "%) treatment success data points with data points ",
           "for which the probability of failure in the control group (",
-          control_failure_rate,
+          sprintf("%.3f", raw_calc$p_destination),
           "%) applies (RIR = ",
           raw_calc$RIR_primary,
-          ").<br>",
+          ").<br><br>",
           "<em>Note that RIR = Fragility/P(destination)</em><br><br>",
           
           "The transfer of ",
@@ -567,20 +511,21 @@ presentation of the result.<br><br>",
           "data points yields the following table:<br>",
           
           "<strong><u>Transfer Table:</u></strong><br>",
-          knitr::kable(raw_calc$expanded_final_table, format = "html", align = "c",
+          knitr::kable(raw_calc$table_final_3x3, format = "html", align = "c",
                        table.attr = "style='width:100%;'",
-                       col.names = c("", "Failures", "Successes", "Success Rate (%)")), 
+                       col.names = c("", "Failures", "Successes", "Success Rate")), 
           
           "<hr>",
           "The log odds (estimated effect) = ",
-          "-0.202*",
+          sprintf("%.3f", raw_calc$est_eff),
           ", SE = ",
-          "0.103*",
+          sprintf("%.3f", raw_calc$std_err_final),
           ", p-value = ",
-          sprintf("%.3f", p_final),
+          sprintf("%.3f", raw_calc$p_final),
           ".",
+          
           "This is based on t = estimated effect/standard error.<br><br>",
-          "<strong>* Note:</strong> The log odds and SE are not currently functional in the Shiny app.<br>",
+          "Use <code>to_return = \"raw_output\"</code> to see more specific results.<br>",
           
           "<hr>",
           "See Frank et al. (2021) for a description of the method.<br><br>",
@@ -676,40 +621,28 @@ presentation of the result.<br><br>",
           "RIR = Fragility / P(destination)<br>",
           "<hr>",
           "For the User-Entered Table, the estimated odds ratio is ",
-          sprintf("%.3f", fisher_oddsratio(a = raw_calc$starting_table[1,1], 
-                                 b = raw_calc$starting_table[1,2], 
-                                 c = raw_calc$starting_table[2,1], 
-                                 d = raw_calc$starting_table[2,2])
-                ),
+          sprintf("%.3f", raw_calc$fisher_ob),
           ", with a <em>p</em>-value of ",
-          sprintf("%.3f", fisher_p(a = raw_calc$starting_table[1,1], 
-                                   b = raw_calc$starting_table[1,2], 
-                                   c = raw_calc$starting_table[2,1], 
-                                   d = raw_calc$starting_table[2,2]) 
-          ),
-          "<br>",
+          sprintf("%.3f", raw_calc$p_start),
+          ".<br><br>",
+          
          "<strong><u>User-Entered Table:</u></strong><br>",
          knitr::kable(raw_calc$starting_table, format = "html", align = "c",
                       table.attr = "style='width:100%;'",
                       col.names = c("Group", "Failures", "Successes", "Success Rate")), 
          "<hr>",
          "For the Transfer Table, the estimated odds ratio is ",
-         sprintf("%.3f", fisher_oddsratio(a = raw_calc$final_table[1,1], 
-                                          b = raw_calc$final_table[1,2], 
-                                          c = raw_calc$final_table[2,1], 
-                                          d = raw_calc$final_table[2,2])
-         ),
+         sprintf("%.3f", raw_calc$fisher_final),
          ", with a <em>p</em>-value of ",
-         sprintf("%.3f", fisher_p(a = raw_calc$final_table[1,1], 
-                                  b = raw_calc$final_table[1,2], 
-                                  c = raw_calc$final_table[2,1], 
-                                  d = raw_calc$final_table[2,2])
-         ),
-         "<br>",
+         sprintf("%.3f", raw_calc$p_final),
+         ".<br><br>",
+         
          "<strong><u>Transfer Table:</u></strong><br>",
          knitr::kable(raw_calc$final_table, format = "html", align = "c",
                       table.attr = "style='width:100%;'",
                       col.names = c("Group", "Failures", "Successes", "Success Rate")), 
+         "<br>",
+         "Use <code>to_return = \"raw_output\"</code> to see more specific results.<br>",
          
          "<hr>",
          "See Frank et al. (2021) for a description of the method.<br><br>",
@@ -893,7 +826,7 @@ presentation of the result.<br><br>",
   user_est_pse <- eventReactive(input$results_pg_pse, {
     paste0("#install.packages('konfound')", "\n", 
            "library(konfound)  # konfound R package version: ", packageVersion("konfound"), "\n", 
-           "pkonfound(est_eff = ", input$unstd_beta_pse, ", std_err = ", input$std_err_pse, ", n_obs = ", input$n_obs_pse, ", n_covariates = ", input$n_covariates_pse, " eff_thr = ", input$eff_thr_pse, ", sdx = ", input$sdx_pse, ", sdy = ", input$sdy_pse, ", R2 = ", input$R2_pse, ", index = 'PSE')"
+           "pkonfound(est_eff = ", input$unstd_beta_pse, ", std_err = ", input$std_err_pse, ", n_obs = ", input$n_obs_pse, ", n_covariates = ", input$n_covariates_pse, ", eff_thr = ", input$eff_thr_pse, ", sdx = ", input$sdx_pse, ", sdy = ", input$sdy_pse, ", R2 = ", input$R2_pse, ", index = 'PSE')"
     )
   })
   
