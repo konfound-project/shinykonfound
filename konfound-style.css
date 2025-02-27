@@ -1,0 +1,274 @@
+/* import Google fonts */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Victor+Mono&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100;0,200;0,300;0,400;1,100;1,200;1,300;1,400');
+              
+ 
+              
+/* change page background as well as header and footer text */
+body {
+  background-color: #fff;
+  font-family: 'Roboto', sans-serif;
+  font-size: 18px;
+  font-weight: 300;
+  color: #000;
+}
+  
+  
+              
+/* change page title */
+h2 {
+  font-family: 'Raleway', serif;
+  font-size: 76px;
+  font-weight: 400;
+  color: #639dad; /* theme blue color */
+}
+    
+    
+              
+/* change page first-level headings (e.g., Specification, Results) */
+h3 {
+  font-family: 'Roboto', sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  color: #7f9f3d;  /* theme green color */
+}
+
+
+
+/* change page second-level headings */
+h4 {
+  font-family: 'Roboto', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: #000;
+}
+    
+    
+              
+/* change page third-level headings */
+h5 {
+  font-family: 'Roboto', sans-serif;
+  font-size: 18px;
+  color: #000;
+}
+     
+     
+              
+/* change hyperlink text */
+a {
+  color: #0645ad;  /* standard blue hyperlink color */
+  font-weight: 400;
+}
+
+/* change hyperlink hover text */
+a:hover {
+  color: #e04300;
+  text-decoration: underline;
+}
+              
+
+
+/* change multiple choice text */
+.shiny-input-container {
+  color: #000;
+  font-size: 16px;
+}
+              
+              
+              
+/* change navigation bar */
+.navbar-default {
+  background-color: #639dad;
+  border-color: #999;
+  font-size: 18px;
+  font-weight: 300;
+}
+
+.navbar-nav > .active {
+  background-color: #7f9f3d;
+}
+              
+/* change text in navigation bar: active tab */
+.navbar-nav > .active > a {
+  color: #fff !important;
+}
+              
+/* change text in navigation bar: inactive tab */
+.navbar-nav > li > a {
+  color: #eee !important;
+}
+              
+
+              
+/* change background of area for user input */
+.well { 
+  background-color: #fff !important;
+}
+              
+/* change rows in area for user input */
+.row { 
+  background-color: #fff !important;
+}
+              
+              
+              
+/* change color of user input labels */
+.label-style {
+  font-style: italic;
+  background-color: #fff;
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  font-weight: 300;
+  color: #000;
+}
+              
+         
+              
+/* change color of most buttons */
+#startover_button, #results_pg_l, 
+#results_pg_pse, #results_pg_cop, 
+#results_pg_di, #results_pg_2x2 {
+  background-color: #7f9f3d !important;
+  color: #fff !important;
+  font-family: 'Roboto', sans-serif;
+  font-size: 22px;
+}
+              
+/* change hover color of most buttons */
+#startover_button:hover, #results_pg_l:hover, 
+#results_pg_pse:hover, #results_pg_cop:hover, 
+#results_pg_di:hover, #results_pg_2x2:hover {
+  background-color: #465723 !important;
+  color: #fff !important;
+  font-family: 'Roboto', sans-serif;
+}
+              
+              
+              
+/* change radio buttons */
+label > input[type='radio'] {
+  opacity: 1;
+  position: absolute;
+}
+              
+label > input[type='radio'] + *::before {
+  content: '';
+  margin: 4px 0 0;
+  width: 13px;
+  height: 13px;
+  position: absolute;
+  margin-left: -20px;
+  border-radius: 50%;
+  border-style: solid;
+  border-width: 0.1rem;
+  border-color: #639dad;
+}
+                    
+label > input[type='radio']:checked + *::before {
+  background: radial-gradient(#7f9f3d 0%, #7f9f3d 50%, transparent 50%) !important;
+  border-color: #639dad !important;
+}
+              
+              
+                    
+label > input[type='checkbox'] {
+  opacity: 1;
+  position: absolute;
+}
+                    
+label > input[type='checkbox'] + *::before {
+  content: '';
+  position: absolute;
+  margin: 4px 0 0;
+  margin-left: -20px;
+  align: center;
+  width: 13px;
+  height: 13px;
+  margin-right: 1rem;
+  border-radius: 0%;
+  border-style: solid;
+  border-width: 0.1rem;
+  border-color: #639dad !important;
+}
+                    
+label > input[type='checkbox']:checked + *::before {
+  content: '';
+  width: 13px;
+  height: 13px;
+  border-color: #639dad !important;
+  background: #7f9f3d !important;
+}
+
+
+
+/* change text on info button */
+[id*=info] {
+  background-color: #639dad !important;
+  color: #fff !important;
+  font-family: 'Roboto', sans-serif;
+  text-shadow: -.0px 0 #fff, 0 .0px #fff, .0px 0 #fff, 0 -.0px #fff;
+}
+              
+              
+              
+/* change color of visit website button */
+#visit_website_button {
+  background-color: #7f9f3d !important;
+  color: #fff !important;
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+}
+              
+/* change hover color of visit website button */
+#visit_website_button:hover {
+  background-color: #465723 !important;
+  color: #fff !important;
+  font-family: 'Roboto', sans-serif;
+}
+              
+              
+              
+/* change color of screenshot button */
+[id*=screenshot] {
+  background-color: #7f9f3d !important;
+  color: #fff !important;
+  font-family: 'Roboto', sans-serif;
+  font-size: 22px;
+}
+              
+/* change hover color of screenshot button */
+[id*=screenshot]:hover {
+  background-color: #465723 !important;
+  color: #fff !important;
+  font-family: 'Roboto', sans-serif;
+}
+
+              
+              
+/* change color of copy source code buttons */
+#clipbtn {
+  background-color: #7f9f3d;
+  color: #fff;
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+}
+              
+/* change hover color of copy source code buttons */
+#clipbtn:hover {
+  background-color: #698235;
+  color: #fff;
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+}
+              
+              
+              
+/* change source code output */
+#r_code, #stata_code, pre {
+  background-color: #444;
+  color: #fff;
+  font-family: 'Courier', mono;
+  font-size: 14px;
+  font-weight: 300;
+}
