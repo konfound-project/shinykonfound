@@ -51,11 +51,11 @@ server <- function(input, output, session) {
       need(input$std_error > 0, "Did not run! Standard error needs to be greater than zero.")
     )
 
-        
-################################################################################
 
+            
+######## GENERATE LINEAR RIR RESULTS ##########################################
     
-    #if statements needed for linear printed output and figure (displays the correct information for RIR, ITCV)
+
     
     r_output <- 
       capture.output(
@@ -81,17 +81,22 @@ server <- function(input, output, session) {
           "<strong>Robustness of Inference to Replacement (RIR):</strong><br>",
           "RIR = ", raw_calc$RIR_primary, "<br><br>",
           "To invalidate the inference of an effect using the threshold of ", 
-          round(raw_calc$beta_threshold, 3),
+          sprintf("%.3f", raw_calc$beta_threshold),
           " for statistical significance (with null hypothesis = 0 and alpha = 0.05), ", 
-          round(raw_calc$perc_bias_to_change, 3),
+          sprintf("%.3f", raw_calc$perc_bias_to_change),
           "% of the (2) estimate would have to be due to bias. This implies that to invalidate the inference one would expect to have to replace ", 
-          raw_calc$RIR_primary, " (", round(raw_calc$perc_bias_to_change, 3), "%) ",
+          raw_calc$RIR_primary, " (", sprintf("%.3f", raw_calc$perc_bias_to_change), "%) ",
           "observations with data points for which the effect is 0 (RIR = ", 
           raw_calc$RIR_primary, ").<br><br>",
+          "Use <code>to_return = \"raw_output\"</code> to see more specific results.<br>",
+          
+          "<hr>",
           "See Frank et al. (2013) for a description of the method.<br><br>",
           "<strong>Citation:</strong><br>",
           "Frank, K.A., Maroulis, S., Duong, M., and Kelcey, B. (2013). What would it take to change an inference? Using Rubin's causal model to interpret the robustness of causal inferences. <em>Education, Evaluation and Policy Analysis, 35</em>, 437-460.<br><br>",
           "Accuracy of results increases with the number of decimals reported.<br><br>",
+          
+          "<hr>",
           "<em>Calculated with konfound R package version </em>", packageVersion("konfound")
         )
       )
@@ -127,22 +132,27 @@ server <- function(input, output, session) {
           paste(
             "<strong>Impact Threshold for a Confounding Variable (ITCV):</strong><br><br>",
             "The minimum impact of an omitted variable to invalidate an inference for a null hypothesis of an effect of nu (0) is based on a correlation of", 
-            round(raw_calc$rxcvGz, 3), 
+            sprintf("%.3f", raw_calc$rxcvGz), 
             "with the outcome and", 
-            round(raw_calc$rxcvGz, 3), 
+            sprintf("%.3f", raw_calc$rxcvGz), 
             "with the predictor of interest (conditioning on all observed covariates in the model; signs are interchangeable). This is based on a threshold effect of a threshold effect of", 
-            round(raw_calc$critical_r, 2),
+            sprintf("%.1f", raw_calc$critical_r),
             "for statistical significance (alpha = 0.05).<br><br>", 
             "Correspondingly, the impact of an omitted variable (as defined in Frank [2000]) must be", 
-            round(raw_calc$rxcvGz, 3), "X", round(raw_calc$rxcvGz, 3), "=", 
-            round(raw_calc$rxcvGz * raw_calc$rxcvGz, 3),
+            sprintf("%.3f", raw_calc$rxcvGz), "X", sprintf("%.3f", raw_calc$rxcvGz), "=", 
+            sprintf("%.3f", raw_calc$rxcvGz * raw_calc$rxcvGz),
             "to invalidate an inference for a null hypothesis of an effect of nu (0).<br><br>",
             "For calculation of unconditional ITCV using pkonfound(), additionally include the <em>R</em><sup>2</sup>, <em>sd</em><sub>x</sub>, and <em>sd</em><sub>y</sub> as input, and request raw output.<br><br>",
+            "Use <code>to_return = \"raw_output\"</code> to see more specific results.<br>",
+            
+            "<hr>",
             "See Frank (2000) for a description of the method.<br><br>",
             "<strong>Citation:</strong><br>",
             "Frank, K. (2000). Impact of a confounding variable on the inference of a regression coefficient. <em>Sociological Methods and Research, 29</em>(2), 147-194.<br><br>",
             "Accuracy of results increases with the number of decimals reported.<br><br>",
             "The ITCV analysis was originally derived for OLS standard errors. If the standard errors reported in the table were not based on OLS, some caution should be used to interpret the ITCV.<br><br>",
+            
+            "<hr>",
             "<em>Calculated with konfound R package version</em>", packageVersion("konfound")
           )
         )
@@ -191,11 +201,11 @@ server <- function(input, output, session) {
   
   
   
-  ################################################################################ 
-  ###### GENERATE LINEAR PSE RESULTS #############################################
-  ################################################################################
+################################################################################ 
+###### GENERATE LINEAR PSE RESULTS #############################################
+################################################################################
   
-  #validate user input values to make sure they are 1) numeric and 2) more than 3 covariate for all model types
+#validate user input values to make sure they are 1) numeric and 2) more than 3 covariate for all model types
   df_pse <- eventReactive(input$results_pg_pse, {
     
     #validating user input is numeric
@@ -218,8 +228,25 @@ server <- function(input, output, session) {
     )
     
     
-    # Generate the printed output
-    pse_output <- capture.output(
+# Generate the printed output
+    
+    r_output <- 
+      capture.output(
+        pkonfound(
+          as.numeric(input$unstd_beta_pse),
+          as.numeric(input$std_err_pse),
+          as.numeric(input$n_obs_pse),
+          n_covariates = as.numeric(input$n_covariates_pse),
+          eff_thr = as.numeric(input$eff_thr_pse),
+          sdx = as.numeric(input$sdx_pse),
+          sdy = as.numeric(input$sdy_pse),
+          R2 = as.numeric(input$R2_pse),
+          index = "PSE",
+          to_return = "print"
+        )
+      )
+    
+    raw_calc <- 
       pkonfound(
         as.numeric(input$unstd_beta_pse),
         as.numeric(input$std_err_pse),
@@ -230,14 +257,43 @@ server <- function(input, output, session) {
         sdy = as.numeric(input$sdy_pse),
         R2 = as.numeric(input$R2_pse),
         index = "PSE",
-        to_return = "print"
+        to_return = "raw_output"
       )
-    )
     
-    list(text = pse_output, 
-         plot_message = "No graphical output for this analysis.")
+    pse_output <-
+      HTML(
+        paste0(
+          "<strong>Preserve Standard Error (Advanced Analysis):</strong><br>",
+          "<em>This function calculates the correlations associated with the confound that generate an estimated effect that is approximately equal to the threshold while preserving the standard error.</em><br><br>",
+          "The correlation between X and CV is ",
+          sprintf("%.3f", raw_calc$`correlation between X and CV`),
+          ", and the correlation between Y and CV is ",
+          sprintf("%.3f", raw_calc$`correlation between Y and CV`),
+          ".<br><br>",
+          "Conditional on the covariates, the correlation between X and CV is ",
+          sprintf("%.3f", raw_calc$`correlation between X and CV conditional on Z`),
+          ", and the correlation between Y and CV is ", 
+          sprintf("%.3f", raw_calc$`correlation between Y and CV conditional on Z`),
+          ".<br><br>",
+          "Including such a CV, the coefficient changes to ", 
+          sprintf("%.3f", raw_calc$eff_M3),
+          ", with standard error of ", 
+          sprintf("%.3f", raw_calc$se_M3),
+          ".<br><br>", 
+          "Use <code>to_return = \"raw_output\"</code> to see more specific results.<br>",
+          
+          "<hr>",
+          "<em>Calculated with konfound R package version </em>", packageVersion("konfound")
+        )
+      )
+    
+    # Return both text and plot separately
+    list(text = pse_output,
+         plot_message = "No graphical output for this analysis.",
+         raw = r_output)
+    
   })
-  
+
   
   
   
@@ -284,7 +340,26 @@ server <- function(input, output, session) {
     )
     
     # Generate the printed output
-    cop_output <- capture.output(
+    
+    r_output <- 
+      capture.output(
+        pkonfound(
+          as.numeric(input$unstd_beta_cop),
+          as.numeric(input$std_err_cop),
+          as.numeric(input$n_obs_cop),
+          as.numeric(input$n_covariates_cop),
+          sdx = as.numeric(input$sdx_cop),
+          sdy = as.numeric(input$sdy_cop),
+          R2 = as.numeric(input$R2_cop),
+          eff_thr = as.numeric(input$eff_thr_cop),
+          FR2max = as.numeric(input$FR2max_cop),
+          index = "COP",
+          to_return = "print"
+        )
+      )
+    
+    # Generate the plot output
+    cop_plot <- 
       pkonfound(
         as.numeric(input$unstd_beta_cop),
         as.numeric(input$std_err_cop),
@@ -296,28 +371,41 @@ server <- function(input, output, session) {
         eff_thr = as.numeric(input$eff_thr_cop),
         FR2max = as.numeric(input$FR2max_cop),
         index = "COP",
-        to_return = "print"
-      )
+        to_return = "raw_output"  
     )
     
-    # Generate the plot output
-    cop_plot <- pkonfound(
-      as.numeric(input$unstd_beta_cop),
-      as.numeric(input$std_err_cop),
-      as.numeric(input$n_obs_cop),
-      as.numeric(input$n_covariates_cop),
-      sdx = as.numeric(input$sdx_cop),
-      sdy = as.numeric(input$sdy_cop),
-      R2 = as.numeric(input$R2_cop),
-      eff_thr = as.numeric(input$eff_thr_cop),
-      FR2max = as.numeric(input$FR2max_cop),
-      index = "COP",
-      to_return = "raw_output"  
-    )
+    cop_output <-
+      HTML(
+        paste0(
+          "<strong>Coefficient of Proportionality (COP):</strong><br>",
+          "<em>This function calculates a correlation-based coefficient of proportionality (delta) as well as Oster's delta*. Using the absolute value of the estimated effect, result can be interpreted by symmetry.</em><br><br>",
+          "Delta* is ", 
+          sprintf("%.3f", cop_plot$`delta*`),
+          " (assuming no covariates in the baseline model M1), ",
+          "the correlation-based delta is ", 
+          sprintf("%.3f", cop_plot$`delta_exact`),
+          " with a bias of ",
+          sprintf("%.3f", cop_plot$delta_pctbias),
+          "%.<br>",
+          "Note that %bias = (delta* - delta) / delta.<br><br>",
+          "With delta*, the coefficient in the final model will be ",
+          sprintf("%.3f", cop_plot$eff_x_M3_oster),
+          ".<br>",
+          "With the correlation-based delta, the coefficient will be ",
+          sprintf("%.3f", cop_plot$eff_x_M3),
+          ".<br><br>",
+          "Use <code>to_return = \"raw_output\"</code> to see more specific results and graphic
+presentation of the result.<br><br>",
+          
+          "<hr>",
+          "<em>Calculated with konfound R package version </em>", packageVersion("konfound")
+        )
+      )
     
     # Return both text and plot outputs as a list
     list(text = cop_output, 
-         plot = cop_plot)
+         plot = cop_plot,
+         raw = r_output)
   })
 
   
@@ -331,38 +419,136 @@ server <- function(input, output, session) {
 ################################################################################
   
   # non-linear model
-  df_log <- eventReactive(input$results_pg_di, {
-    validate(
-      need(is.numeric(input$unstd_beta_nl) &
-             is.numeric(input$std_error_nl) &
-             is.numeric(input$n_obs_nl) &
-             is.numeric(input$n_covariates_nl) &
-             is.numeric(input$n_trm_nl),
-           "Did not run! Did you enter numbers for the estimated effect, standard error, number of observations, and number of covariates? Please change any of these that are not to a number."),
-      need(input$n_obs_nl > (input$n_covariates_nl + 2),
-           "Did not run! There are too few observations relative to the number of observations and covariates. Please specify a less complex model to use KonFound-It."),
-      need(input$std_error_nl > 0, "Did not run! Standard error needs to be greater than zero.")
-    )
+  df_log <- 
+    eventReactive(input$results_pg_di, {
+      validate(
+        need(is.numeric(input$unstd_beta_nl) &
+               is.numeric(input$std_error_nl) &
+               is.numeric(input$n_obs_nl) &
+               is.numeric(input$n_covariates_nl) &
+               is.numeric(input$n_trm_nl),
+             "Did not run! Did you enter numbers for the estimated effect, standard error, number of observations, and number of covariates? Please change any of these that are not to a number."),
+        need(input$n_obs_nl > (input$n_covariates_nl + 2),
+             "Did not run! There are too few observations relative to the number of observations and covariates. Please specify a less complex model to use KonFound-It."),
+        need(input$std_error_nl > 0, "Did not run! Standard error needs to be greater than zero.")
+      )
+      
+    # Generate the printed output
     
-    # Run the logistic model function and capture both raw and print outputs
-    log_output <- capture.output(
+    r_output <- 
+      capture.output(
+        pkonfound(input$unstd_beta_nl, 
+                  input$std_error_nl, 
+                  input$n_obs_nl, 
+                  input$n_covariates_nl,
+                  n_treat = input$n_trm_nl, 
+                  model_type = "logistic",
+                  to_return = "print")
+      )
+    
+    raw_calc <- 
       pkonfound(input$unstd_beta_nl, 
                 input$std_error_nl, 
                 input$n_obs_nl, 
                 input$n_covariates_nl,
                 n_treat = input$n_trm_nl, 
                 model_type = "logistic",
-                to_return = "print")
-    )
+                to_return = "raw_output"
+      )
+
     
-    # Return a list containing both the raw and print outputs
+    
+################################################################################   
+  
+    log_output <- 
+      HTML(
+        paste0(
+          "<strong>Robustness of Inference to Replacement (RIR):</strong><br>",
+          "RIR = ", raw_calc$RIR_primary, "<br>",
+          "Fragility = ", raw_calc$fragility_primary, "<br><br>",
+          "The table implied by the parameter estimates and sample sizes you entered:<br><br>",
+          
+          "<strong><u>User-Entered Table:</u></strong><br>",
+          knitr::kable(raw_calc$table_start_3x3, format = "html", align = "c",
+                       table.attr = "style='width:100%;'",
+                       col.names = c("", "Failures", "Successes", "Success Rate")), 
+          
+          "<hr>",
+          
+          "The reported log odds = ",
+          sprintf("%.3f", input$unstd_beta_nl),
+          ", SE = ",
+          sprintf("%.3f", input$std_error_nl),
+          ", and p-value = ",
+          sprintf("%.3f", raw_calc$p_start),
+          ".<br>",
+          
+          "Note that values in the table have been rounded to the nearest integer. ",
+          "This may cause a small change to the estimated effect for the table.<br>",
+      
+          "<hr>",
+          
+          "To sustain an inference that the effect is different from ",
+          "0 (alpha = 0.050), one would need to transfer ",
+          raw_calc$fragility_primary,
+          " data points from treatment success to treatment failure (Fragility = ",
+          raw_calc$fragility_primary,
+          ").<br><br>",
+          "This is equivalent to replacing ",
+          raw_calc$RIR_primary, 
+          " (",
+          sprintf("%.3f", raw_calc$RIR_perc),
+          "%) treatment success data points with data points ",
+          "for which the probability of failure in the control group (",
+          sprintf("%.3f", raw_calc$p_destination),
+          "%) applies (RIR = ",
+          raw_calc$RIR_primary,
+          ").<br><br>",
+          "<em>Note that RIR = Fragility/P(destination)</em><br><br>",
+          
+          "The transfer of ",
+          raw_calc$fragility_primary,
+          "data points yields the following table:<br>",
+          
+          "<strong><u>Transfer Table:</u></strong><br>",
+          knitr::kable(raw_calc$table_final_3x3, format = "html", align = "c",
+                       table.attr = "style='width:100%;'",
+                       col.names = c("", "Failures", "Successes", "Success Rate")), 
+          
+          "<hr>",
+          "The log odds (estimated effect) = ",
+          sprintf("%.3f", raw_calc$est_eff),
+          ", SE = ",
+          sprintf("%.3f", raw_calc$std_err_final),
+          ", p-value = ",
+          sprintf("%.3f", raw_calc$p_final),
+          ".",
+          
+          "This is based on t = estimated effect/standard error.<br><br>",
+          "Use <code>to_return = \"raw_output\"</code> to see more specific results.<br>",
+          
+          "<hr>",
+          "See Frank et al. (2021) for a description of the method.<br><br>",
+          "<strong>Citation:</strong><br>",
+          "*Frank, K. A., *Lin, Q., *Maroulis, S., *Mueller, A. S., Xu, R., Rosenberg, J. M., ... & Zhang, L. (2021). Hypothetical case replacement can be used to quantify the robustness of trial results. <em>Journal of Clinical Epidemiology, 134</em>, 150-159.<br>",
+          "*<em>Authors are listed alphabetically.</em><br><br>",
+          
+          "<hr>",
+          "<em>Calculated with konfound R package version </em>", packageVersion("konfound")
+        )
+      )
+    
+
+################################################################################
+    
+    
     list(text = log_output, 
-         plot_message = "No graphical output for this analysis.")
+         plot_message = "No graphical output for this analysis.",
+         raw = r_output)
   })
+
   
-  
-  
-  
+    
   
   
 ################################################################################
@@ -422,57 +608,49 @@ server <- function(input, output, session) {
           "Fragility = ", raw_calc$fragility_primary, "<br><br>",
           "This function calculates the number of data points that would have to be replaced with zero effect data points (RIR) to invalidate the inference made about the association between the rows and columns in a 2x2 table.<br><br>", 
           "One can also interpret this as switches (Fragility) from one cell to another, such as from the treatment success cell to the treatment failure cell.<br><br>",
-          "To sustain an inference that the effect is different from 0 (alpha = 0.05), one would need to transfer ",
+          "To sustain an inference that the effect is different from 0 (alpha = 0.050), one would need to transfer ",
           raw_calc$fragility_primary,
           " data points from treatment failure to treatment success as shown, from the User-Entered Table to the Transfer Table (Fragility = ",
           raw_calc$fragility_primary,
           ").<br><br>",
-          "This is equivalent to replacing ", raw_calc$RIR_primary, " (", round(raw_calc$RIR_perc, 3), "%) treatment failure data points with data points for which the probability of success in the control group (",
+          "This is equivalent to replacing ", raw_calc$RIR_primary, 
+          " (", sprintf("%.3f", raw_calc$RIR_perc), "%) treatment failure data points with data points for which the probability of success in the control group (",
           raw_calc$starting_table$Success_Rate[1],
           ") applies (RIR = ",
           raw_calc$RIR_primary, ").<br><br>",
           "RIR = Fragility / P(destination)<br>",
           "<hr>",
           "For the User-Entered Table, the estimated odds ratio is ",
-          round(fisher_oddsratio(a = raw_calc$starting_table[1,1], 
-                                 b = raw_calc$starting_table[1,2], 
-                                 c = raw_calc$starting_table[2,1], 
-                                 d = raw_calc$starting_table[2,2]), 
-                3),
+          sprintf("%.3f", raw_calc$fisher_ob),
           ", with a <em>p</em>-value of ",
-         round(fisher_p(a = raw_calc$starting_table[1,1], 
-                        b = raw_calc$starting_table[1,2], 
-                        c = raw_calc$starting_table[2,1], 
-                        d = raw_calc$starting_table[2,2]), 
-               3),
-         "<br>",
+          sprintf("%.3f", raw_calc$p_start),
+          ".<br><br>",
+          
          "<strong><u>User-Entered Table:</u></strong><br>",
          knitr::kable(raw_calc$starting_table, format = "html", align = "c",
                       table.attr = "style='width:100%;'",
                       col.names = c("Group", "Failures", "Successes", "Success Rate")), 
          "<hr>",
          "For the Transfer Table, the estimated odds ratio is ",
-         round(fisher_oddsratio(a = raw_calc$final_table[1,1], 
-                                b = raw_calc$final_table[1,2], 
-                                c = raw_calc$final_table[2,1], 
-                                d = raw_calc$final_table[2,2]), 
-               3),
+         sprintf("%.3f", raw_calc$fisher_final),
          ", with a <em>p</em>-value of ",
-         round(fisher_p(a = raw_calc$final_table[1,1], 
-                        b = raw_calc$final_table[1,2], 
-                        c = raw_calc$final_table[2,1], 
-                        d = raw_calc$final_table[2,2]), 
-               3),
-         "<br>",
+         sprintf("%.3f", raw_calc$p_final),
+         ".<br><br>",
+         
          "<strong><u>Transfer Table:</u></strong><br>",
          knitr::kable(raw_calc$final_table, format = "html", align = "c",
                       table.attr = "style='width:100%;'",
                       col.names = c("Group", "Failures", "Successes", "Success Rate")), 
+         "<br>",
+         "Use <code>to_return = \"raw_output\"</code> to see more specific results.<br>",
+         
          "<hr>",
          "See Frank et al. (2021) for a description of the method.<br><br>",
          "<strong>Citation:</strong><br>",
          "*Frank, K. A., *Lin, Q., *Maroulis, S., *Mueller, A. S., Xu, R., Rosenberg, J. M., ... & Zhang, L. (2021). Hypothetical case replacement can be used to quantify the robustness of trial results. <em>Journal of Clinical Epidemiology, 134</em>, 150-159.<br>",
          "*<em>Authors are listed alphabetically.</em><br><br>",
+         
+         "<hr>",
          "<em>Calculated with konfound R package version </em>", packageVersion("konfound")
         )
       )
@@ -480,7 +658,7 @@ server <- function(input, output, session) {
         
 ################################################################################
     
-    # Return the full output as a single concatenated string with line breaks
+    
     list(text = twobytwo_output, 
          plot_message = "No graphical output for this analysis.",
          raw = twobytwo_output_raw)
@@ -496,69 +674,18 @@ server <- function(input, output, session) {
 ###### GENERATE PRINTED OUTPUT #################################################
 ################################################################################
   
+  
+  
   r <- reactiveValues(print_results1 = "") # Create empty reactive string for printed results.
   r <- reactiveValues(print_results2 = "") # Create empty reactive string for printed results.
   
   
   
-  # If user presses the results button for linear models, paste the linear results
-  observeEvent(input$results_pg_l, {
-    
-    output$print_results1 <- renderText({
-      df()$text # Combine text output lines
-    })
-    output$fig_results <- renderPlot({
-      df()$plot  # Render the plot output 
-    })
-    
-    output$print_results2 <- renderText({
-      paste(df()$raw , collapse = "\n")  # Combine text output lines
-    })
-        
-  })
-  
-  
-  
-  #If user presses the results button for COP models, paste the COP results
-  observeEvent(input$results_pg_cop, {
-    output$print_results1 <- renderText({
-      paste(df_cop()$text, collapse = "\n")  # Combine text output lines
-    })
-    output$print_results2 <- renderText({
-      paste(df_cop()$text, collapse = "\n")  # Combine text output lines
-    })
-    output$fig_results <- renderPlot({
-      df_cop()$plot  # Render the plot output 
-    })
-  })
-  
-  
-  
-  #If user presses the results button for PSE models, paste the PSE results
-  observeEvent(input$results_pg_pse, {
-    output$print_results1 <- renderText({
-      paste(df_pse()$text, collapse = "\n")  # Combine text output lines
-    })
-    output$print_results2 <- renderText({
-      paste(df_pse()$text, collapse = "\n")  # Combine text output lines
-    })
-    
-    # Render a dummy plot with text message
-    output$fig_results <- renderPlot({
-      message <- df_pse()$plot_message
-      plot.new()
-      text(0.5, 0.5, message, cex = 1.5, col = "black", font = 1.8)    
-    })
-  })
-  
-  
-  #If user presses the results button for logistic models, paste the logistic results
+  # If user presses the results button for logistic models, paste the logistic results
   observeEvent(input$results_pg_di, {
+    
     output$print_results1 <- renderText({
-      paste(df_log()$text, collapse = "\n")  # Combine text output lines
-    })
-    output$print_results2 <- renderText({
-      paste(df_log()$text, collapse = "\n")  # Combine text output lines
+      df_log()$text  # Combine text output lines
     })
     
     # Render a dummy plot with text message
@@ -566,6 +693,10 @@ server <- function(input, output, session) {
       message <- df_log()$plot_message
       plot.new()
       text(0.5, 0.5, message, cex = 1.5, col = "black", font = 1.8)    
+    })
+    
+    output$print_results2 <- renderText({
+      paste(df_log()$raw, collapse = "\n")  # Combine text output lines
     })
   })
   
@@ -577,17 +708,77 @@ server <- function(input, output, session) {
     output$print_results1 <- renderText({
       df_twobytwo()$text # Combine text output lines
     })
+
+    # Render a dummy plot with text message
     output$fig_results <- renderPlot({
       message <- df_twobytwo()$plot_message
       plot.new()
-      text(0.5, 0.5, message, cex = 1.5, col = "black", font = 1.8)
+      text(0.5, 0.5, message, cex = 1.5, col = "black", font = 1.8)    
     })
     
     output$print_results2 <- renderText({
       paste(df_twobytwo()$raw , collapse = "\n")  # Combine text output lines
     })
-    
   })
+  
+ 
+   
+  # If user presses the results button for linear models, paste the linear results
+  observeEvent(input$results_pg_l, {
+    
+    output$print_results1 <- renderText({
+      df()$text # Combine text output lines
+    })
+    
+    output$fig_results <- renderPlot({
+      df()$plot  # Render the plot output 
+    })
+    
+    output$print_results2 <- renderText({
+      paste(df()$raw , collapse = "\n")  # Combine text output lines
+    })
+  })
+  
+  
+  
+  #If user presses the results button for PSE models, paste the PSE results
+  observeEvent(input$results_pg_pse, {
+    
+    output$print_results1 <- renderText({
+      df_pse()$text  # Combine text output lines
+    })
+    
+    # Render a dummy plot with text message
+    output$fig_results <- renderPlot({
+      message <- df_pse()$plot_message
+      plot.new()
+      text(0.5, 0.5, message, cex = 1.5, col = "black", font = 1.8)    
+    })
+    
+    output$print_results2 <- renderText({
+      paste(df_pse()$raw, collapse = "\n")  # Combine text output lines
+    })
+  })
+  
+  
+  
+  # If user presses the results button for COP models, paste the COP results
+  observeEvent(input$results_pg_cop, {
+    
+    output$print_results1 <- renderText({
+      df_cop()$text  # Combine text output lines
+    })
+    
+    output$fig_results <- renderPlot({
+      df_cop()$plot  # Render the plot output 
+    })
+    
+    output$print_results2 <- renderText({
+      paste(df_cop()$raw, collapse = "\n")  # Combine text output lines
+    })
+  })
+
+  
   
   
   
@@ -635,7 +826,7 @@ server <- function(input, output, session) {
   user_est_pse <- eventReactive(input$results_pg_pse, {
     paste0("#install.packages('konfound')", "\n", 
            "library(konfound)  # konfound R package version: ", packageVersion("konfound"), "\n", 
-           "pkonfound(est_eff = ", input$unstd_beta_pse, ", std_err = ", input$std_err_pse, ", n_obs = ", input$n_obs_pse, ", n_covariates = ", input$n_covariates_pse, " eff_thr = ", input$eff_thr_pse, ", sdx = ", input$sdx_pse, ", sdy = ", input$sdy_pse, ", R2 = ", input$R2_pse, ", index = 'PSE')"
+           "pkonfound(est_eff = ", input$unstd_beta_pse, ", std_err = ", input$std_err_pse, ", n_obs = ", input$n_obs_pse, ", n_covariates = ", input$n_covariates_pse, ", eff_thr = ", input$eff_thr_pse, ", sdx = ", input$sdx_pse, ", sdy = ", input$sdy_pse, ", R2 = ", input$R2_pse, ", index = 'PSE')"
     )
   })
   
