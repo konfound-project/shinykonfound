@@ -150,6 +150,7 @@ server <- function(input, output, session) {
             sprintf("%.3f", raw_calc$rycvGz), "X", sprintf("%.3f", raw_calc$rxcvGz), "=", 
             sprintf("%.3f", raw_calc$itcvGz),
             "to invalidate an inference for a null hypothesis of an effect of nu (0).<br><br>",
+            
             "For calculation of unconditional ITCV using pkonfound(), additionally include the <em>R</em><sup>2</sup>, <em>sd</em><sub>x</sub>, and <em>sd</em><sub>y</sub> as input, and request raw output.<br><br>",
             "Use <code>to_return = \"raw_output\"</code> to see more specific results.<br>",
             
@@ -287,8 +288,8 @@ server <- function(input, output, session) {
           sprintf("%.3f", raw_calc$eff_M3),
           ", with standard error of ", 
           sprintf("%.3f", raw_calc$se_M3),
-          ".<br><br>", 
-          "Use <code>to_return = \"raw_output\"</code> to see more specific results.<br>",
+          ".<hr>", 
+          "Use <code>to_return = \"raw_output\"</code> to see more specific results.",
           
           "<hr>",
           "<em>Calculated with konfound R package version </em>", packageVersion("konfound")
@@ -386,7 +387,8 @@ server <- function(input, output, session) {
       HTML(
         paste0(
           "<strong>Coefficient of Proportionality (COP):</strong><br>",
-          "<em>This function calculates a correlation-based coefficient of proportionality (delta) as well as Oster's delta*. Using the absolute value of the estimated effect, result can be interpreted by symmetry.</em><br><br>",
+          "<em>This function calculates a correlation-based coefficient of proportionality (delta) as well as Oster's delta*. Using the absolute value of the estimated effect, results can be interpreted by symmetry.</em><br><br>",
+          
           "Delta* is ", 
           sprintf("%.3f", cop_plot$`delta*`),
           " (assuming no covariates in the baseline model M1), ",
@@ -394,16 +396,19 @@ server <- function(input, output, session) {
           sprintf("%.3f", cop_plot$`delta_exact`),
           " with a bias of ",
           sprintf("%.3f", cop_plot$delta_pctbias),
-          "%.<br>",
-          "Note that %bias = (delta* - delta) / delta.<br><br>",
+          "%.<br><br>",
+          
+          "<em>Note that %bias = (delta* - delta) / delta.</em><br><br>",
+          
           "With delta*, the coefficient in the final model will be ",
           sprintf("%.3f", cop_plot$eff_x_M3_oster),
           ".<br>",
           "With the correlation-based delta, the coefficient will be ",
           sprintf("%.3f", cop_plot$eff_x_M3),
-          ".<br><br>",
+          ".<hr>",
+          
           "Use <code>to_return = \"raw_output\"</code> to see more specific results and graphic
-presentation of the result.<br><br>",
+presentation of the result.",
           
           "<hr>",
           "<em>Calculated with konfound R package version </em>", packageVersion("konfound")
@@ -474,6 +479,11 @@ presentation of the result.<br><br>",
           "<strong>Robustness of Inference to Replacement (RIR):</strong><br>",
           "RIR = ", raw_calc$RIR_primary, "<br>",
           "Fragility = ", raw_calc$fragility_primary, "<br><br>",
+          
+          "You entered: log odds = ", input$unstd_beta_nl,
+          ", SE = ", input$std_error_nl, 
+          ", with p-value = ", sprintf("%.3f", raw_calc$p_start), ".<br>",
+          
           "The table implied by the parameter estimates and sample sizes you entered:<br><br>",
           
           "<strong><u>User-Entered Table:</u></strong><br>",
@@ -481,19 +491,8 @@ presentation of the result.<br><br>",
                        table.attr = "style='width:100%;'",
                        col.names = c("", "Failures", "Successes", "Success Rate")), 
           
-          "<hr>",
-          
-          "The reported log odds = ",
-          sprintf("%.3f", input$unstd_beta_nl),
-          ", SE = ",
-          sprintf("%.3f", input$std_error_nl),
-          ", and p-value = ",
-          sprintf("%.3f", raw_calc$p_start),
-          ".<br>",
-          
-          "Note that values in the table have been rounded to the nearest integer. ",
-          "This may cause a small change to the estimated effect for the table.<br>",
-      
+          "<br><em>Values in the table have been rounded to the nearest integer.</em> ",
+          "<em>This may cause a small change to the estimated effect for the table.</em>",
           "<hr>",
           
           "To sustain an inference that the effect is different from ",
@@ -512,11 +511,16 @@ presentation of the result.<br><br>",
           "%) applies (RIR = ",
           raw_calc$RIR_primary,
           ").<br><br>",
-          "<em>Note that RIR = Fragility/P(destination)</em><br><br>",
+          
+          "<em>Note that RIR = Fragility/P(destination) = </em>", 
+          raw_calc$fragility_primary, "/", 
+          sprintf("%.3f", raw_calc$p_destination / 100),
+          " ~ ", raw_calc$RIR_primary, ".",
+          "<hr>",
           
           "The transfer of ",
           raw_calc$fragility_primary,
-          "data points yields the following table:<br>",
+          "data points yields the following table:<br><br>",
           
           "<strong><u>Transfer Table:</u></strong><br>",
           knitr::kable(raw_calc$table_final_3x3, format = "html", align = "c",
@@ -524,15 +528,26 @@ presentation of the result.<br><br>",
                        col.names = c("", "Failures", "Successes", "Success Rate")), 
           
           "<hr>",
+          
           "The log odds (estimated effect) = ",
-          sprintf("%.3f", raw_calc$est_eff),
+          sprintf("%.3f", raw_calc$est_eff_final),
           ", SE = ",
           sprintf("%.3f", raw_calc$std_err_final),
           ", p-value = ",
           sprintf("%.3f", raw_calc$p_final),
           ".",
           
-          "This is based on t = estimated effect/standard error.<br><br>",
+          "This p-value is based on t = estimated effect/standard error.",
+          "<hr>",
+          
+          "<strong>Benchmarking RIR for Logistic Regression</strong><br>",
+          "The treatment is not statistically significant in the implied table ",
+          "and would also not be statistically significant in the raw table ",
+          "(before covariates were added). In this scenario, we do not yet have ",
+          "a clear interpretation of the benchmark and therefore ", 
+          "the benchmark calculation is not reported.",
+          "<hr>",
+          
           "Use <code>to_return = \"raw_output\"</code> to see more specific results.<br>",
           
           "<hr>",
@@ -546,8 +561,10 @@ presentation of the result.<br><br>",
         )
       )
     
+    
 
 ################################################################################
+    
     
     
     list(text = log_output, 
@@ -614,20 +631,24 @@ presentation of the result.<br><br>",
           "<strong>Robustness of Inference to Replacement (RIR):</strong><br>",
           "RIR = ", raw_calc$RIR_primary, "<br>",
           "Fragility = ", raw_calc$fragility_primary, "<br><br>",
-          "This function calculates the number of data points that would have to be replaced with zero effect data points (RIR) to invalidate the inference made about the association between the rows and columns in a 2x2 table.<br><br>", 
+          "This function calculates the number of data points that would have to be replaced with zero effect data points (RIR) to nullify the inference made about the association between the rows and columns in a 2x2 table.<br><br>", 
           "One can also interpret this as switches (Fragility) from one cell to another, such as from the treatment success cell to the treatment failure cell.<br><br>",
-          "To sustain an inference that the effect is different from 0 (alpha = 0.050), one would need to transfer ",
+          
+          "To sustain an inference that the effect is different from 0 (alpha = 0.05), one would need to transfer ",
           raw_calc$fragility_primary,
           " data points from treatment failure to treatment success as shown, from the User-Entered Table to the Transfer Table (Fragility = ",
           raw_calc$fragility_primary,
           ").<br><br>",
+          
           "This is equivalent to replacing ", raw_calc$RIR_primary, 
           " (", sprintf("%.3f", raw_calc$RIR_perc), "%) treatment failure data points with data points for which the probability of success in the control group (",
           raw_calc$starting_table$Success_Rate[1],
           ") applies (RIR = ",
           raw_calc$RIR_primary, ").<br><br>",
+          
           "RIR = Fragility / P(destination)<br>",
           "<hr>",
+          
           "For the User-Entered Table, the estimated odds ratio is ",
           sprintf("%.3f", raw_calc$fisher_ob),
           ", with a <em>p</em>-value of ",
@@ -639,6 +660,7 @@ presentation of the result.<br><br>",
                       table.attr = "style='width:100%;'",
                       col.names = c("Group", "Failures", "Successes", "Success Rate")), 
          "<hr>",
+         
          "For the Transfer Table, the estimated odds ratio is ",
          sprintf("%.3f", raw_calc$fisher_final),
          ", with a <em>p</em>-value of ",
