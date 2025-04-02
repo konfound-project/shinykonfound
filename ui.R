@@ -634,30 +634,101 @@ shinyUI(
 
 ################################################################################
 
-                            wellPanel(p(h4("Would you like to generate source code?")),
-                                      checkboxInput("gen_r_code", "Generate R Code"),
-                                      conditionalPanel(condition = "input.gen_r_code == 1",
-                                                       id = "r_code",
-                                                       verbatimTextOutput("r_code_print"), 
-                                                       uiOutput("clip"),
-                                                       tippy_this(
-                                                         "clip",
-                                                         tooltip = "<span style='font-size:14px; color:#fff;'>Copied!<span>",
-                                                         trigger = "click",
-                                                         placement = "right",
-                                                         arrow = "true")),
-                                      
-                                      checkboxInput("gen_stata_code", "Generate Stata Code"),
-                                      conditionalPanel(condition = "input.gen_stata_code == 1",
-                                                       id = "stata_code",
-                                                       verbatimTextOutput("stata_code_print"), 
-                                                       uiOutput("clip2"),
-                                                       tippy_this(
-                                                         "clip",
-                                                         tooltip = "<span style='font-size:14px; color:#fff;'>Copied!<span>",
-                                                         trigger = "click",
-                                                         placement = "right",
-                                                         arrow = "true"))),
+                            wellPanel(
+                              p(h4("Would you like to generate source code?")),
+                              
+                              # Row for checkboxes: 2 columns across
+                              fluidRow(
+                                # Left column for R checkboxes
+                                column(
+                                  width = 6,
+                                  checkboxInput("gen_r_code", "Generate R Code"),
+                                  checkboxInput("gen_r_code_default", "Generate R Code (Advanced Defaults)")
+                                ),
+                                # Right column for Stata checkboxes
+                                column(
+                                  width = 6,
+                                  checkboxInput("gen_stata_code", "Generate Stata Code"),
+                                  checkboxInput("gen_stata_code_default", "Generate Stata Code (Advanced Defaults)")
+                                )
+                              ),
+                              
+                              # --- SINGLE large area for R code (only if one of the R checkboxes is checked) ---
+                              conditionalPanel(
+                                condition = "input.gen_r_code == 1 || input.gen_r_code_default == 1",
+                                fluidRow(
+                                  column(
+                                    width = 12,
+                                    
+                                    # Simple R code output (shown only if gen_r_code == 1)
+                                    conditionalPanel(
+                                      condition = "input.gen_r_code == 1",
+                                      verbatimTextOutput("r_code_print"), 
+                                      uiOutput("clip"),
+                                      tippy_this(
+                                        "clip",
+                                        tooltip = "<span style='font-size:14px; color:#fff;'>Copied!</span>",
+                                        trigger = "click",
+                                        placement = "right",
+                                        arrow = "true"
+                                      )
+                                    ),
+                                    
+                                    # Advanced R code output (shown only if gen_r_code_default == 1)
+                                    conditionalPanel(
+                                      condition = "input.gen_r_code_default == 1",
+                                      verbatimTextOutput("r_code_print_default"), 
+                                      uiOutput("clip_r_default"),
+                                      tippy_this(
+                                        "clip_r_default",
+                                        tooltip = "<span style='font-size:14px; color:#fff;'>Copied!</span>",
+                                        trigger = "click",
+                                        placement = "right",
+                                        arrow = "true"
+                                      )
+                                    )
+                                  )
+                                )
+                              ),
+                              
+                              # --- SINGLE large area for Stata code (only if one of the Stata checkboxes is checked) ---
+                              conditionalPanel(
+                                condition = "input.gen_stata_code == 1 || input.gen_stata_code_default == 1",
+                                fluidRow(
+                                  column(
+                                    width = 12,
+                                    
+                                    # Simple Stata code output
+                                    conditionalPanel(
+                                      condition = "input.gen_stata_code == 1",
+                                      verbatimTextOutput("stata_code_print"), 
+                                      uiOutput("clip_stata"),
+                                      tippy_this(
+                                        "clip_stata",
+                                        tooltip = "<span style='font-size:14px; color:#fff;'>Copied!</span>",
+                                        trigger = "click",
+                                        placement = "right",
+                                        arrow = "true"
+                                      )
+                                    ),
+                                    
+                                    # Advanced Stata code output
+                                    conditionalPanel(
+                                      condition = "input.gen_stata_code_default == 1",
+                                      verbatimTextOutput("stata_code_print_default"), 
+                                      uiOutput("clip_stata_default"),
+                                      tippy_this(
+                                        "clip_stata_default",
+                                        tooltip = "<span style='font-size:14px; color:#fff;'>Copied!</span>",
+                                        trigger = "click",
+                                        placement = "right",
+                                        arrow = "true"
+                                      )
+                                    )
+                                  )
+                                )
+                              )
+                            ),
 
 
                          
