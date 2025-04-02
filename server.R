@@ -1434,7 +1434,7 @@ server <- function(input, output, session) {
            "# help(pkonfound)  # Check this help page for more details on default arguments \n", 
            "pkonfound(est_eff = ", input$unstd_beta, ", std_err = ", input$std_error, ", n_obs = ", input$n_obs, ", n_covariates = ", input$n_covariates, ", \n\t  ",
            "sdx = NA, sdy = NA, R2 = NA, alpha = 0.05, tails = 2, nu = 0, far_bound = 0, eff_thr = NA, to_return = 'print', \n\t  ",
-           "index = ", "'", input$AnalysisL, "'", ")"
+           "upper_bound = NULL, lower_bound = NULL, index = ", "'", input$AnalysisL, "'", ")"
     )
   })
   
@@ -1452,7 +1452,7 @@ server <- function(input, output, session) {
            "library(konfound)  # konfound R package version: ", packageVersion("konfound"), "\n", 
            "# help(pkonfound)  # Check this help page for more details on default arguments \n", 
            "pkonfound(est_eff = ", input$unstd_beta_nl, ", std_err = ", input$std_error_nl, ", n_obs = ", input$n_obs_nl, ", n_covariates = ", input$n_covariates_nl, ", n_treat = ", input$n_trm_nl, ", \n\t  ",
-           "alpha = 0.05, tails = 2, nu = 0, switch_trm = TRUE, replace = 'control', to_return = 'print',",
+           "alpha = 0.05, tails = 2, nu = 0, switch_trm = TRUE, replace = 'control', to_return = 'print'",
            ", model_type = 'logistic')"
     )
   })
