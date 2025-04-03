@@ -75,41 +75,70 @@ server <- function(input, output, session) {
                 index = "RIR",
                 to_return = "raw_output")
     
-    linear_output <-
-      HTML(
-        paste0(
-          "<strong>Robustness of Inference to Replacement (RIR):</strong><br>",
-          "RIR = ", raw_calc$RIR_primary, "<br><br>",
-          
-          "The estimated effect is ",
-          input$unstd_beta,
-          ". The threshold value for statistical significance is ",
-          sprintf("%.3f", raw_calc$beta_threshold),
-          " (with null hypothesis = 0 and alpha = 0.05). ",
-          "To reach that threshold, ",
-          sprintf("%.3f", raw_calc$perc_bias_to_change), 
-          "% of the (", 
-          input$unstd_beta,
-          ") estimate would have to be due to bias. ",
-          "This imples to sustain an inference one would expect to have to replace ",
-          raw_calc$RIR_primary,
-          " (", sprintf("%.3f", raw_calc$perc_bias_to_change),
-          "%) observations with effect of 0 with data points with effects of ",
-          sprintf("%.3f", raw_calc$beta_threshold),
-          " (RIR = ", raw_calc$RIR_primary, ").<br>",
-          
-          "<hr>",
-          "See Frank et al. (2013) for a description of the method.<br><br>",
-          "<strong>Citation:</strong><br>",
-          "Frank, K.A., Maroulis, S., Duong, M., and Kelcey, B. (2013). What would it take to change an inference? Using Rubin's causal model to interpret the robustness of causal inferences. <em>Education, Evaluation and Policy Analysis, 35</em>, 437-460.<br><br>",
-          "Accuracy of results increases with the number of decimals reported.<br><br>",
-          
-          "<hr>",
-          "<em>Calculated with konfound R package version </em>", packageVersion("konfound")
-        )
+    
+    if (abs(input$unstd_beta) > abs(raw_calc$beta_threshold)) {
+      # Nullify scenario (like abs(est_eff) > abs(beta_threshhold))
+      linear_output <- paste0(
+        "<strong>Robustness of Inference to Replacement (RIR):</strong><br><br>",
+        "RIR = ", round(raw_calc$RIR_primary, 3), "<br>",
+        
+        "To nullify the inference of an effect using the threshold of ",
+        round(raw_calc$beta_threshold, 3), " for ",
+        "statistical significance (with null hypothesis = 0 and alpha = 0.05), ",
+        round(raw_calc$perc_bias_to_change, 3), "% ",
+        "of the estimate of ", round(input$unstd_beta, 3), " would have to be due to bias. This implies that to ",
+        "nullify the inference one would expect to have to replace ",
+        round(raw_calc$RIR_primary, 3), " (", round(raw_calc$perc_bias_to_change, 3),
+        "%) ",
+        "observations with data points for which the effect is 0 (RIR = ",
+        round(raw_calc$RIR_primary, 3), ").<br>"
       )
+      
+    } else if (abs(input$unstd_beta) < abs(raw_calc$beta_threshold)) {
+      # Sustain scenario (like abs(est_eff) < abs(beta_threshhold))
+      linear_output <- paste0(
+        "<strong>Robustness of Inference to Replacement (RIR):</strong><br><br>",
+        "RIR = ", round(raw_calc$RIR_primary, 3), "<br>",
+        
+        "The estimated effect is ", round(input$unstd_beta, 3), ". The threshold value for statistical significance ",
+        "is ", round(raw_calc$beta_threshold, 3), " (with null hypothesis = 0 and alpha = 0.05). To reach that threshold, ",
+        round(raw_calc$perc_bias_to_change, 3), "% of the estimate of ",
+        round(input$unstd_beta, 3), " would have to be due to bias. This implies to ",
+        "sustain an inference one would expect to have to replace ",
+        round(raw_calc$RIR_primary, 3), " (", round(raw_calc$perc_bias_to_change, 3),
+        "%) ",
+        "observations with effect of 0 with data points with effect of ",
+        round(raw_calc$beta_threshold, 3), " (RIR = ",
+        round(raw_calc$RIR_primary, 3), ").<br>"
+      )
+      
+    } else {
+      # Exactly equal scenario (est_eff == beta_threshold)
+      warning("The coefficient is exactly equal to the threshold.\n")
+      linear_output <- paste0(
+        "<strong>Robustness of Inference to Replacement (RIR):</strong><br><br>",
+        "The coefficient is exactly equal to the threshold (",
+        round(raw_calc$beta_threshold, 3), ").<br>"
+      )
+    }
     
-    
+    # Add final note/citation, as in the R code
+    linear_output <- HTML(
+      paste0(
+      linear_output,
+      "<hr>",
+      "See Frank et al. (2013) for a description of the method.<br><br>",
+      "<strong>Citation:</strong><br>",
+      "Frank, K.A., Maroulis, S., Duong, M., and Kelcey, B. (2013).<br>",
+      "What would it take to change an inference? Using Rubin's causal model to interpret the robustness of causal inferences.<br>",
+      "<em>Education, Evaluation and Policy Analysis, 35</em>, 437-460.<br><br>",
+      "Accuracy of results increases with the number of decimals reported.<br>",
+      "This analysis assumes the use of default parameters. For greater flexibility, use the R or Stata versions", 
+      " of the konfound package, beginning with the advanced code provided below on this page.<br>",
+      "<hr>",
+      "<em>Calculated with konfound R package version </em>", packageVersion("konfound")
+      )
+    )
 
 
         
@@ -135,37 +164,84 @@ server <- function(input, output, session) {
                   index = "IT",
                   to_return = "raw_output")
       
-      linear_output <-
-        HTML(
-          paste(
-            "<strong>Impact Threshold for a Confounding Variable (ITCV):</strong><br><br>",
-            "The minimum impact of an omitted variable to invalidate an inference for a null hypothesis of an effect of nu (0) is based on a correlation of", 
-            sprintf("%.3f", raw_calc$rycvGz), 
-            "with the outcome and", 
-            sprintf("%.3f", raw_calc$rxcvGz), 
-            "with the predictor of interest (conditioning on all observed covariates in the model; signs are interchangeable). This is based on a threshold effect of a threshold effect of", 
-            sprintf("%.1f", raw_calc$critical_r),
-            "for statistical significance (alpha = 0.05).<br><br>", 
-            "Correspondingly, the impact of an omitted variable (as defined in Frank [2000]) must be", 
-            sprintf("%.3f", raw_calc$rycvGz), "X", sprintf("%.3f", raw_calc$rxcvGz), "=", 
-            sprintf("%.3f", raw_calc$itcvGz),
-            "to invalidate an inference for a null hypothesis of an effect of nu (0).<br><br>",
-            
-            "For calculation of unconditional ITCV using pkonfound(), additionally include the <em>R</em><sup>2</sup>, <em>sd</em><sub>x</sub>, and <em>sd</em><sub>y</sub> as input, and request raw output.<br><br>",
-            "Use <code>to_return = \"raw_output\"</code> to see more specific results.<br>",
-            
-            "<hr>",
-            "See Frank (2000) for a description of the method.<br><br>",
-            "<strong>Citation:</strong><br>",
-            "Frank, K. (2000). Impact of a confounding variable on the inference of a regression coefficient. <em>Sociological Methods and Research, 29</em>(2), 147-194.<br><br>",
-            "Accuracy of results increases with the number of decimals reported.<br><br>",
-            "The ITCV analysis was originally derived for OLS standard errors. If the standard errors reported in the table were not based on OLS, some caution should be used to interpret the ITCV.<br><br>",
-            
-            "<hr>",
-            "<em>Calculated with konfound R package version</em>", packageVersion("konfound")
+      # Extract key values from raw_calc
+      obs_r <- raw_calc$obs_r        
+      critical_r <- raw_calc$critical_r
+      beta_threshold <- raw_calc$beta_threshold
+      rycvGz <- raw_calc$rycvGz       
+      rxcvGz <- raw_calc$rxcvGz  
+      
+      # Conditional message based on obs_r and critical_r
+      if((abs(obs_r) < abs(critical_r) & obs_r >= 0)|(abs(obs_r) > abs(critical_r) & obs_r < 0)){
+        abs_val <- " (in absolute value) "
+      } else {
+        abs_val <- ""
+      }
+      
+      if (abs(obs_r) > abs(critical_r)) {
+        # Nullify Scenario
+        linear_output <- HTML(
+          paste0(
+          "<strong>Impact Threshold for a Confounding Variable (ITCV):</strong><br><br>",
+          
+          "The minimum impact", abs_val, " of an omitted variable needed to nullify an inference for a null hypothesis of 0 (nu) ",
+          "is based on correlations of ", 
+          formatC(rycvGz, format = "f", digits = 3), " with the outcome and ",
+          formatC(rxcvGz, format = "f", digits = 3), " with the predictor of interest ",
+          "(conditioning on all observed covariates in the model; signs are interchangeable if they are different).<br>",
+          "This is based on a threshold effect of ",
+          formatC(critical_r, format = "f", digits = 3),
+          " for statistical significance (alpha = 0.05).<br><br>",
+          
+          "Correspondingly, the impact of an omitted variable (Frank 2000) must be ",
+          formatC(rycvGz, format = "f", digits = 3), " × ",
+          formatC(rxcvGz, format = "f", digits = 3), " = ",
+          formatC(rycvGz * rxcvGz, format = "f", digits = 3),
+          " to nullify the inference.<br>"
           )
         )
+      } else {
+        linear_output <- HTML(
+          paste0(
+          # Sustain Scenario
+          "<strong>Impact Threshold for a Confounding Variable (ITCV):</strong><br><br>",
+          
+          "The maximum impact", abs_val, " of an omitted variable needed to sustain an inference for a null hypothesis of 0 (nu) ",
+          "is based on correlations of ", 
+          formatC(rycvGz, format = "f", digits = 3), " with the outcome and ",
+          formatC(rxcvGz, format = "f", digits = 3), " with the predictor of interest ",
+          "(conditioning on all observed covariates in the model; signs are interchangeable if they are different).<br>",
+          "This is based on a threshold effect of ",
+          formatC(beta_threshold, format = "f", digits = 3),
+          " for statistical significance (alpha = 0.05).<br><br>",
+          
+          "Correspondingly, the impact of an omitted variable (Frank 2000) must be ",
+          formatC(rycvGz, format = "f", digits = 3), " × ",
+          formatC(rxcvGz, format = "f", digits = 3), " = ",
+          formatC(rycvGz * rxcvGz, format = "f", digits = 3),
+          " to sustain the inference.<br>"
+          )
+        )
+      }
       
+      # Add final disclaimers, references, etc.
+      linear_output <- HTML(
+        paste0(
+        linear_output,
+        "<hr>",
+        "See Frank (2000) for a description of the method.<br><br>",
+        "<strong>Citation:</strong><br>",
+        "Frank, K. (2000). Impact of a confounding variable on the inference of a regression coefficient. ",
+        "<em>Sociological Methods and Research, 29</em>(2), 147-194.<br><br>",
+        "Accuracy of results increases with the number of decimals reported.<br>",
+        "The ITCV analysis was originally derived for OLS standard errors. If your standard errors are not OLS-based, ",
+        "interpret the ITCV with caution.<br>",
+        "This analysis assumes the use of default parameters. For greater flexibility, use the R or Stata versions", 
+        " of the konfound package, beginning with the advanced code provided below on this page.<br>",
+        "<hr>",
+        "<em>Calculated with konfound R package version </em>", packageVersion("konfound")
+        )
+      )
       
     }
 
@@ -272,8 +348,8 @@ server <- function(input, output, session) {
     pse_output <-
       HTML(
         paste0(
-          "<strong>Preserve Standard Error (Advanced Analysis):</strong><br>",
-          "<em>This function calculates the correlations associated with the confound that generate an estimated effect that is approximately equal to the threshold while preserving the standard error.</em><br><br>",
+          "<strong>Preserve Standard Error (Advanced Analysis):</strong><br><br>",
+          "This function calculates the correlations associated with the confound that generate an estimated effect that is approximately equal to the threshold while preserving the standard error.<br><br>",
           "The correlation between X and CV is ",
           sprintf("%.3f", raw_calc$`correlation between X and CV`),
           ", and the correlation between Y and CV is ",
@@ -288,10 +364,11 @@ server <- function(input, output, session) {
           sprintf("%.3f", raw_calc$eff_M3),
           ", with standard error of ", 
           sprintf("%.3f", raw_calc$se_M3),
-          ".<hr>", 
-          "Use <code>to_return = \"raw_output\"</code> to see more specific results.",
-          
-          "<hr>",
+          ".",
+          "<br><br>",
+          "This analysis assumes the use of default parameters. For greater flexibility, use the R or Stata versions", 
+          " of the konfound package, beginning with the advanced code provided below on this page.<br>",
+          "<hr>", 
           "<em>Calculated with konfound R package version </em>", packageVersion("konfound")
         )
       )
@@ -386,8 +463,9 @@ server <- function(input, output, session) {
     cop_output <-
       HTML(
         paste0(
-          "<strong>Coefficient of Proportionality (COP):</strong><br>",
-          "<em>This function calculates a correlation-based coefficient of proportionality (delta) as well as Oster's delta*. Using the absolute value of the estimated effect, results can be interpreted by symmetry.</em><br><br>",
+          "<strong>Coefficient of Proportionality (COP):</strong><br><br>",
+          "This function calculates a correlation-based coefficient of proportionality (delta) as well as Oster's delta*.<br>",
+          "Using the absolute value of the estimated effect, result can be interpreted by symmetry.<br><br>",
           
           "Delta* is ", 
           sprintf("%.3f", cop_plot$`delta*`),
@@ -396,20 +474,21 @@ server <- function(input, output, session) {
           sprintf("%.3f", cop_plot$`delta_exact`),
           " with a bias of ",
           sprintf("%.3f", cop_plot$delta_pctbias),
-          "%.<br><br>",
+          "%.<br>",
           
-          "<em>Note that %bias = (delta* - delta) / delta.</em><br><br>",
+          "Note that %bias = (delta* - delta) / delta.<br><br>",
           
           "With delta*, the coefficient in the final model will be ",
           sprintf("%.3f", cop_plot$eff_x_M3_oster),
           ".<br>",
           "With the correlation-based delta, the coefficient will be ",
           sprintf("%.3f", cop_plot$eff_x_M3),
-          ".<hr>",
           
-          "Use <code>to_return = \"raw_output\"</code> to see more specific results and graphic
-presentation of the result.",
+          "<br><br>",
           
+          "This analysis assumes the use of default parameters. For greater flexibility, use the R or Stata versions", 
+          " of the konfound package, beginning with the advanced code provided below on this page.<br>",
+
           "<hr>",
           "<em>Calculated with konfound R package version </em>", packageVersion("konfound")
         )
@@ -469,107 +548,377 @@ presentation of the result.",
                 to_return = "raw_output"
       )
 
+    # Base indicators/output values from raw_calc
+    invalidate_ob <- raw_calc$invalidate_ob   # TRUE => "To nullify" / FALSE => "To sustain"
+    needtworows <- raw_calc$needtworows     # TRUE => double-switch scenario
     
+    # RIR and Fragility
+    final_switch <- raw_calc$total_switch    # total fragility
+    final_primary <- raw_calc$fragility_primary
+    final_extra <- if (!is.null(raw_calc$fragility_supplemental)) raw_calc$fragility_supplemental else NA
+    RIR_primary <- raw_calc$RIR_primary
+    RIR_extra <- if (!is.null(raw_calc$RIR_supplemental)) raw_calc$RIR_supplemental else NA
+    total_RIR <- raw_calc$total_RIR
+    RIR_perc <- raw_calc$RIR_perc   
+    RIR <- raw_calc$RIR_primary # only for RIR_pi calculation
+    
+    # 3x3 tables
+    table_start_3x3 <- raw_calc$table_start_3x3
+    table_final_3x3 <- raw_calc$table_final_3x3
+    
+    # Observed log-odds, final log-odds
+    est_eff <- raw_calc$est_eff
+    user_std_err <- raw_calc$user_std_err
+    p_start <- raw_calc$p_start
+    est_eff_final <- raw_calc$est_eff_final
+    std_err_final <- raw_calc$std_err_final
+    p_final <- raw_calc$p_final
+    
+    # Constructing conditional message based on intermediate values
+    
+    # define elements of implied table
+    a <- raw_calc$starting_table[1,1]
+    b <- raw_calc$starting_table[1,2]
+    c <- raw_calc$starting_table[2,1]
+    d <- raw_calc$starting_table[2,2]
+    
+    # hard coding of default alpha and tails
+    alpha <- 0.05
+    tails <- 2
+    
+    # compute thr_t 
+    est_eff <- raw_calc$est_eff
+    std_err <- raw_calc$user_std_err
+    
+    if (est_eff < 0) {
+      thr_t <- qt(1 - (alpha / tails), as.numeric(input$n_obs_nl) - as.numeric(input$n_covariates_nl) - 2) * -1
+    } else {
+      thr_t <- qt(1 - (alpha / tails), as.numeric(input$n_obs_nl) - as.numeric(input$n_covariates_nl) - 2)
+    }
+    
+    t_ob <- est_eff / std_err
+    
+    # isdcroddsratio logic
+    dcroddsratio_ob <- if (thr_t < t_ob) TRUE else FALSE
+    
+    # For single row switch scenario, define transferway, RIRway, p_destination for flexible print output
+    # ShinyApp have default switch_trm = TRUE and replace = "control"
+    switch_trm <- TRUE
+    replace <- "control"
+    
+    # single row logic
+    transferway       <- ""
+    RIRway            <- ""
+    prob_indicator    <- ""
+    p_destination_val <- NA
+    
+    # single row 
+    if (!needtworows) {
+      if (switch_trm && dcroddsratio_ob) {
+        transferway <- "treatment success to treatment failure"
+        RIRway <- "treatment success"
+        p_destination <- p_destination <- round((a+c)/(a+b+c+d) * 100, 3) * (replace == "entire") + 
+          round(a/(a+b) * 100, 3) * (1 - (replace == "entire"))
+        RIR_pi <- RIR / d * 100
+        
+      } else if (switch_trm && !dcroddsratio_ob) {
+        transferway <- "treatment failure to treatment success"
+        RIRway <- "treatment failure"
+        p_destination <- round((b+d)/(a+b+c+d) * 100, 3) * (replace == "entire") + 
+          round(b/(a+b) * 100, 3) * (1 - (replace == "entire"))
+        RIR_pi <- RIR / c * 100
+        
+      }
+    } else if (needtworows) {
+      # extract the relevant two-row fields from raw_calc
+      RIR_pi <- NA
+      transferway_extra    <- ""
+      RIRway_extra         <- ""
+      prob_indicator_extra <- ""
+      p_destination_extra_val <- NA
+
+      # define extra row logic
+      if (switch_trm && dcroddsratio_ob) {
+        transferway_extra <- "control failure to control success"
+        RIRway_extra <- "control failure"
+        RIRway_extra_start <- "control row"
+        p_destination_extra <- round((b+d)/(a+b+c+d) * 100, 3) * (replace == "entire") + 
+          round(b/(a+b) * 100, 3) * (1 - (replace == "entire"))
+        
+      } else if (switch_trm && !dcroddsratio_ob) {
+        transferway_extra <- "control success to control failure"
+        RIRway_extra <- "control success"
+        RIRway_extra_start <- "control row"
+        p_destination_extra <- round((a+c)/(a+b+c+d) * 100, 3) * (replace == "entire") + 
+          round(a/(a+b) * 100, 3) * (1 - (replace == "entire"))
+        
+      } 
+    }
+    
+    # Conditional Fragility calculation component 
+    if (raw_calc$p_start < 0.05) {
+      if (RIRway == "treatment success") {
+        prob_indicator = "failure"  
+      } else if (RIRway == "treatment failure") {
+        prob_indicator = "success"  
+      } else if (RIRway == "control success") {
+        prob_indicator = "failure"  
+      } else if (RIRway == "control failure") {
+        prob_indicator = "success" 
+      }
+    } else {  # p_start > 0.05
+      if (RIRway == "treatment success") {
+        prob_indicator = "failure"  
+      } else if (RIRway == "treatment failure") {
+        prob_indicator = "success" 
+      } else if (RIRway == "control success") {
+        prob_indicator = "failure" 
+      } else if (RIRway == "control failure") {
+        prob_indicator = "success" 
+      }
+    }
+    
+    if (needtworows) {
+      # Conditional Fragility calculation component 
+      if (raw_calc$p_start < 0.05) {
+        if (RIRway_extra == "treatment success") {
+          prob_indicator_extra = "failure"  
+        } else if (RIRway_extra == "treatment failure") {
+          prob_indicator_extra = "success"  
+        } else if (RIRway_extra == "control success") {
+          prob_indicator_extra = "failure"  
+        } else if (RIRway_extra == "control failure") {
+          prob_indicator_extra = "success" 
+        }
+      } else {  # p_start > 0.05
+        if (RIRway_extra == "treatment success") {
+          prob_indicator_extra = "failure"  
+        } else if (RIRway_extra == "treatment failure") {
+          prob_indicator_extra = "success" 
+        } else if (RIRway_extra == "control success") {
+          prob_indicator_extra = "failure" 
+        } else if (RIRway_extra == "control failure") {
+          prob_indicator_extra = "success" 
+        }
+      }
+    }
+    
+    # Benchmark output/plot generation
+    log_output_plot <- raw_calc$benchmark_plot
+    
+    # Determine the message for the plot if no plot is available
+    plot_message <- if (is.null(log_output_plot)) {
+      "No graphical output for this analysis."
+    } else {
+      "Plot is displayed below."
+    }
+    
+    # RIR benchmark description
+    benchmark_section <- ""
+    
+    if (raw_calc$invalidate_ob) {
+      # Nullify scenario: Show RIR benchmark details
+      benchmark_section <- paste0(
+        "<strong>Benchmarking RIR for Logistic Regression</strong><br>",
+        "The benchmark value helps interpret the RIR necessary to nullify an inference by comparing the change ",
+        "needed to nullify the inference with the changes in the estimated effect due to observed covariates.",
+        "Currently this feature is available only when the reported results are statistically significant.<br><br>",
+        
+        "The benchmark is used to compare the bias needed to nullify the inference / bias reduction due to ",
+        "observed covariates. Specifically, change in data from implied to transfer table / change ",
+        "in data from unconditional table to implied table.<br><br>",
+        
+        "To calculate this benchmark value, a range of treatment success values is automatically generated based on ",
+        "the assumption that the marginals are constant between the implied table and the raw unadjusted table.<br>",
+        "The benchmark value is visualized as a graph, allowing the user to interpret how the benchmark changes with ",
+        "hypothesized treatment success values.<br>"
+        
+      )
+    } else {
+      # Sustain scenario: No meaningful benchmark
+      benchmark_section <- paste0(
+        "<strong>Benchmarking RIR for Logistic Regression</strong><br>",
+        "The treatment is not statistically significant in the implied table and would also not be statistically significant ",
+        "in the raw table (before covariates were added). In this scenario, we do not yet have a clear interpretation ",
+        "of the benchmark, and therefore the benchmark calculation is not reported.<br>"
+      )
+    }
     
 ################################################################################   
   
-    log_output <- 
-      HTML(
-        paste0(
-          "<strong>Robustness of Inference to Replacement (RIR):</strong><br>",
-          "RIR = ", raw_calc$RIR_primary, "<br>",
-          "Fragility = ", raw_calc$fragility_primary, "<br><br>",
-          
-          "You entered: log odds = ", input$unstd_beta_nl,
-          ", SE = ", input$std_error_nl, 
-          ", with p-value = ", sprintf("%.3f", raw_calc$p_start), ".<br>",
-          
-          "The table implied by the parameter estimates and sample sizes you entered:<br><br>",
-          
-          "<strong><u>User-Entered Table:</u></strong><br>",
-          knitr::kable(raw_calc$table_start_3x3, format = "html", align = "c",
-                       table.attr = "style='width:100%;'",
-                       col.names = c("", "Failures", "Successes", "Success Rate")), 
-          
-          "<br><em>Values in the table have been rounded to the nearest integer.</em> ",
-          "<em>This may cause a small change to the estimated effect for the table.</em>",
-          "<hr>",
-          
-          "To sustain an inference that the effect is different from ",
-          "0 (alpha = 0.050), one would need to transfer ",
-          raw_calc$fragility_primary,
-          " data points from treatment success to treatment failure (Fragility = ",
-          raw_calc$fragility_primary,
-          ").<br><br>",
-          "This is equivalent to replacing ",
-          raw_calc$RIR_primary, 
-          " (",
-          sprintf("%.3f", raw_calc$RIR_perc),
-          "%) treatment success data points with data points ",
-          "for which the probability of failure in the control group (",
-          sprintf("%.3f", raw_calc$p_destination),
-          "%) applies (RIR = ",
-          raw_calc$RIR_primary,
-          ").<br><br>",
-          
-          "<em>Note that RIR = Fragility/P(destination) = </em>", 
-          raw_calc$fragility_primary, "/", 
-          sprintf("%.3f", raw_calc$p_destination / 100),
-          " ~ ", raw_calc$RIR_primary, ".",
-          "<hr>",
-          
-          "The transfer of ",
-          raw_calc$fragility_primary,
-          "data points yields the following table:<br><br>",
-          
-          "<strong><u>Transfer Table:</u></strong><br>",
-          knitr::kable(raw_calc$table_final_3x3, format = "html", align = "c",
-                       table.attr = "style='width:100%;'",
-                       col.names = c("", "Failures", "Successes", "Success Rate")), 
-          
-          "<hr>",
-          
-          "The log odds (estimated effect) = ",
-          sprintf("%.3f", raw_calc$est_eff_final),
-          ", SE = ",
-          sprintf("%.3f", raw_calc$std_err_final),
-          ", p-value = ",
-          sprintf("%.3f", raw_calc$p_final),
-          ".",
-          
-          "This p-value is based on t = estimated effect/standard error.",
-          "<hr>",
-          
-          "<strong>Benchmarking RIR for Logistic Regression</strong><br>",
-          "The treatment is not statistically significant in the implied table ",
-          "and would also not be statistically significant in the raw table ",
-          "(before covariates were added). In this scenario, we do not yet have ",
-          "a clear interpretation of the benchmark and therefore ", 
-          "the benchmark calculation is not reported.",
-          "<hr>",
-          
-          "Use <code>to_return = \"raw_output\"</code> to see more specific results.<br>",
-          
-          "<hr>",
-          "See Frank et al. (2021) for a description of the method.<br><br>",
-          "<strong>Citation:</strong><br>",
-          "*Frank, K. A., *Lin, Q., *Maroulis, S., *Mueller, A. S., Xu, R., Rosenberg, J. M., ... & Zhang, L. (2021). Hypothetical case replacement can be used to quantify the robustness of trial results. <em>Journal of Clinical Epidemiology, 134</em>, 150-159.<br>",
-          "*<em>Authors are listed alphabetically.</em><br><br>",
-          
-          "<hr>",
-          "<em>Calculated with konfound R package version </em>", packageVersion("konfound")
-        )
+    # Text output generation
+    # Decide if p_start < .05 => "nullify" or "sustain" text
+    change_phrase <- if (invalidate_ob) {
+      paste0("To nullify the inference that the effect is different from 0 (alpha = 0.050), one would")
+    } else {
+      paste0("To sustain an inference that the effect is different from 0 (alpha = 0.050), one would")
+    }
+    
+    # For referencing partial row text, e.g. "to nullify the inference, transferring X data points..."
+    change_t <- if (invalidate_ob) "to nullify the inference," else "to sustain an inference,"
+    
+    # 7) Build the single-row text (if needtworows == FALSE)
+    single_row_text <- ""
+    
+    if (!needtworows) {
+      single_row_text <- paste0(
+        change_phrase, " ",
+        "need to transfer ", raw_calc$fragility_primary, " data points from ", transferway,
+        " (Fragility = ", raw_calc$fragility_primary, ").<br>",
+        "This is equivalent to replacing ", raw_calc$total_RIR, " (", round(RIR_perc, 3), "%) ", RIRway, " data points with data points ",
+        "for which the probability of ", prob_indicator, " in the control group (", p_destination, "%) applies (RIR = ",
+        raw_calc$RIR_primary, ").<br><br>"
+        
       )
+    }
     
+    # Build the two-row text (if needtworows == TRUE)
+    two_row_text <- ""
     
+    if (needtworows) {
+      final_primary <- raw_calc$fragility_primary
+      final_extra <- raw_calc$fragility_supplemental
+      RIR_primary <- raw_calc$RIR_primary
+      RIR_extra <- raw_calc$RIR_supplemental
+      
+      two_row_text <- paste0(
+        "In terms of Fragility, ", change_t, " transferring ", final_primary, " data points from ",
+        transferway, " is not enough to change the inference.<br>",
+        "One would also need to transfer ", final_extra, " data points from ", transferway_extra,
+        " as shown, from the User-entered Table to the Transfer Table.<br><br>",
+        
+        "In terms of RIR, generating the ", final_primary, " switches from ", transferway, " ",
+        "is equivalent to replacing ", RIR_primary, " ", RIRway, " data points with data points for which ",
+        "the probability of ", prob_indicator, " in the control group (", p_destination, "%) applies.<br><br>",
+        
+        "In addition, generating the ", final_extra, " switches from ", transferway_extra, " is ",
+        "equivalent to replacing ", RIR_extra, " ", RIRway_extra, " data points with data points for which ",
+        "the probability of ", prob_indicator_extra, " in the control group (", p_destination_extra, "%) applies.<br><br>",
+        
+        "Therefore, the total RIR is ", RIR_primary + RIR_extra, ".<br>",
+        "RIR = primary RIR + supplemental RIR = (", RIR_primary, " + ", RIR_extra, ") = ",
+        raw_calc$total_RIR, ".<br>",
+        "Total Fragility = ", final_primary + final_extra, " = ", raw_calc$total_switch, ".<br><br>"
+      )
+    }
+    
+    changeSE_message <- if (raw_calc$user_SE != raw_calc$analysis_SE) {
+      paste0(
+        "The SE has been adjusted to ", round(raw_calc$analysis_SE, 3), 
+        " to generate real numbers in the implied table for which the p-value would be ",
+        round(p_start, 3), ".<br>",
+        "Numbers in the table cells have been rounded to integers, which may slightly ",
+        "alter the estimated effect from the value originally entered.<br>"
+      )
+    } else {
+      paste0(
+        "Values in the table have been rounded to the nearest integer. ",
+        "This may cause a small change to the estimated effect for the table.<br>"
+      )
+    }
+    
+    if (!needtworows) {
+      RIR_calc <- paste0(
+        "\n\nNote that RIR = Fragility/P(destination) = ",
+        raw_calc$fragility_primary, "/", sprintf("%.3f", p_destination/100), " ~ ", total_RIR, ".\n")
+    } else{
+      RIR_calc <- paste0(
+        "\n\nNote that RIR = primary RIR + supplemental RIR = (",
+        raw_calc$fragility_primary, "/", sprintf("%.3f", p_destination/100), ") + (", raw_calc$fragility_supplemental, "/", sprintf("%.3f", p_destination_extra/100), ") ~ ", total_RIR, ".\n",
+        "based on the calculation RIR = Fragility/P(destination).\n"
+      )
+    }
+    
+    # Special case if RIR percentage > 100
+    if (!needtworows && RIR_pi > 100) {
+      conclusion_large_rir <- paste0(
+        sprintf("\nNote the RIR exceeds 100%%. Generating the transfer of %d data points would", raw_calc$fragility_primary),
+        " require replacing more data points than are in the ", RIRway, " condition.")
+    } else {
+      conclusion_large_rir <- ""  # Empty string if RIR_pi <= 100
+    }
+    
+    # Merge everything into final_output
+    log_output <- HTML(
+      paste0(
+      "<strong>Robustness of Inference to Replacement (RIR):</strong><br>",
+      "RIR = ", raw_calc$RIR_primary, "<br>",
+      "Fragility = ", raw_calc$fragility_primary, "<br><br>",
+      
+      "You entered: log odds = ", round(est_eff, 3), ", SE = ", round(user_std_err, 3),
+      ", with p-value = ", round(p_start, 3), ".<br>",
+      
+      "The table implied by the parameter estimates and sample sizes you entered:<br>",
+      "<strong><u>User-Entered Table:</u></strong><br>",
+      knitr::kable(table_start_3x3, format = "html", align = "c",
+                   table.attr = "style='width:100%;'",
+                   col.names = c("", "Failures", "Successes", "Success Rate")),  
+      
+      "<br>",
+      
+      changeSE_message,
+      
+      "<hr>",
+      
+      single_row_text,
+      two_row_text,
+      
+      RIR_calc, "<br>", 
+      
+      "<hr>",
+      
+      if (!needtworows && RIR_pi > 100) {
+        paste0(conclusion_large_rir, "<br><br>")
+      },      
+      
+      # Transfer Table
+      "The transfer of data points yields the following table:<br>",
+      "<strong><u>Transfer Table:</u></strong><br>",
+      knitr::kable(table_final_3x3, format = "html", align = "c",
+                   table.attr = "style='width:100%;'",
+                   col.names = c("", "Failures", "Successes", "Success Rate")), 
+      
+      "<hr>",
+      
+      "The log odds (estimated effect) = ", round(est_eff_final, 3), 
+      ", SE = ", round(std_err_final, 3), ", p-value = ", round(p_final, 3), ".<br>",
+      "This p-value is based on t = estimated effect / standard error.<br>",
+      
+      "<hr>",
+      
+      benchmark_section,
+      
+      "<hr>",
+      
+      "See Frank et al. (2021) for a description of the methods.<br><br>",
+      
+      "<strong>Citation:</strong><br>",
+      "*Frank, K. A., *Lin, Q., *Maroulis, S., *Mueller, A. S., Xu, R., Rosenberg, J. M., ... & Zhang, L. (2021).<br>",
+      "Hypothetical case replacement can be used to quantify the robustness of trial results.<br>",
+      "<em>Journal of Clinical Epidemiology, 134</em>, 150-159.<br>",
+      "*Authors are listed alphabetically.<br><br>",
+      
+      "Accuracy of results increases with the number of decimals entered.<br>",
+      
+      "This analysis assumes the use of default parameters. For greater flexibility, use the R or Stata versions", 
+      " of the konfound package, beginning with the advanced code provided below on this page.<br>",
+      
+      "<hr>",
+      
+      "<em>Calculated with konfound R package version </em>", packageVersion("konfound")
+          )
+      )
+
 
 ################################################################################
     
     
     
     list(text = log_output, 
-         plot_message = "No graphical output for this analysis.",
-         raw = r_output)
+         raw = r_output,
+         plot = log_output_plot,
+         plot_message = plot_message
+         )
   })
 
   
@@ -611,79 +960,330 @@ presentation of the result.",
                 d = input$treat_success,
                 to_return = "raw_output")
     
-    # get odds ratio for exact fisher p test 
-    fisher_oddsratio <- function(a, b, c, d){
-      table <- matrix(c(a,b,c,d), byrow = TRUE, 2, 2)
-      value <- suppressWarnings(fisher.test(table)$estimate)
-      return(value)
+    # Extract key input values from user-entered fields
+    a = input$ctrl_fail
+    b = input$ctrl_success
+    c = input$treat_fail
+    d = input$treat_success
+    
+    # Extract key fields from raw_calc
+    needtworows <- isTRUE(raw_calc$needtworows)
+    invalidate_ob <- isTRUE(raw_calc$invalidate_ob)  
+    table_start <- raw_calc$starting_table
+    table_final <- raw_calc$final_table
+    
+    # RIR / Fragility
+    frag_primary <- raw_calc$fragility_primary
+    frag_extra <- raw_calc$fragility_supplemental %||% NA
+    RIR_primary <- raw_calc$RIR_primary
+    RIR_extra <- raw_calc$RIR_supplemental %||% NA
+    total_RIR <- RIR_primary + ifelse(is.na(RIR_extra), 0, RIR_extra)
+    total_switch <- frag_primary + ifelse(is.na(frag_extra), 0, frag_extra)
+    RIR_perc <- raw_calc$RIR_perc
+    
+    RIR <- raw_calc$RIR_primary # only for RIR_pi calculation
+    
+    # Odds ratio and p-values for user/transfer tables (if stored):
+    fisher_ob <- raw_calc$fisher_ob %||% NA
+    fisher_final <- raw_calc$fisher_final %||% NA
+    p_start <- raw_calc$p_start               
+    p_final <- raw_calc$p_final %||% NA
+    
+    alpha <- 0.05 # default
+    p_ob <- raw_calc$p_start
+    allnotenough <- raw_calc$needtworows
+    switch_trm = TRUE # default
+    test = "fisher" # default
+    replace = "control" # default
+    
+    # Constructing conditional message based on intermediate values
+    
+    if (a == 0 || b == 0 || c == 0 || d == 0) {
+      a_OR <- a + 0.5
+      b_OR <- b + 0.5
+      c_OR <- c + 0.5
+      d_OR <- d + 0.5
+    } else {
+      a_OR <- a
+      b_OR <- b
+      c_OR <- c 
+      d_OR <- d
+    }  
+    
+    odds_ratio <- a_OR * d_OR / (b_OR * c_OR)
+    
+    if (test == "fisher"){
+      solution <- konfound:::getswitch_fisher(a, b, c, d, odds_ratio, 0.05, switch_trm)
     }
     
-    # get p value for exact fisher p test
-    fisher_p <- function(a, b, c, d){
-      table <- matrix(c(a,b,c,d), byrow = TRUE, 2, 2)
-      p <- suppressWarnings(fisher.test(table)$p.value)
-      return(p)
+    dcroddsratio_ob <- solution$dcroddsratio_ob
+    
+    if (switch_trm && dcroddsratio_ob) {
+      transferway <- "treatment success to treatment failure"
+      transferway_start <- "treatment row"
+      
+      RIRway <- "treatment success"
+      RIRway_start <- "treatment row"
+      RIR_pi <- RIR / d * 100
+      p_destination_control <- a/(a+b)
+      p_destination <- round((a+c)/(a+b+c+d) * 100, 3) * (replace == "entire") + 
+        round(a/(a+b) * 100, 3) * (1 - (replace == "entire"))
     }
     
-    twobytwo_output <-
-      HTML(
-        paste0(
-          "<strong>Robustness of Inference to Replacement (RIR):</strong><br>",
-          "RIR = ", raw_calc$RIR_primary, "<br>",
-          "Fragility = ", raw_calc$fragility_primary, "<br><br>",
-          "This function calculates the number of data points that would have to be replaced with zero effect data points (RIR) to nullify the inference made about the association between the rows and columns in a 2x2 table.<br><br>", 
-          "One can also interpret this as switches (Fragility) from one cell to another, such as from the treatment success cell to the treatment failure cell.<br><br>",
-          
-          "To sustain an inference that the effect is different from 0 (alpha = 0.05), one would need to transfer ",
-          raw_calc$fragility_primary,
-          " data points from treatment failure to treatment success as shown, from the User-Entered Table to the Transfer Table (Fragility = ",
-          raw_calc$fragility_primary,
-          ").<br><br>",
-          
-          "This is equivalent to replacing ", raw_calc$RIR_primary, 
-          " (", sprintf("%.3f", raw_calc$RIR_perc), "%) treatment failure data points with data points for which the probability of success in the control group (",
-          raw_calc$starting_table$Success_Rate[1],
-          ") applies (RIR = ",
-          raw_calc$RIR_primary, ").<br><br>",
-          
-          "RIR = Fragility / P(destination)<br>",
-          "<hr>",
-          
-          "For the User-Entered Table, the estimated odds ratio is ",
-          sprintf("%.3f", raw_calc$fisher_ob),
-          ", with a <em>p</em>-value of ",
-          sprintf("%.3f", raw_calc$p_start),
-          ".<br><br>",
-          
-         "<strong><u>User-Entered Table:</u></strong><br>",
-         knitr::kable(raw_calc$starting_table, format = "html", align = "c",
-                      table.attr = "style='width:100%;'",
-                      col.names = c("Group", "Failures", "Successes", "Success Rate")), 
-         "<hr>",
-         
-         "For the Transfer Table, the estimated odds ratio is ",
-         sprintf("%.3f", raw_calc$fisher_final),
-         ", with a <em>p</em>-value of ",
-         sprintf("%.3f", raw_calc$p_final),
-         ".<br><br>",
-         
-         "<strong><u>Transfer Table:</u></strong><br>",
-         knitr::kable(raw_calc$final_table, format = "html", align = "c",
-                      table.attr = "style='width:100%;'",
-                      col.names = c("Group", "Failures", "Successes", "Success Rate")), 
-         "<br>",
-         "Use <code>to_return = \"raw_output\"</code> to see more specific results.<br>",
-         
-         "<hr>",
-         "See Frank et al. (2021) for a description of the method.<br><br>",
-         "<strong>Citation:</strong><br>",
-         "*Frank, K. A., *Lin, Q., *Maroulis, S., *Mueller, A. S., Xu, R., Rosenberg, J. M., ... & Zhang, L. (2021). Hypothetical case replacement can be used to quantify the robustness of trial results. <em>Journal of Clinical Epidemiology, 134</em>, 150-159.<br>",
-         "*<em>Authors are listed alphabetically.</em><br><br>",
-         
-         "<hr>",
-         "<em>Calculated with konfound R package version </em>", packageVersion("konfound")
-        )
+    if (switch_trm && !dcroddsratio_ob) {
+      transferway <- "treatment failure to treatment success"
+      transferway_start <- "treatment row"
+      
+      RIRway <- "treatment failure"
+      RIRway_start <- "treatment row"
+      RIR_pi <- RIR / c * 100
+      p_destination_control <- b/(a+b)
+      p_destination <- round((b+d)/(a+b+c+d) * 100, 3) * (replace == "entire") + 
+        round(b/(a+b) * 100, 3) * (1 - (replace == "entire"))
+    }
+    
+    if (allnotenough) {
+      
+      RIR_pi <- NA
+      
+      if (switch_trm && dcroddsratio_ob) {
+        transferway_extra <- "control failure to control success"
+        transferway_extra_start <- "control row"
+        
+        RIRway_extra <- "control failure"
+        RIRway_extra_start <- "control row"
+        p_destination_control_extra <- b/(a+b)
+        p_destination_extra <- round((b+d)/(a+b+c+d) * 100, 3) * (replace == "entire") + 
+          round(b/(a+b) * 100, 3) * (1 - (replace == "entire"))
+      }
+      if (switch_trm && !dcroddsratio_ob) {
+        transferway_extra <- "control success to control failure"
+        transferway_extra_start <- "control row"
+        
+        RIRway_extra <- "control success"
+        RIRway_extra_start <- "control row"
+        p_destination_control_extra <- a/(a+b)
+        p_destination_extra <- round((a+c)/(a+b+c+d) * 100, 3) * (replace == "entire") + 
+          round(a/(a+b) * 100, 3) * (1 - (replace == "entire"))
+      }
+    }
+    
+    ### Output language objects
+    # fragility calculation component (when needtworows == F)
+    if (p_ob < 0.05) {
+      if (RIRway == "treatment success") {
+        prob_indicator = "failure"  
+      } else if (RIRway == "treatment failure") {
+        prob_indicator = "success"  
+      } else if (RIRway == "control success") {
+        prob_indicator = "failure"  
+      } else if (RIRway == "control failure") {
+        prob_indicator = "success" 
+      }
+    } else {  
+      if (RIRway == "treatment success") {
+        prob_indicator = "failure"  
+      } else if (RIRway == "treatment failure") {
+        prob_indicator = "success" 
+      } else if (RIRway == "control success") {
+        prob_indicator = "failure" 
+      } else if (RIRway == "control failure") {
+        prob_indicator = "success" 
+      }
+    }
+    
+    if (allnotenough) {
+      # fragility calculation component (when needtworows == T)
+      if (p_ob < 0.05) {
+        if (RIRway_extra == "treatment success") {
+          prob_indicator_extra = "failure"  
+        } else if (RIRway_extra == "treatment failure") {
+          prob_indicator_extra = "success"  
+        } else if (RIRway_extra == "control success") {
+          prob_indicator_extra = "failure"  
+        } else if (RIRway_extra == "control failure") {
+          prob_indicator_extra = "success" 
+        }
+      } else {  
+        if (RIRway_extra == "treatment success") {
+          prob_indicator_extra = "failure"  
+        } else if (RIRway_extra == "treatment failure") {
+          prob_indicator_extra = "success" 
+        } else if (RIRway_extra == "control success") {
+          prob_indicator_extra = "failure" 
+        } else if (RIRway_extra == "control failure") {
+          prob_indicator_extra = "success" 
+        }
+      }
+    }
+
+    if (!exists("p_destination_extra") || is.na(p_destination_extra)) {
+      p_destination_extra <- NA
+    }
+    
+    # Decide if p_start < alpha => “nullify” or else => “sustain”
+    change_phrase <- if (!is.na(p_start) && p_start < 0.05) {
+      "To nullify the inference that the effect is different from 0 (alpha = 0.05), one would need to transfer"
+    } else {
+      "To sustain an inference that the effect is different from 0 (alpha = 0.05), one would need to transfer"
+    }
+    
+    # Special case if RIR percentage > 100
+    if (!needtworows && RIR_pi > 100) {
+      conclusion_large_rir <- paste0(
+        sprintf("\nNote the RIR exceeds 100%%. Generating the transfer of %d data points would", raw_calc$fragility_primary),
+        " require replacing more data points than are in the ", RIRway, " condition.\n\n")
+    } else {
+      conclusion_large_rir <- ""  # Empty string if RIR_pi <= 100
+    }
+    
+    # RIR calculation note
+    if (!needtworows) {
+      RIR_calc <- paste0(
+        "\n\nNote that RIR = Fragility/P(destination) = ",
+        raw_calc$fragility_primary, "/", sprintf("%.3f", p_destination/100), " ~ ", total_RIR, ".\n")
+    } else{
+      RIR_calc <- paste0(
+        "\n\nNote that RIR = primary RIR + supplemental RIR = (",
+        raw_calc$fragility_primary, "/", sprintf("%.3f", p_destination/100), ") + (",
+        raw_calc$fragility_supplemental, "/", sprintf("%.3f", p_destination_extra/100), ") ~ ", total_RIR, "<br>",
+        "based on the calculation RIR = Fragility/P(destination).\n"
       )
+    }
+    
+    single_row_text <- ""
+    double_row_text <- ""
+    
+    if (!needtworows) {
+      ## Single-switch scenario
+      single_row_text <- paste0(
+        change_phrase, " ", frag_primary, " data points from ",
+        transferway, " as shown, from the User-entered Table to the Transfer Table (Fragility = ", frag_primary, ").<br>",
+        
+        "This is equivalent to replacing ", total_RIR, " (", round(RIR_perc, 3), "%) ",
+        RIRway, " data points with data points ",
+        "for which the probability of ", prob_indicator, " in the control group (", p_destination, "%) applies ",
+        "(RIR = ", RIR_primary, ").<br>"
+        
+      )
+      
+    } else {
+      ## Double-switch scenario
+      double_row_text <- paste0(
+        "In terms of Fragility, to ", if (invalidate_ob) "nullify" else "sustain", 
+        " an inference that the effect is different from 0 (alpha = 0.05), ",
+        
+        "transferring ", frag_primary, " data points from ",
+        transferway, " is not enough to change the inference.<br>",
+        
+        "One would also need to transfer ", frag_extra, " data points from ", transferway_extra, " as shown, ",
+        "from the User-Entered Table to the Transfer Table.<br><br>",
+        
+        "In terms of RIR, generating the ", frag_primary, " switches from ", transferway, " ",
+        "is equivalent to replacing ", RIR_primary, " ", RIRway, " data points with data points for which",
+        "the probability of ", prob_indicator, " in the control group (", p_destination, "%) applies.<br><br>",
+        
+        "In addition, generating the ", frag_extra, " switches from ", transferway_extra, " is ",
+        "equivalent to replacing ", RIR_extra, " ", RIRway_extra, " data points with data points for which ",
+        "the probability of ", prob_indicator_extra, " in the control group (", p_destination_extra, "%) applies.<br><br>",
+        
+        "Therefore, the total RIR is ", total_RIR, ".<br>"
+      )
+    }
+    
+    # construct final HTML 
+    twobytwo_output <- HTML(
+      paste0(
+        "<strong>Robustness of Inference to Replacement (RIR):</strong><br>",
+        # RIR 
+        "RIR = ",
+        if (!needtworows) {
+          RIR_primary
+        } else {
+          paste0(RIR_primary, " + ", RIR_extra, " = ", total_RIR)
+        },
+        "<br>",
+        
+        # Optional total RIR line for needtworows == T
+        if (needtworows) {
+          paste0(
+            "Total RIR = primary RIR in ", RIRway_start, " + supplemental RIR in ", RIRway_extra_start, "<br><br>"
+          )
+        } else {
+          ""
+        },
+        
+        # Fragility
+        "Fragility = ", if (!needtworows) {
+          frag_primary
+        } else {
+          paste0(frag_primary, " + ", frag_extra, " = ", total_switch)
+        },
+        "<br>",
+        
+        # Optional total Fragility line for needtworows == T
+        if (needtworows) {
+          paste0(
+            "Total Fragility = primary Fragility in ", transferway_start, " + supplemental Fragility in ", transferway_extra_start, "<br>"
+          )
+        } else {
+          ""
+        },
+        
+        "<br>This function calculates the number of data points that would have to be replaced with zero-effect data points (RIR) ",
+        "to nullify or sustain the inference made about the association between the rows and columns in a 2x2 table.<br>",
+        
+        "One can also interpret this as switches (Fragility) from one cell to another, such as from the treatment success cell ",
+        "to the treatment failure cell.<br><br>",
+        
+        single_row_text,
+        double_row_text,
+        
+        "<br>",
+        
+        RIR_calc, "<br><br>",
+        
+        if (!needtworows && RIR_pi > 100) {
+          paste0(conclusion_large_rir, "<br><br>")
+        },
+        
+        # show user odds ratio or p-value from the user table 
+        if (!is.na(fisher_ob)) paste0("For the User-entered Table, the estimated odds ratio is ", round(fisher_ob,3), 
+                                      ", with p-value of ", round(p_start,3),":<br>") else "",
+        
+        "<strong><u>User-Entered Table:</u></strong><br>",
+        knitr::kable(raw_calc$starting_table, format = "html", align = "c",
+                     table.attr = "style='width:100%;'",
+                     col.names = c("Group", "Failures", "Successes", "Success Rate")),
+        "<br>",
+        
+        if (!is.na(fisher_final)) paste0("For the Transfer Table, the estimated odds ratio is ", round(fisher_final,3), 
+                                         ", with p-value of ", round(p_final,3),":<br>") else "",
+        
+        "<strong><u>Transfer Table:</u></strong><br>",
+        knitr::kable(raw_calc$final_table, format = "html", align = "c",
+                     table.attr = "style='width:100%;'",
+                     col.names = c("Group", "Failures", "Successes", "Success Rate")),
+
+        "<hr>",
+        "See Frank et al. (2021) for a description of the method.<br><br>",
+        "<strong>Citation:</strong><br>",
+        "*Frank, K. A., *Lin, Q., *Maroulis, S., *Mueller, A. S., Xu, R., Rosenberg, J. M., ... & Zhang, L. (2021).<br>",
+        "Hypothetical case replacement can be used to quantify the robustness of trial results.<br>",
+        "<em>Journal of Clinical Epidemiology, 134, 150-159.</em><br>",
+        "*Authors are listed alphabetically.<br><br>",
+        
+        "Accuracy of results increases with the number of decimals entered.<br>",
+        
+        "This analysis assumes the use of default parameters. For greater flexibility, use the R or Stata versions", 
+        " of the konfound package, beginning with the advanced code provided below on this page.<br>",
+        
+        "<hr>",
+        
+        "<em>Calculated with konfound R package version </em>", packageVersion("konfound")
+      )
+    )
+    
 
         
 ################################################################################
@@ -720,9 +1320,12 @@ presentation of the result.",
     
     # Render a dummy plot with text message
     output$fig_results <- renderPlot({
-      message <- df_log()$plot_message
-      plot.new()
-      text(0.5, 0.5, message, cex = 1.5, col = "black", font = 1.8)    
+      if (!is.null(df_log()$plot)) {
+        df_log()$plot
+      } else {
+        plot.new()
+        text(0.5, 0.5, df_log()$plot_message, cex = 1.5, col = "black", font = 1.8)
+      }
     })
     
     output$print_results2 <- renderText({
@@ -818,45 +1421,97 @@ presentation of the result.",
   
   # Generate R code for linear models using user input values
   user_est_l <- eventReactive(input$results_pg_l, {
-    paste0("#install.packages('konfound')", "\n", 
+    paste0("# install.packages('konfound')", "\n", 
            "library(konfound)  # konfound R package version: ", packageVersion("konfound"), "\n", 
-           "pkonfound(", input$unstd_beta, ", ", input$std_error, ", ", input$n_obs, ", ", input$n_covariates, ", ", "index = ", "'", input$AnalysisL, "'", ")"
+           "pkonfound(est_eff = ", input$unstd_beta, ", std_err = ", input$std_error, ", n_obs = ", input$n_obs, ", n_covariates = ", input$n_covariates, ", ",
+           "index = ", "'", input$AnalysisL, "'", ")"
+    )
+  })
+  
+  user_est_l_default <- eventReactive(input$results_pg_l, {
+    paste0("# install.packages('konfound')", "\n", 
+           "library(konfound)  # konfound R package version: ", packageVersion("konfound"), "\n", 
+           "# help(pkonfound)  # Check this help page for more details on default arguments \n", 
+           "pkonfound(est_eff = ", input$unstd_beta, ", std_err = ", input$std_error, ", n_obs = ", input$n_obs, ", n_covariates = ", input$n_covariates, ", \n\t  ",
+           "sdx = NA, sdy = NA, R2 = NA, alpha = 0.05, tails = 2, nu = 0, far_bound = 0, eff_thr = NA, to_return = 'print', \n\t  ",
+           "upper_bound = NULL, lower_bound = NULL, index = ", "'", input$AnalysisL, "'", ")"
     )
   })
   
   
   # Generate R code for logistic models using user input values
   user_est_di <- eventReactive(input$results_pg_di, {
-    paste0("#install.packages('konfound')", "\n", 
+    paste0("# install.packages('konfound')", "\n", 
            "library(konfound)  # konfound R package version: ", packageVersion("konfound"), "\n", 
-           "pkonfound(", input$unstd_beta_nl, ", ", input$std_error_nl, ", ", input$n_obs_nl, ", ", input$n_covariates_nl, ", n_treat = ", input$n_trm_nl, ", model_type = 'logistic')"
+           "pkonfound(est_eff = ", input$unstd_beta_nl, ", std_err = ", input$std_error_nl, ", n_obs = ", input$n_obs_nl, ", n_covariates = ", input$n_covariates_nl, ", n_treat = ", input$n_trm_nl, ", model_type = 'logistic')"
+    )
+  })
+  
+  user_est_di_default <- eventReactive(input$results_pg_di, {
+    paste0("# install.packages('konfound')", "\n", 
+           "library(konfound)  # konfound R package version: ", packageVersion("konfound"), "\n", 
+           "# help(pkonfound)  # Check this help page for more details on default arguments \n", 
+           "pkonfound(est_eff = ", input$unstd_beta_nl, ", std_err = ", input$std_error_nl, ", n_obs = ", input$n_obs_nl, ", n_covariates = ", input$n_covariates_nl, ", n_treat = ", input$n_trm_nl, ", \n\t  ",
+           "alpha = 0.05, tails = 2, nu = 0, switch_trm = TRUE, replace = 'control', to_return = 'print'",
+           ", model_type = 'logistic')"
     )
   })
   
   
   # Generate R code for 2x2 tables using user inputs
   user_est_2x2 <- eventReactive(input$results_pg_2x2, {
-    paste0("#install.packages('konfound')", "\n", 
+    paste0("# install.packages('konfound')", "\n", 
            "library(konfound)  # konfound R package version: ", packageVersion("konfound"), "\n", 
            "pkonfound(a = ", input$ctrl_fail, ", b = ", input$ctrl_success, ", c = ", input$treat_fail, ", d = ", input$treat_success, ")"
+    )
+  })
+  
+  user_est_2x2_default <- eventReactive(input$results_pg_2x2, {
+    paste0("# install.packages('konfound')", "\n", 
+           "library(konfound)  # konfound R package version: ", packageVersion("konfound"), "\n", 
+           "# help(pkonfound)  # Check this help page for more details on default arguments \n", 
+           "pkonfound(a = ", input$ctrl_fail, ", b = ", input$ctrl_success, ", c = ", input$treat_fail, ", d = ", input$treat_success, ", \n\t  ",
+           "alpha = 0.05, switch_trm = TRUE, replace = 'control', test = 'fisher', to_return = 'print')"
     )
   })
   
   
   # Generate R code for COP
   user_est_cop <- eventReactive(input$results_pg_cop, {
-    paste0("#install.packages('konfound')", "\n", 
+    paste0("# install.packages('konfound')", "\n", 
            "library(konfound)  # konfound R package version: ", packageVersion("konfound"), "\n", 
-           "pkonfound(est_eff = ", input$unstd_beta_cop, ", std_err = ", input$std_err_cop, ", n_obs = ", input$n_obs_cop, ", n_covariates = ", input$n_covariates_cop, ", sdx = ", input$sdx_cop, ", sdy = ", input$sdy_cop, ", R2 = ", input$R2_cop, ", eff_thr = ", input$eff_thr_cop, ", FR2max = ", input$FR2max_cop, ", index = 'COP')"
+           "pkonfound(est_eff = ", input$unstd_beta_cop, ", std_err = ", input$std_err_cop, ", n_obs = ", input$n_obs_cop, ", n_covariates = ", input$n_covariates_cop, ", \n\t  ",
+           "sdx = ", input$sdx_cop, ", sdy = ", input$sdy_cop, ", R2 = ", input$R2_cop, ", eff_thr = ", input$eff_thr_cop, ", FR2max = ", input$FR2max_cop, ", index = 'COP')"
+    )
+  })
+  
+  user_est_cop_default <- eventReactive(input$results_pg_cop, {
+    paste0("# install.packages('konfound')", "\n", 
+           "library(konfound)  # konfound R package version: ", packageVersion("konfound"), "\n", 
+           "# help(pkonfound)  # Check this help page for more details on default arguments \n", 
+           "pkonfound(est_eff = ", input$unstd_beta_cop, ", std_err = ", input$std_err_cop, ", n_obs = ", input$n_obs_cop, ", n_covariates = ", input$n_covariates_cop, ", \n\t  ",
+           "sdx = ", input$sdx_cop, ", sdy = ", input$sdy_cop, ", R2 = ", input$R2_cop, ", eff_thr = ", input$eff_thr_cop, ", FR2max = ", input$FR2max_cop, ", \n\t  ",
+           "alpha = 0.05, tails = 2, to_return = 'print', index = 'COP')"
     )
   })
   
   
   # Generate R code for PSE
   user_est_pse <- eventReactive(input$results_pg_pse, {
-    paste0("#install.packages('konfound')", "\n", 
+    paste0("# install.packages('konfound')", "\n", 
            "library(konfound)  # konfound R package version: ", packageVersion("konfound"), "\n", 
-           "pkonfound(est_eff = ", input$unstd_beta_pse, ", std_err = ", input$std_err_pse, ", n_obs = ", input$n_obs_pse, ", n_covariates = ", input$n_covariates_pse, ", eff_thr = ", input$eff_thr_pse, ", sdx = ", input$sdx_pse, ", sdy = ", input$sdy_pse, ", R2 = ", input$R2_pse, ", index = 'PSE')"
+           "pkonfound(est_eff = ", input$unstd_beta_pse, ", std_err = ", input$std_err_pse, ", n_obs = ", input$n_obs_pse, ", n_covariates = ", input$n_covariates_pse, ", \n\t  ", 
+           "eff_thr = ", input$eff_thr_pse, ", sdx = ", input$sdx_pse, ", sdy = ", input$sdy_pse, ", R2 = ", input$R2_pse, ", index = 'PSE')"
+    )
+  })
+  
+  user_est_pse_default <- eventReactive(input$results_pg_pse, {
+    paste0("# install.packages('konfound')", "\n", 
+           "library(konfound)  # konfound R package version: ", packageVersion("konfound"), "\n", 
+           "# help(pkonfound)  # Check this help page for more details on default arguments \n", 
+           "pkonfound(est_eff = ", input$unstd_beta_pse, ", std_err = ", input$std_err_pse, ", n_obs = ", input$n_obs_pse, ", n_covariates = ", input$n_covariates_pse, ", \n\t  ", 
+           "eff_thr = ", input$eff_thr_pse, ", sdx = ", input$sdx_pse, ", sdy = ", input$sdy_pse, ", R2 = ", input$R2_pse, ", \n\t  ", 
+           "to_return = 'print', index = 'PSE')"
     )
   })
   
@@ -898,7 +1553,42 @@ presentation of the result.",
     r_code
   })
   
-  
+  select_r_code_default <- reactive({
+    req(isTruthy(input$Outcome),
+        isTruthy(input$Data) || isTruthy(input$DataL))
+    
+    # Dichotomous outcome
+    if (isTruthy(input$Outcome == "Dichotomous")) {
+      if (isTruthy(input$Data == "2x2 table")) {
+        r_code_def <- user_est_2x2_default()
+      }
+      if (isTruthy(input$Data == "Logistic model")) {
+        r_code_def <- user_est_di_default()
+      }
+    }
+    
+    # Continuous outcome
+    if (isTruthy(input$Outcome == "Continuous")) {
+      if (isTruthy(input$DataL == "Linear model")) {
+        # Possibly we check input$AnalysisL to decide which snippet
+        # e.g. IT, RIR, COP, PSE
+        if (isTruthy(input$AnalysisL == "IT")) {
+          r_code_def <- user_est_l_default()
+        }
+        if (isTruthy(input$AnalysisL == "RIR")) {
+          r_code_def <- user_est_l_default()
+        }
+        if (isTruthy(input$AnalysisL == "COP")) {
+          r_code_def <- user_est_cop_default()
+        }
+        if (isTruthy(input$AnalysisL == "PSE")) {
+          r_code_def <- user_est_pse_default()
+        }
+      }
+    }
+    
+    r_code_def
+  })
   
 ################################################################################
 ########## CREATE BUTTONS ######################################################
@@ -918,6 +1608,20 @@ presentation of the result.",
       icon = icon("clipboard"))
   })
   
+  # Render Default R code in UI.R to display for user
+    output$r_code_print_default <- renderText({
+    select_r_code_default()
+  })
+  
+  # And a matching clipboard button
+  output$clip_r_default <- renderUI({
+    rclipButton(
+      inputId = "clipbtn",
+      label = "Copy advanced R code",
+      clipText = select_r_code_default(),
+      icon = icon("clipboard")
+    )
+  })
   
   
 ################################################################################
@@ -936,6 +1640,17 @@ presentation of the result.",
     )  
   })
   
+  s_user_est_l_default <- eventReactive(input$results_pg_l, {
+    paste0(
+      "ssc install konfound", "\n", 
+      "ssc install indeplist", "\n", 
+      "ssc install moss", "\n", 
+      "ssc install matsort", "\n", 
+      "* help pkonfound // Check this help page for more details on default arguments", "\n", 
+      "pkonfound ", input$unstd_beta, " ", input$std_error, " ", 
+      input$n_obs, " ", input$n_covariates, ", sig(0.05) nu(0) onetail(0) sdx(NA) sdy(NA) rs(NA) far_bound(0) eff_thr(NA) model_type(0) indx(", input$AnalysisL, ")"
+    )  
+  })
   
   
   # Generate Stata code for logistic models using user input values
@@ -948,6 +1663,16 @@ presentation of the result.",
     ) 
   })
   
+  s_user_est_di_default <- eventReactive(input$results_pg_di, {
+    paste0(
+      "ssc install konfound", "\n", 
+      "* help pkonfound // Check this help page for more details on default arguments", "\n", 
+      "pkonfound ", input$unstd_beta_nl, " ", input$std_error_nl, " ", 
+      input$n_obs_nl, " ", input$n_covariates_nl, " ", input$n_trm_nl, 
+      ", sig(0.05) onetail(0) switch_trm(1) replace(1) model_type(1)"
+    ) 
+  })
+  
   
   # Generate Stata code for 2x2 tables using user input values
   s_user_est_2x2 <- eventReactive(input$results_pg_2x2, {
@@ -955,6 +1680,16 @@ presentation of the result.",
       "ssc install konfound", "\n", 
       "pkonfound ", input$ctrl_fail, " ", input$ctrl_success, " ", 
       input$treat_fail, " ", input$treat_success, ", model_type(2)"
+    ) 
+  })
+  
+  s_user_est_2x2_default <- eventReactive(input$results_pg_2x2, {
+    paste0(
+      "ssc install konfound", "\n", 
+      "* help pkonfound // Check this help page for more details on default arguments", "\n", 
+      "pkonfound ", input$ctrl_fail, " ", input$ctrl_success, " ", 
+      input$treat_fail, " ", input$treat_success, 
+      ", sig(0.05) onetail(0) test1(0) switch_trm(1) replace(1) model_type(2)"
     ) 
   })
   
@@ -969,6 +1704,17 @@ presentation of the result.",
     )
   })
   
+  s_user_est_cop_default <- eventReactive(input$results_pg_cop, {
+    paste0(
+      "ssc install konfound", "\n", 
+      "* help pkonfound // Check this help page for more details on default arguments", "\n", 
+      "pkonfound ", input$unstd_beta_cop, " ", input$std_err_cop, " ", 
+      input$n_obs_cop, " ", input$n_covariates_cop, " ", 
+      input$sdx_cop, " ", input$sdy_cop, " ", input$R2_cop, 
+      ", eff_thr(", input$eff_thr_cop, ") fr2max(", input$FR2max_cop, ") sig(0.05) onetail(0) indx(COP)"
+    )
+  })
+  
   
   s_user_est_pse <- eventReactive(input$results_pg_pse, {
     paste0(
@@ -980,6 +1726,16 @@ presentation of the result.",
     )
   })
   
+  s_user_est_pse_default <- eventReactive(input$results_pg_pse, {
+    paste0(
+      "ssc install konfound", "\n", 
+      "* help pkonfound // Check this help page for more details on default arguments", "\n",
+      "pkonfound ", input$unstd_beta_pse, " ", input$std_err_pse, " ", 
+      input$n_obs_pse, " ", input$n_covariates_pse, " ", 
+      input$eff_thr_pse, " ", input$sdx_pse, " ", input$sdy_pse, 
+      " ", input$R2_pse, ", eff_thr(", input$eff_thr_pse, ") indx(PSE)"
+    )
+  })
   
   # Conditional statement to display the correct Stata code based on model type
   select_stata_code <- reactive({
@@ -1013,6 +1769,37 @@ presentation of the result.",
     
   })
   
+  select_stata_code_default <- reactive({
+    req(input$Outcome) #need or will get error: argument is of length zero
+    
+    if(input$Outcome == "Dichotomous"){
+      if(input$Data == "2x2 table"){
+        stata_code_def <- s_user_est_2x2_default()
+      }
+      if(input$Data == "Logistic model"){
+        stata_code_def <- s_user_est_di_default()
+      }
+    }
+    
+    if(input$Outcome == "Continuous"){
+      if(input$AnalysisL == "IT"){
+        stata_code_def <- s_user_est_l_default()
+      }
+      if(input$AnalysisL == "RIR"){
+        stata_code_def <- s_user_est_l_default()
+      }
+      if(input$AnalysisL == "COP"){
+        stata_code_def <- s_user_est_cop_default()
+      }
+      if(input$AnalysisL == "PSE"){
+        stata_code_def <- s_user_est_pse_default()
+      }
+    }
+    
+    stata_code_def
+    
+  })
+  
   
   # Render Stata code in UI.R to display for user
   output$stata_code_print <- renderText({
@@ -1021,11 +1808,24 @@ presentation of the result.",
   
   
   # Add clipboard buttons
-  output$clip2 <- renderUI({
+  output$clip_stata <- renderUI({
     rclipButton(
       inputId = "clipbtn",
       label = "Copy Stata code",
       clipText = select_stata_code(),
+      icon = icon("clipboard"))
+  })
+  
+  output$stata_code_print_default <- renderText({
+    select_stata_code_default()
+  })
+  
+  # Add clipboard buttons
+  output$clip_stata_default <- renderUI({
+    rclipButton(
+      inputId = "clipbtn",
+      label = "Copy advanced Stata code",
+      clipText = select_stata_code_default(),
       icon = icon("clipboard"))
   })
   
