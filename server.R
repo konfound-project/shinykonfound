@@ -852,7 +852,7 @@ server <- function(input, output, session) {
       "You entered: log odds = ", round(est_eff, 3), ", SE = ", round(user_std_err, 3),
       ", with p-value = ", round(p_start, 3), ".<br>",
       
-      "The table implied by the parameter estimates and sample sizes you entered:<br>",
+      "The table implied by the parameter estimates and sample sizes you entered:<br><br>",
       "<strong><u>Implied Table:</u></strong><br>",
       knitr::kable(table_start_3x3, format = "html", align = "c",
                    table.attr = "style='width:100%;'",
@@ -876,7 +876,7 @@ server <- function(input, output, session) {
       },      
       
       # Transfer Table
-      "The transfer of data points yields the following table:<br>",
+      "The transfer of data points yields the following table:<br><br>",
       "<strong><u>Transfer Table:</u></strong><br>",
       knitr::kable(table_final_3x3, format = "html", align = "c",
                    table.attr = "style='width:100%;'",
@@ -1251,7 +1251,7 @@ server <- function(input, output, session) {
         
         # show user odds ratio or p-value from the user table 
         if (!is.na(fisher_ob)) paste0("For the User-entered Table, the estimated odds ratio is ", round(fisher_ob,3), 
-                                      ", with p-value of ", round(p_start,3),":<br>") else "",
+                                      ", with p-value of ", round(p_start,3),":<br><br>") else "",
         
         "<strong><u>Implied Table:</u></strong><br>",
         knitr::kable(raw_calc$starting_table, format = "html", align = "c",
@@ -1260,7 +1260,7 @@ server <- function(input, output, session) {
         "<br>",
         
         if (!is.na(fisher_final)) paste0("For the Transfer Table, the estimated odds ratio is ", round(fisher_final,3), 
-                                         ", with p-value of ", round(p_final,3),":<br>") else "",
+                                         ", with p-value of ", round(p_final,3),":<br><br>") else "",
         
         "<strong><u>Transfer Table:</u></strong><br>",
         knitr::kable(raw_calc$final_table, format = "html", align = "c",
