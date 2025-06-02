@@ -720,7 +720,7 @@ server <- function(input, output, session) {
     if (raw_calc$invalidate_ob) {
       # Nullify scenario: Show RIR benchmark details
       benchmark_section <- paste0(
-        "<strong>Benchmarking RIR for Logistic Regression</strong><br>",
+        "<strong>Benchmarking RIR for Logistic Regression (Beta Version)</strong><br>",
         "The benchmark value helps interpret the RIR necessary to nullify an inference by comparing the change ",
         "needed to nullify the inference with the changes in the estimated effect due to observed covariates.",
         "Currently this feature is available only when the reported results are statistically significant.<br><br>",
@@ -741,7 +741,7 @@ server <- function(input, output, session) {
     } else {
       # Sustain scenario: No meaningful benchmark
       benchmark_section <- paste0(
-        "<strong>Benchmarking RIR for Logistic Regression</strong><br>",
+        "<strong>Benchmarking RIR for Logistic Regression (Beta Version)</strong><br>",
         "The treatment is not statistically significant in the implied table and would also not be statistically significant ",
         "in the raw table (before covariates were added). In this scenario, we do not yet have a clear interpretation ",
         "of the benchmark, and therefore the benchmark calculation is not reported.<br>"
