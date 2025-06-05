@@ -195,7 +195,7 @@ server <- function(input, output, session) {
           formatC(critical_r, format = "f", digits = 3),
           " for statistical significance (alpha = 0.05).<br><br>",
           
-          "Correspondingly, the impact of an omitted variable (Frank 2000) must be ",
+          "Correspondingly, the conditional impact of an omitted variable (Frank 2000) must be ",
           formatC(rycvGz, format = "f", digits = 3), " × ",
           formatC(rxcvGz, format = "f", digits = 3), " = ",
           formatC(rycvGz * rxcvGz, format = "f", digits = 3),
@@ -217,7 +217,7 @@ server <- function(input, output, session) {
           formatC(beta_threshold, format = "f", digits = 3),
           " for statistical significance (alpha = 0.05).<br><br>",
           
-          "Correspondingly, the impact of an omitted variable (Frank 2000) must be ",
+          "Correspondingly, the maximum impact of an omitted variable (Frank 2000) is ",
           formatC(rycvGz, format = "f", digits = 3), " × ",
           formatC(rxcvGz, format = "f", digits = 3), " = ",
           formatC(rycvGz * rxcvGz, format = "f", digits = 3),
@@ -351,7 +351,7 @@ server <- function(input, output, session) {
       HTML(
         paste0(
           "<strong>Preserve Standard Error (Advanced Analysis):</strong><br><br>",
-          "This function calculates the correlations associated with the confound that generate an estimated effect that is approximately equal to the threshold while preserving the standard error.<br><br>",
+          "This function calculates the correlations associated with an omitted confounding variable (CV) that generate an estimated effect that is approximately equal to the threshold while preserving the originally reported standard error.<br><br>",
           "The correlation between X and CV is ",
           sprintf("%.3f", raw_calc$`correlation between X and CV`),
           ", and the correlation between Y and CV is ",
@@ -362,7 +362,7 @@ server <- function(input, output, session) {
           ", and the correlation between Y and CV is ", 
           sprintf("%.3f", raw_calc$`correlation between Y and CV conditional on Z`),
           ".<br><br>",
-          "Including such a CV, the coefficient changes to ", 
+          "Including such a CV, the coefficient would change to ", 
           sprintf("%.3f", raw_calc$eff_M3),
           ", with standard error of ", 
           sprintf("%.3f", raw_calc$se_M3),
@@ -466,7 +466,8 @@ server <- function(input, output, session) {
       HTML(
         paste0(
           "<strong>Coefficient of Proportionality (COP):</strong><br><br>",
-          "This function calculates a correlation-based coefficient of proportionality (delta) as well as Oster's delta*.<br>",
+          "This function calculates a correlation-based coefficient of proportionality (delta) ",
+          "which is exact even in finite samples as well as Oster's delta*.<br>",
           "Using the absolute value of the estimated effect, result can be interpreted by symmetry.<br><br>",
           
           "Delta* is ", 
@@ -721,7 +722,7 @@ server <- function(input, output, session) {
     if (raw_calc$invalidate_ob) {
       # Nullify scenario: Show RIR benchmark details
       benchmark_section <- paste0(
-        "<strong>Benchmarking RIR for Logistic Regression</strong><br>",
+        "<strong>Benchmarking RIR for Logistic Regression (Beta Version)</strong><br>",
         "The benchmark value helps interpret the RIR necessary to nullify an inference by comparing the change ",
         "needed to nullify the inference with the changes in the estimated effect due to observed covariates.",
         "Currently this feature is available only when the reported results are statistically significant.<br><br>",
@@ -733,13 +734,16 @@ server <- function(input, output, session) {
         "To calculate this benchmark value, a range of treatment success values is automatically generated based on ",
         "the assumption that the marginals are constant between the implied table and the raw unadjusted table.<br>",
         "The benchmark value is visualized as a graph, allowing the user to interpret how the benchmark changes with ",
-        "hypothesized treatment success values.<br>"
+        "hypothesized treatment success values.<br><br>",
+        
+        "Note that switches in the control row and treatment row required to generate the implied table from the ", 
+        "unadjusted table are used to define the benchmark RIR.<br>"
         
       )
     } else {
       # Sustain scenario: No meaningful benchmark
       benchmark_section <- paste0(
-        "<strong>Benchmarking RIR for Logistic Regression</strong><br>",
+        "<strong>Benchmarking RIR for Logistic Regression (Beta Version)</strong><br>",
         "The treatment is not statistically significant in the implied table and would also not be statistically significant ",
         "in the raw table (before covariates were added). In this scenario, we do not yet have a clear interpretation ",
         "of the benchmark, and therefore the benchmark calculation is not reported.<br>"
@@ -786,8 +790,8 @@ server <- function(input, output, session) {
       two_row_text <- paste0(
         "In terms of Fragility, ", change_t, " transferring ", final_primary, " data points from ",
         transferway, " is not enough to change the inference.<br>",
-        "One would also need to transfer ", final_extra, " data points from ", transferway_extra,
-        " as shown, from the User-entered Table to the Transfer Table.<br><br>",
+        "One would also need to transfer ", final_extra, " data points from ", transferway_extra, 
+        "<br><br>",
         
         "In terms of RIR, generating the ", final_primary, " switches from ", transferway, " ",
         "is equivalent to replacing ", RIR_primary, " ", RIRway, " data points with data points for which ",
@@ -797,9 +801,9 @@ server <- function(input, output, session) {
         "equivalent to replacing ", RIR_extra, " ", RIRway_extra, " data points with data points for which ",
         "the probability of ", prob_indicator_extra, " in the control group (", p_destination_extra, "%) applies.<br><br>",
         
-        "Therefore, the total RIR is ", RIR_primary + RIR_extra, ".<br>",
-        "RIR = primary RIR + supplemental RIR = (", RIR_primary, " + ", RIR_extra, ") = ",
-        raw_calc$total_RIR, ".<br>",
+        "Total RIR = primary RIR + supplemental RIR = (",
+        final_primary, "/", sprintf("%.3f", p_destination/100), ") + (", final_extra, "/", sprintf("%.3f", p_destination_extra/100), ") = ", RIR, " + ", RIR_extra, " = ", raw_calc$total_RIR, "<br>",
+        
         "Total Fragility = ", final_primary + final_extra, " = ", raw_calc$total_switch, ".<br><br>"
       )
     }
@@ -850,8 +854,8 @@ server <- function(input, output, session) {
       "You entered: log odds = ", round(est_eff, 3), ", SE = ", round(user_std_err, 3),
       ", with p-value = ", round(p_start, 3), ".<br>",
       
-      "The table implied by the parameter estimates and sample sizes you entered:<br>",
-      "<strong><u>User-Entered Table:</u></strong><br>",
+      "The table implied by the parameter estimates and sample sizes you entered:<br><br>",
+      "<strong><u>Implied Table:</u></strong><br>",
       knitr::kable(table_start_3x3, format = "html", align = "c",
                    table.attr = "style='width:100%;'",
                    col.names = c("", "Failures", "Successes", "Success Rate")),  
@@ -874,7 +878,7 @@ server <- function(input, output, session) {
       },      
       
       # Transfer Table
-      "The transfer of data points yields the following table:<br>",
+      "The transfer of data points yields the following table:<br><br>",
       "<strong><u>Transfer Table:</u></strong><br>",
       knitr::kable(table_final_3x3, format = "html", align = "c",
                    table.attr = "style='width:100%;'",
@@ -1189,9 +1193,7 @@ server <- function(input, output, session) {
         
         "In addition, generating the ", frag_extra, " switches from ", transferway_extra, " is ",
         "equivalent to replacing ", RIR_extra, " ", RIRway_extra, " data points with data points for which ",
-        "the probability of ", prob_indicator_extra, " in the control group (", p_destination_extra, "%) applies.<br><br>",
-        
-        "Therefore, the total RIR is ", total_RIR, ".<br>"
+        "the probability of ", prob_indicator_extra, " in the control group (", p_destination_extra, "%) applies.<br>"
       )
     }
     
@@ -1253,16 +1255,16 @@ server <- function(input, output, session) {
         
         # show user odds ratio or p-value from the user table 
         if (!is.na(fisher_ob)) paste0("For the User-entered Table, the estimated odds ratio is ", round(fisher_ob,3), 
-                                      ", with p-value of ", round(p_start,3),":<br>") else "",
+                                      ", with p-value of ", round(p_start,3),":<br><br>") else "",
         
-        "<strong><u>User-Entered Table:</u></strong><br>",
+        "<strong><u>Implied Table:</u></strong><br>",
         knitr::kable(raw_calc$starting_table, format = "html", align = "c",
                      table.attr = "style='width:100%;'",
                      col.names = c("Group", "Failures", "Successes", "Success Rate")),
         "<br>",
         
         if (!is.na(fisher_final)) paste0("For the Transfer Table, the estimated odds ratio is ", round(fisher_final,3), 
-                                         ", with p-value of ", round(p_final,3),":<br>") else "",
+                                         ", with p-value of ", round(p_final,3),":<br><br>") else "",
         
         "<strong><u>Transfer Table:</u></strong><br>",
         knitr::kable(raw_calc$final_table, format = "html", align = "c",
