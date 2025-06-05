@@ -1,5 +1,11 @@
 # NOTE: IF UPDATING APP + REPUBLISHING, FIRST RUN THIS YOUR CONSOLE, THEN RELOAD, AND PUBLISH
 
+
+
+################################################################################
+### Load Packages
+################################################################################
+
 # install.packages("remotes")
 #remotes::install_github("deepanshu88/shinyDarkmode")
 
@@ -18,8 +24,10 @@ library(shinyDarkmode)
 
 
 
+
+
 ################################################################################
-############################### Style Sheet ####################################
+### Style Sheet
 ################################################################################
 
 jscode <- "shinyjs.refresh_page = function() { history.go(0); }" 
@@ -40,7 +48,7 @@ shinyUI(
        
     
 ################################################################################
-############################### Header #########################################
+### Header
 ################################################################################   
 
     titlePanel(title = div(img(style = "height:3.0em; 
@@ -71,7 +79,6 @@ shinyUI(
   extendShinyjs(text = jscode, functions = "refresh_page"),
 
 
-
   
   navbarPage("",
              tabPanel(div(icon("house", lib = "font-awesome"), " Home"),
@@ -84,7 +91,14 @@ shinyUI(
                               align = "center",
                               h3("Specification")),
                             
+
                             
+
+                            
+################################################################################                                      
+### Step 1
+################################################################################
+
                             wellPanel(p(h4("Step 1",
                                            bsButton("step1info", 
                                                     label = "", 
@@ -109,8 +123,14 @@ shinyUI(
                                                    choices = c("Dichotomous", "Continuous"),
                                                    selected = character(0))), # No default radio button selected
                             
+
                             
-                            
+
+                                                        
+################################################################################                                      
+### Step 2
+################################################################################
+
                             wellPanel(p(h4("Step 2",
                                            bsButton("step2info", 
                                                     label = "",
@@ -144,8 +164,14 @@ shinyUI(
                                                                     choiceNames = list("Estimates from a linear model"),
                                                                     choiceValues = c("Linear model")))), # No default radio button selected
                             
-                            
-                            
+
+
+
+
+################################################################################                                      
+### Step 3
+################################################################################
+
                             wellPanel(p(h4("Step 3",
                                            bsButton("step3info", 
                                                     label = "", 
@@ -277,10 +303,14 @@ shinyUI(
                                          trigger = "hover",
                                          options = list(container = "body")
                                        ),
-                            
-                            
-                            
-                            
+
+
+
+
+
+################################################################################                                      
+### Step 4
+################################################################################
                             
                             wellPanel(p(h4("Step 4",
                                            bsButton("step4info", 
@@ -304,7 +334,11 @@ shinyUI(
                                       
                                       
                                       
-                                                
+                                      
+                                      ################################################################################                                      
+                                      ### Conditions for ITCV and RIR
+                                      ################################################################################
+                                      
                                       conditionalPanel(condition = "(input.AnalysisL == 'IT' || input.AnalysisL == 'RIR') && input.Outcome == 'Continuous'",
                                                        style = "display: none;",
                                                        
@@ -501,10 +535,9 @@ shinyUI(
                                       
                                       
                                       
-                                      
-                                      
-                                      
-                                      
+                                      ################################################################################                                      
+                                      ### Conditions for PSE
+                                      ################################################################################
                                       
                                       conditionalPanel(condition = "(input.AnalysisL == 'PSE') && input.Outcome == 'Continuous'",
                                                        style = "display: none;",
@@ -569,7 +602,14 @@ shinyUI(
                                         options = list(container = "body")
                                       ),
                                       
-
+                                      
+                                      
+                                      
+                                      
+                                      ################################################################################                                      
+                                      ### Conditions for COP
+                                      ################################################################################
+                                      
                                       conditionalPanel(condition = "(input.AnalysisL == 'COP') && input.Outcome == 'Continuous'",
                                                        style = "display: none;",
                                                        div(class = "label-style", "Enter these values (Note that decimals must be denoted with a period, e.g., 2.1):"),
@@ -635,6 +675,13 @@ shinyUI(
                                       ),
                                       
                                       
+                                      
+                                      
+                                      
+                                      ################################################################################                                      
+                                      ### Conditions for Logistic
+                                      ################################################################################
+                                      
                                       conditionalPanel(condition = "(input.Analysis == 'RIR' || input.Analysis == 'Fragility') &&
                                                                         (input.Data == 'Logistic model' && input.Outcome == 'Dichotomous')",
                                                        style = "display: none;",
@@ -697,6 +744,13 @@ shinyUI(
                                       ),
                                       
                                       
+                                      
+                                      
+                                      
+                                      ################################################################################                                      
+                                      ### Conditions for 2x2 Table
+                                      ################################################################################
+                                      
                                       conditionalPanel(condition = "(input.Analysis == 'RIR' || input.Analysis == 'Fragility') &&
                                                                                          (input.Data == '2x2 table' && input.Outcome == 'Dichotomous')",
                                                        style = "display: none;",
@@ -720,6 +774,8 @@ shinyUI(
  
                         
                                                
+################################################################################
+### Displaying Results
 ################################################################################
 
                         mainPanel(
@@ -874,10 +930,8 @@ shinyUI(
 
          
 ################################################################################
-###########################  SECOND TAB  #######################################
+### Second Tab
 ################################################################################
- 
-
             
 tabPanel(div(icon("screwdriver-wrench", lib = "font-awesome"), " Resources"),
          
