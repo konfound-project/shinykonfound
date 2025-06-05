@@ -1,3 +1,8 @@
+
+################################################################################
+### Load Packages
+################################################################################
+
 library(shiny)
 library(tidyverse)
 library(shinyjs)
@@ -34,7 +39,7 @@ server <- function(input, output, session) {
   
   
 ################################################################################
-###### GENERATE LINEAR RIR/ITCV RESULTS ########################################
+### GENERATE LINEAR RIR/ITCV RESULTS
 ################################################################################
   
   # Validate user input values to make sure they are 1) numeric and 2) more than 3 covariates for all model types
@@ -289,7 +294,7 @@ server <- function(input, output, session) {
   
   
 ################################################################################ 
-###### GENERATE LINEAR PSE RESULTS #############################################
+### GENERATE LINEAR PSE RESULTS
 ################################################################################
   
 #validate user input values to make sure they are 1) numeric and 2) more than 3 covariate for all model types
@@ -389,7 +394,7 @@ server <- function(input, output, session) {
   
   
 ################################################################################
-###### GENERATE LINEAR COP RESULTS #############################################
+### GENERATE LINEAR COP RESULTS
 ################################################################################
   
   #validate user input values to make sure they are 1) numeric and 2) more than 3 covariate for all model types
@@ -510,7 +515,7 @@ server <- function(input, output, session) {
   
   
 ################################################################################
-###### GENERATE LOGISTIC RESULTS  ##############################################
+### GENERATE LOGISTIC RESULTS
 ################################################################################
   
   # non-linear model
@@ -934,7 +939,7 @@ server <- function(input, output, session) {
   
   
 ################################################################################
-######### GENERATE 2x2 RESULTS  ################################################
+### GENERATE 2x2 RESULTS
 ################################################################################
   
   # If user presses the results button for 2x2 tables, show the 2x2 tables
@@ -1309,7 +1314,7 @@ server <- function(input, output, session) {
   
   
 ################################################################################
-###### GENERATE PRINTED OUTPUT #################################################
+### GENERATE PRINTED OUTPUT
 ################################################################################
   
   
@@ -1426,7 +1431,7 @@ server <- function(input, output, session) {
   
   
 ################################################################################
-######### GENERATE R CODE ######################################################
+### GENERATE R CODE
 ################################################################################
   
   # Generate R code for linear models using user input values
@@ -1617,8 +1622,12 @@ server <- function(input, output, session) {
     r_code_def
   })
   
+  
+  
+  
+  
 ################################################################################
-########## CREATE BUTTONS ######################################################
+### CREATE BUTTONS
 ################################################################################
   
   # Render R code in UI.R to display for user
@@ -1649,10 +1658,13 @@ server <- function(input, output, session) {
       icon = icon("clipboard")
     )
   })
+ 
+  
+   
   
   
 ################################################################################
-######### GENERATE STATA CODE ##################################################
+### GENERATE STATA CODE
 ################################################################################
   
   # Generate Stata code for linear models using user input values
