@@ -522,36 +522,36 @@ server <- function(input, output, session) {
   df_log <- 
     eventReactive(input$results_pg_di, {
       validate(
-        need(is.numeric(input$unstd_beta_nl) &
-               is.numeric(input$std_error_nl) &
-               is.numeric(input$n_obs_nl) &
-               is.numeric(input$n_covariates_nl) &
-               is.numeric(input$n_trm_nl),
+        need(is.numeric(input$unstd_beta_log) &
+               is.numeric(input$std_error_log) &
+               is.numeric(input$n_obs_log) &
+               is.numeric(input$n_covariates_log) &
+               is.numeric(input$n_trm_log),
              "Did not run! Did you enter numbers for the estimated effect, standard error, number of observations, and number of covariates? Please change any of these that are not to a number."),
-        need(input$n_obs_nl > (input$n_covariates_nl + 2),
+        need(input$n_obs_log > (input$n_covariates_log + 2),
              "Did not run! There are too few observations relative to the number of observations and covariates. Please specify a less complex model to use KonFound-It."),
-        need(input$std_error_nl > 0, "Did not run! Standard error needs to be greater than zero.")
+        need(input$std_error_log > 0, "Did not run! Standard error needs to be greater than zero.")
       )
       
     # Generate the printed output
     
     r_output <- 
       capture.output(
-        pkonfound(input$unstd_beta_nl, 
-                  input$std_error_nl, 
-                  input$n_obs_nl, 
-                  input$n_covariates_nl,
-                  n_treat = input$n_trm_nl, 
+        pkonfound(input$unstd_beta_log, 
+                  input$std_error_log, 
+                  input$n_obs_log, 
+                  input$n_covariates_log,
+                  n_treat = input$n_trm_log, 
                   model_type = "logistic",
                   to_return = "print")
       )
     
     raw_calc <- 
-      pkonfound(input$unstd_beta_nl, 
-                input$std_error_nl, 
-                input$n_obs_nl, 
-                input$n_covariates_nl,
-                n_treat = input$n_trm_nl, 
+      pkonfound(input$unstd_beta_log, 
+                input$std_error_log, 
+                input$n_obs_log, 
+                input$n_covariates_log,
+                n_treat = input$n_trm_log, 
                 model_type = "logistic",
                 to_return = "raw_output"
       )
@@ -599,9 +599,9 @@ server <- function(input, output, session) {
     std_err <- raw_calc$user_std_err
     
     if (est_eff < 0) {
-      thr_t <- qt(1 - (alpha / tails), as.numeric(input$n_obs_nl) - as.numeric(input$n_covariates_nl) - 2) * -1
+      thr_t <- qt(1 - (alpha / tails), as.numeric(input$n_obs_log) - as.numeric(input$n_covariates_log) - 2) * -1
     } else {
-      thr_t <- qt(1 - (alpha / tails), as.numeric(input$n_obs_nl) - as.numeric(input$n_covariates_nl) - 2)
+      thr_t <- qt(1 - (alpha / tails), as.numeric(input$n_obs_log) - as.numeric(input$n_covariates_log) - 2)
     }
     
     t_ob <- est_eff / std_err
@@ -1458,7 +1458,7 @@ server <- function(input, output, session) {
   user_est_di <- eventReactive(input$results_pg_di, {
     paste0("# install.packages('konfound')", "\n", 
            "library(konfound)  # konfound R package version: ", packageVersion("konfound"), "\n", 
-           "pkonfound(est_eff = ", input$unstd_beta_nl, ", std_err = ", input$std_error_nl, ", n_obs = ", input$n_obs_nl, ", n_covariates = ", input$n_covariates_nl, ", n_treat = ", input$n_trm_nl, ", model_type = 'logistic')"
+           "pkonfound(est_eff = ", input$unstd_beta_log, ", std_err = ", input$std_error_log, ", n_obs = ", input$n_obs_log, ", n_covariates = ", input$n_covariates_log, ", n_treat = ", input$n_trm_log, ", model_type = 'logistic')"
     )
   })
   
@@ -1466,7 +1466,7 @@ server <- function(input, output, session) {
     paste0("# install.packages('konfound')", "\n", 
            "library(konfound)  # konfound R package version: ", packageVersion("konfound"), "\n", 
            "# help(pkonfound)  # Check this help page for more details on default arguments \n", 
-           "pkonfound(est_eff = ", input$unstd_beta_nl, ", std_err = ", input$std_error_nl, ", n_obs = ", input$n_obs_nl, ", n_covariates = ", input$n_covariates_nl, ", n_treat = ", input$n_trm_nl, ", \n\t  ",
+           "pkonfound(est_eff = ", input$unstd_beta_log, ", std_err = ", input$std_error_log, ", n_obs = ", input$n_obs_log, ", n_covariates = ", input$n_covariates_log, ", n_treat = ", input$n_trm_log, ", \n\t  ",
            "alpha = 0.05, tails = 2, nu = 0, switch_trm = TRUE, replace = 'control', to_return = 'print'",
            ", model_type = 'logistic')"
     )
@@ -1696,8 +1696,8 @@ server <- function(input, output, session) {
   s_user_est_di <- eventReactive(input$results_pg_di, {
     paste0(
       "ssc install konfound", "\n", 
-      "pkonfound ", input$unstd_beta_nl, " ", input$std_error_nl, " ", 
-      input$n_obs_nl, " ", input$n_covariates_nl, " ", input$n_trm_nl, 
+      "pkonfound ", input$unstd_beta_log, " ", input$std_error_log, " ", 
+      input$n_obs_log, " ", input$n_covariates_log, " ", input$n_trm_log, 
       ", model_type(1)"
     ) 
   })
@@ -1706,8 +1706,8 @@ server <- function(input, output, session) {
     paste0(
       "ssc install konfound", "\n", 
       "* help pkonfound // Check this help page for more details on default arguments", "\n", 
-      "pkonfound ", input$unstd_beta_nl, " ", input$std_error_nl, " ", 
-      input$n_obs_nl, " ", input$n_covariates_nl, " ", input$n_trm_nl, 
+      "pkonfound ", input$unstd_beta_log, " ", input$std_error_log, " ", 
+      input$n_obs_log, " ", input$n_covariates_log, " ", input$n_trm_log, 
       ", sig(0.05) onetail(0) switch_trm(1) replace(1) model_type(1)"
     ) 
   })
