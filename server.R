@@ -51,6 +51,8 @@ server <- function(input, output, session) {
       need(input$std_error > 0, "Did not run! Standard error needs to be greater than zero.")
     )
 
+    
+    
 
             
 ######## GENERATE LINEAR RIR RESULTS ##########################################
@@ -925,6 +927,8 @@ server <- function(input, output, session) {
     
   
   
+  
+  
 ################################################################################
 ######### GENERATE 2x2 RESULTS  ################################################
 ################################################################################
@@ -1300,6 +1304,8 @@ server <- function(input, output, session) {
   
   
   
+  
+  
 ################################################################################
 ###### GENERATE PRINTED OUTPUT #################################################
 ################################################################################
@@ -1411,6 +1417,8 @@ server <- function(input, output, session) {
     })
   })
 
+  
+  
   
   
   
@@ -1570,17 +1578,34 @@ server <- function(input, output, session) {
     # Continuous outcome
     if (isTruthy(input$Outcome == "Continuous")) {
       if (isTruthy(input$DataL == "Linear model")) {
+        
         # Possibly we check input$AnalysisL to decide which snippet
         # e.g. IT, RIR, COP, PSE
-        if (isTruthy(input$AnalysisL == "IT")) {
-          r_code_def <- user_est_l_default()
+        
+        if (isTruthy(input$AnalysisL == "IT") || isTruthy(input$AnalysisL == "RIR")) {
+          
+          
+          
+          
+          
+          if (isTruthy(input$UncertaintyL == "Estimated effect")) {
+            r_code_def <- user_est_l_default()
+          }
+          if (isTruthy(input$UncertaintyL == "Confidence interval")) {
+            r_code_def <- user_est_l_default()
+          }
         }
-        if (isTruthy(input$AnalysisL == "RIR")) {
-          r_code_def <- user_est_l_default()
-        }
+        
+        
+        
+        
+        
+        
+        
         if (isTruthy(input$AnalysisL == "COP")) {
           r_code_def <- user_est_cop_default()
         }
+        
         if (isTruthy(input$AnalysisL == "PSE")) {
           r_code_def <- user_est_pse_default()
         }
