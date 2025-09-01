@@ -186,26 +186,63 @@ get_rir_itcv_results <- function(input_linear) {
                   index = "RIR",
                   to_return = "raw_output"
         )
+
+      if (abs((input_linear$lower_bnd_rir_ci + input_linear$upper_bnd_rir_ci) / 2) > abs(raw_calc$beta_threshold)) {
+        ### Nullify scenario (like abs(est_effect_rir_ee) > abs(beta_threshhold))
+        linear_output <- 
+          paste0(
+            "<strong>Robustness of Inference to Replacement (RIR):</strong><br><br>",
+             "RIR = ", sprintf("%.0f", raw_calc$RIR_primary), "<br><br>",
+            "To nullify the inference of an effect using the threshold of ",
+            sprintf("%.3f", raw_calc$beta_threshold), " for ",
+            "statistical significance (with null hypothesis = 0 and alpha = 0.05), ",
+            sprintf("%.3f", raw_calc$perc_bias_to_change), "% ",
+            "of the estimate of ", 
+            sprintf("%.1f", mean(c(input_linear$lower_bnd_rir_ci, input_linear$upper_bnd_rir_ci))), 
+            " (between the lower bound of ", input_linear$lower_bnd_rir_ci,
+            " and the upper bound of ", input_linear$upper_bnd_rir_ci,
+            ") would have to be due to bias. This implies that to ",
+            "nullify the inference, one would expect to have to replace ",
+            sprintf("%.0f", raw_calc$RIR_primary), 
+            " (", sprintf("%.3f", raw_calc$perc_bias_to_change),
+            "%) ",
+            "observations with data points for which the effect is 0 (RIR = ",
+            sprintf("%.0f", raw_calc$RIR_primary), ").<br>"
+          )
       
-      linear_output <- 
-        paste0(
+      } else if (abs((input_linear$lower_bnd_rir_ci + input_linear$upper_bnd_rir_ci) / 2) < abs(raw_calc$beta_threshold)) {
+        ### Sustain scenario (like abs(est_effect_rir_ee) < abs(beta_threshhold))
+        linear_output <- 
+          paste0(
+            "<strong>Robustness of Inference to Replacement (RIR):</strong><br><br>",
+            "RIR = ", sprintf("%.0f", raw_calc$RIR_primary), "<br><br>",
+            "The estimated effect is ", (input_linear$lower_bnd_rir_ci + input_linear$upper_bnd_rir_ci) / 2, 
+            ". The threshold value for statistical significance ",
+            "is ", sprintf("%.3f", raw_calc$beta_threshold), 
+            " (with null hypothesis = 0 and alpha = 0.05). To reach that threshold, ",
+            sprintf("%.3f", raw_calc$perc_bias_to_change), "% of the estimate of ",
+            sprintf("%.1f", mean(c(input_linear$lower_bnd_rir_ci, input_linear$upper_bnd_rir_ci))), 
+            " (between the lower bound of ", input_linear$lower_bnd_rir_ci,
+            " and the upper bound of ", input_linear$upper_bnd_rir_ci,
+            ") would have to be due to bias. This implies to ",
+            "sustain an inference one would expect to have to replace ",
+            sprintf("%.0f", raw_calc$RIR_primary), 
+            " (", sprintf("%.3f", raw_calc$perc_bias_to_change),
+            "%) ",
+            "observations with effect of 0 with data points with effect of ",
+            sprintf("%.3f", raw_calc$beta_threshold), " (RIR = ",
+            sprintf("%.0f", raw_calc$RIR_primary), ").<br>"
+          )
+        
+      } else {
+        ### Exactly equal scenario (est_eff == beta_threshold), allowing a small tolerance around the threshold value
+        warning("The coefficient is exactly equal to the threshold.\n")
+        linear_output <- paste0(
           "<strong>Robustness of Inference to Replacement (RIR):</strong><br><br>",
-          "RIR = ", sprintf("%.0f", raw_calc$RIR_primary), "<br><br>",
-          "To nullify the inference of an effect using the threshold of ",
-          sprintf("%.3f", raw_calc$beta_threshold), " for ",
-          "statistical significance (with null hypothesis = 0 and alpha = 0.05), ",
-          sprintf("%.3f", raw_calc$perc_bias_to_change), "% ",
-          "of the estimate of ", 
-          sprintf("%.1f", mean(c(input_linear$lower_bnd_rir_ci, input_linear$upper_bnd_rir_ci))), 
-          " (between the lower bound of ", input_linear$lower_bnd_rir_ci,
-          " and the upper bound of ", input_linear$upper_bnd_rir_ci,
-          ") would have to be due to bias. ", 
-          "This implies that to nullify the inference, one would expect to have to replace ",
-          sprintf("%.0f", raw_calc$RIR_primary), " (", sprintf("%.3f", raw_calc$perc_bias_to_change),
-          "%) observations with data points for which the effect is 0 (RIR = ",
-          sprintf("%.0f", raw_calc$RIR_primary), ").<br>"
+          "The coefficient is exactly equal to the threshold (",
+          sprintf("%.3f", raw_calc$beta_threshold), ").<br>"
         )
-      
+      }
       
       ##########################################################################
       ### GENERATE LINEAR RIR PLOT with Confidence Interval

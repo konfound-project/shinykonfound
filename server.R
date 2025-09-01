@@ -91,8 +91,8 @@ server <- function(input, output, session) {
         "pkonfound(est_eff = ", input$est_effect_rir_ee, 
         ", std_err = ", input$std_error_rir_ee, 
         ", n_obs = ", input$n_obs_rir_ee, 
-        ", n_covariates = ", input$n_covariates_rir_ee, ",", "\n\t",
-        "index = ", "'", input$AnalysisL, "')"
+        ", n_covariates = ", input$n_covariates_rir_ee,
+        ", index = ", "'", input$AnalysisL, "')"
       )
     })
   
@@ -108,11 +108,38 @@ server <- function(input, output, session) {
         ", n_covariates = ", input$n_covariates_rir_ee, ",", "\n\t",
         "sdx = NA, sdy = NA, R2 = NA, alpha = 0.05, tails = 2, nu = 0,",  "\n\t",
         "far_bound = 0, eff_thr = NA,", "\n\t",
-        "upper_bound = NULL, lower_bound = NULL,", "\n\t", 
-        "to_return = 'print', index = ", "'", input$AnalysisL, "')"
+        "upper_bound = NULL, lower_bound = NULL,",
+        ", to_return = 'print', index = ", "'", input$AnalysisL, "')"
       )
     })
   
+  user_est_l_ci <- 
+    eventReactive(input$results_pg_l, {
+      paste0(
+        "# install.packages('konfound')", "\n",
+        "library(konfound)  # konfound R package version: ", packageVersion("konfound"), "\n",
+        "pkonfound(lower_bound = ", input$lower_bnd_rir_ci,
+        ", upper_bound = ", input$upper_bnd_rir_ci,
+        ", n_obs = ", input$n_obs_rir_ci,
+        ", n_covariates = ", input$n_covariates_rir_ci, ",", "\n\t",
+        "sdx = NA, sdy = NA, R2 = NA, index = '", input$AnalysisL, "')"
+      )
+    })
+  
+  user_est_l_ci_default <- 
+    eventReactive(input$results_pg_l, {
+      paste0(
+        "# install.packages('konfound')", "\n",
+        "library(konfound)  # konfound R package version: ", packageVersion("konfound"), "\n",
+        "# help(pkonfound)  # Check this help page for more details on default arguments", "\n",
+        "pkonfound(lower_bound = ", input$lower_bnd_rir_ci,
+        ", upper_bound = ", input$upper_bnd_rir_ci,
+        ", n_obs = ", input$n_obs_rir_ci,
+        ", n_covariates = ", input$n_covariates_rir_ci, ",", "\n\t",
+        "sdx = NA, sdy = NA, R2 = NA, alpha = 0.05, tails = 2, nu = 0,", "\n\t",
+        "far_bound = 0, eff_thr = NA, to_return = 'print', index = '", input$AnalysisL, "')"
+      )
+    })
   
   ##############################################################################
   ### GENERATE LINEAR RIR + LINEAR ITCV STATA CODE
@@ -209,8 +236,7 @@ server <- function(input, output, session) {
         ", sdx = ", input$sdx_pse_ee, 
         ", sdy = ", input$sdy_pse_ee, 
         ", R2 = ", input$R2_pse_ee, ",", "\n\t",
-        "upper_bound = NULL, lower_bound = NULL,", "\n\t", 
-        "index = 'PSE')"
+        "upper_bound = NULL, lower_bound = NULL, index = 'PSE')"
       )
     })
   
@@ -234,6 +260,42 @@ server <- function(input, output, session) {
       )
     })
   
+  user_est_pse_ci <- 
+    eventReactive(input$results_pg_pse, {
+      paste0(
+        "# install.packages('konfound')", "\n", 
+        "library(konfound)  # konfound R package version: ", 
+        packageVersion("konfound"), "\n", 
+        "pkonfound(lower_bound = ", input$lower_bnd_pse_ci, 
+        ", upper_bound = ", input$upper_bnd_pse_ci, 
+        ", n_obs = ", input$n_obs_pse_ci, 
+        ", n_covariates = ", input$n_covariates_pse_ci, ",", "\n\t", 
+        "eff_thr = ", input$eff_thr_pse_ci, 
+        ", sdx = ", input$sdx_pse_ci, 
+        ", sdy = ", input$sdy_pse_ci, 
+        ", R2 = ", input$R2_pse_ci,
+        ", index = 'PSE')"
+      )
+    })
+  
+  user_est_pse_ci_default <- 
+    eventReactive(input$results_pg_pse, {
+      paste0(
+        "# install.packages('konfound')", "\n", 
+        "library(konfound)  # konfound R package version: ", 
+        packageVersion("konfound"), "\n", 
+        "# help(pkonfound)  # Check this help page for more details on default arguments\n", 
+        "pkonfound(lower_bound = ", input$lower_bnd_pse_ci, 
+        ", upper_bound = ", input$upper_bnd_pse_ci, 
+        ", n_obs = ", input$n_obs_pse_ci, 
+        ", n_covariates = ", input$n_covariates_pse_ci, ",", "\n\t", 
+        "eff_thr = ", input$eff_thr_pse_ci, 
+        ", sdx = ", input$sdx_pse_ci, 
+        ", sdy = ", input$sdy_pse_ci, 
+        ", R2 = ", input$R2_pse_ci, ",", "\n\t", 
+        "to_return = 'print', index = 'PSE')"
+      )
+    })
   
   ##############################################################################
   ### GENERATE PSE STATA CODE
@@ -323,7 +385,7 @@ server <- function(input, output, session) {
         ", n_covariates = ", input$n_covariates_cop_ee, ",", "\n\t",
         "sdx = ", input$sdx_cop_ee, 
         ", sdy = ", input$sdy_cop_ee, 
-        ", R2 = ", input$R2_copv, 
+        ", R2 = ", input$R2_cop_ee, 
         ", eff_thr = ", input$eff_thr_cop_ee, 
         ", FR2max = ", input$FR2max_cop_ee, ",", "\n\t",
         "upper_bound = NULL, lower_bound = NULL,", "\n\t", 
@@ -335,9 +397,8 @@ server <- function(input, output, session) {
     eventReactive(input$results_pg_cop, {
       paste0(
         "# install.packages('konfound')", "\n", 
-        "library(konfound)  # konfound R package version: ", 
+        "library(konfound)  # konfound R package version: ", packageVersion("konfound"), "\n", 
         "# help(pkonfound)  # Check this help page for more details on default arguments \n", 
-        packageVersion("konfound"), "\n", 
         "pkonfound(est_eff = ", input$est_effect_cop_ee, 
         ", std_err = ", input$std_err_cop_ee, 
         ", n_obs = ", input$n_obs_cop_ee, 
@@ -353,6 +414,42 @@ server <- function(input, output, session) {
       )
     })
   
+  user_est_cop_ci <- 
+    eventReactive(input$results_pg_cop, {
+      paste0(
+        "# install.packages('konfound')", "\n", 
+        "library(konfound)  # konfound R package version: ", packageVersion("konfound"), "\n", 
+        "pkonfound(lower_bound = ", input$lower_bnd_cop_ci, 
+        ", upper_bound = ", input$upper_bnd_cop_ci, 
+        ", n_obs = ", input$n_obs_cop_ci, 
+        ", n_covariates = ", input$n_covariates_cop_ci, ",", "\n\t",
+        "sdx = ", input$sdx_cop_ci, 
+        ", sdy = ", input$sdy_cop_ci, 
+        ", R2 = ", input$R2_cop_ci, 
+        ", eff_thr = ", input$eff_thr_cop_ci, 
+        ", FR2max = ", input$FR2max_cop_ci,
+        ", index = 'COP')"
+      )
+    })
+  
+  user_est_cop_ci_default <- 
+    eventReactive(input$results_pg_cop, {
+      paste0(
+        "# install.packages('konfound')", "\n", 
+        "library(konfound)  # konfound R package version: ", packageVersion("konfound"), "\n", 
+        "# help(pkonfound)  # Check this help page for more details on default arguments\n", 
+        "pkonfound(lower_bound = ", input$lower_bnd_cop_ci, 
+        ", upper_bound = ", input$upper_bnd_cop_ci, 
+        ", n_obs = ", input$n_obs_cop_ci, 
+        ", n_covariates = ", input$n_covariates_cop_ci, ",", "\n\t",
+        "sdx= ", input$sdx_cop_ci, 
+        ", sdy = ", input$sdy_cop_ci, 
+        ", R2 = ", input$R2_cop_ci, 
+        ", eff_thr = ", input$eff_thr_cop_ci, 
+        ", FR2max = ", input$FR2max_cop_ci, ",", "\n\t",
+        "alpha = 0.05, tails = 2, index = 'COP')"
+      )
+    })
   
   ##############################################################################
   ### GENERATE COP STATA CODE
@@ -469,6 +566,36 @@ server <- function(input, output, session) {
     )
   })
   
+  
+  user_est_di_ci <- 
+    eventReactive(input$results_pg_di, {
+      paste0(
+        "# install.packages('konfound')", "\n", 
+        "library(konfound)  # konfound R package version: ", packageVersion("konfound"), "\n", 
+        "pkonfound(lower_bound = ", input$lower_bnd_log_ci,
+        ", upper_bound = ", input$upper_bnd_log_ci,
+        ", n_obs = ", input$n_obs_log_ci,
+        ", n_covariates = ",        input$n_covariates_log_ci, ",", "\n\t",
+        "n_treat = ",               input$n_trm_log_ci,
+        ", model_type = 'logistic')"
+      )
+    })
+  
+  user_est_di_ci_default <- 
+    eventReactive(input$results_pg_di, {
+      paste0(
+        "# install.packages('konfound')", "\n", 
+        "library(konfound)  # konfound R package version: ", packageVersion("konfound"), "\n", 
+        "# help(pkonfound)  # Check this help page for more details on default arguments", "\n", 
+        "pkonfound(lower_bound = ", input$lower_bnd_log_ci,
+        ", upper_bound = ", input$upper_bnd_log_ci,
+        ", n_obs = ", input$n_obs_log_ci,
+        ", n_covariates = ", input$n_covariates_log_ci, ",", "\n\t",
+        "n_treat = ", input$n_trm_log_ci,
+        ", alpha = 0.05, tails = 2, nu = 0, switch_trm = TRUE, replace = 'control',", "\n\t",
+        "to_return = 'print', model_type = 'logistic')"
+      )
+    })
   
   ##############################################################################
   ### GENERATE LOG STATA CODE
@@ -981,7 +1108,12 @@ server <- function(input, output, session) {
           r_code <- user_est_2x2()
         }
         if(isTruthy(input$DataD == "Logistic model")){
-          r_code <- user_est_di()
+          if (input$Uncertainty_log == "EstEff") {
+            r_code <- user_est_di()
+          } else {
+            # CI-based default
+            r_code <- user_est_di_ci()
+          }
         }
         if(is.null(input$DataD)){
           r_code <- print("")
@@ -992,16 +1124,36 @@ server <- function(input, output, session) {
         if(isTruthy(input$DataL == "Linear model")){
           r_code <- print("")
           if(isTruthy(input$AnalysisL == "IT")){
-            r_code <- user_est_l()
+            if (input$Uncertainty_RIR == "EstEff") {
+              r_code <- user_est_l()
+            } else {
+              # CI-based default
+              r_code <- user_est_l_ci()
+            }          
           }
           if(isTruthy(input$AnalysisL == "RIR")){
-            r_code <- user_est_l()
+            if (input$Uncertainty_RIR == "EstEff") {
+              r_code <- user_est_l()
+            } else {
+              # CI-based default
+              r_code <- user_est_l_ci()
+            }
           }
           if(isTruthy(input$AnalysisL == "COP")){
-            r_code <- user_est_cop()
+            if (input$Uncertainty_COP == "EstEff") {
+              r_code <- user_est_cop()
+            } else {
+              # CI-based default
+              r_code <- user_est_cop_ci()
+            }
           }
           if(isTruthy(input$AnalysisL == "PSE")){
-            r_code <- user_est_pse()
+            if (input$Uncertainty_PSE == "EstEff") {
+              r_code <- user_est_pse()
+            } else {
+              # CI-based default
+              r_code <- user_est_pse_ci()
+            }
           }
         }
       }
@@ -1021,7 +1173,12 @@ server <- function(input, output, session) {
           r_code_def <- user_est_2x2_default()
         }
         if (isTruthy(input$DataD == "Logistic model")) {
-          r_code_def <- user_est_di_default()
+          if (input$Uncertainty_log == "EstEff") {
+            r_code_def <- user_est_di_default()
+          } else {
+            # CI-based default
+            r_code_def <- user_est_di_ci_default()
+          }
         }
       }
       
@@ -1030,21 +1187,28 @@ server <- function(input, output, session) {
         if (isTruthy(input$DataL == "Linear model")) {
           
           if (isTruthy(input$AnalysisL == "IT") || isTruthy(input$AnalysisL == "RIR")) {
-            
-            #if (isTruthy(input$Uncertainty_RIR == "Estimated effect")) {
-            r_code_def <- user_est_l_default()
+            if (input$Uncertainty_RIR == "EstEff") {
+              r_code_def <- user_est_l_default()
+            } else {
+              # CI-based default
+              r_code_def <- user_est_l_ci_default()
+            }
           }
-          # if (isTruthy(input$Uncertainty_RIR == "Confidence interval")) {
-          #  r_code_def <- user_est_l_default()
-          #}
-          #}
-          
           if (isTruthy(input$AnalysisL == "COP")) {
-            r_code_def <- user_est_cop_default()
+            if (input$Uncertainty_COP == "EstEff") {
+              r_code_def <- user_est_cop_default()
+            } else {
+              # CI-based default
+              r_code_def <- user_est_cop_ci_default()
+            }          
           }
-          
           if (isTruthy(input$AnalysisL == "PSE")) {
-            r_code_def <- user_est_pse_default()
+            if (input$Uncertainty_PSE == "EstEff") {
+              r_code_def <- user_est_pse_default()
+            } else {
+              # CI-based default
+              r_code_def <- user_est_pse_ci_default()
+            }
           }
         }
       }
