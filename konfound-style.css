@@ -124,7 +124,62 @@ a:hover {
 }
               
          
-              
+
+
+   
+/* Radio button subheadings styling */
+.radio-subheading {
+  font-family: 'Roboto', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: #7f9f3d;
+  margin-top: 9px;
+  margin-bottom: 0px;
+  padding: 5px;
+  margin-left: -15px;
+}
+
+#AnalysisL input[value="SUBHEADING1"], 
+#AnalysisL input[value="SUBHEADING2"] {
+  display: none !important;
+  visibility: hidden !important;
+  width: 0 !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  opacity: 0 !important;
+}
+
+/* Remove pointer cursor since these aren't clickable */
+.radio-subheading label {
+  cursor: default !important;
+}
+
+/* Ensure the subheading text styling is applied */
+.radio-subheading span {
+  font-weight: inherit;
+  color: inherit;
+}
+
+/* Additional: Hide any Bootstrap radio button styling */
+.radio-subheading .radio-inline {
+  display: none !important;
+}
+
+/* Force the parent radio div to not display the radio button */
+.radio-subheading {
+  position: relative;
+}
+
+.radio-subheading input[type="radio"] + span::before {
+  display: none !important;
+  content: none !important;
+}
+
+
+
+
+
 /* change color of most buttons */
 #startover_button, #results_pg_l, 
 #results_pg_pse, #results_pg_cop, 
@@ -207,7 +262,16 @@ label > input[type='checkbox']:checked + *::before {
   background-color: #639dad !important;
   color: #fff !important;
   font-family: 'Roboto', sans-serif;
-  text-shadow: -.0px 0 #fff, 0 .0px #fff, .0px 0 #fff, 0 -.0px #fff;
+  font-size: 8px;
+  margin-left: -6px; 
+  margin-right: 12px; 
+  margin-top: -4px;
+  vertical-align: top;
+  border: none !important;           /* Remove default button border */
+  border-radius: 50% !important;     /* Make it circular */
+  width: 16px !important;            /* Fixed width for consistency */
+  height: 16px !important;           /* Fixed height for consistency */
+  padding: 0 !important;             /* Remove default padding */
 }
               
               

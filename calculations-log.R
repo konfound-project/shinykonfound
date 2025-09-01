@@ -94,7 +94,12 @@ get_log_results <- function(input_log) {
       need(input_log$n_obs_log_ci > (input_log$n_covariates_log_ci + 2),
            "Did not run! There are too few observations relative to the number of observations and covariates. Please specify a less complex model to use KonFound-It."),
       need(input_log$upper_bnd_log_ci > input_log$lower_bnd_log_ci, 
-           "Did not run! The upper bound needs to be greater than the lower bound.")
+           paste0("Did not run! The upper bound needs to be greater than the lower bound.",
+                  " The upper bound you entered of ", input_log$upper_bnd_log_ci, 
+                  " is less than or equal than the lower bound of ", 
+                  input_log$lower_bnd_log_ci, "."
+           )
+      )
     )
     
     
