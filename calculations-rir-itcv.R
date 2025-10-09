@@ -250,6 +250,7 @@ get_rir_itcv_results <- function(input_linear) {
         )
       }
       
+      
       ##########################################################################
       ### GENERATE LINEAR RIR PLOT with Confidence Interval
       ##########################################################################
@@ -289,8 +290,6 @@ get_rir_itcv_results <- function(input_linear) {
       )
     
   }
-    
-    
     
     
     
