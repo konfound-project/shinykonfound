@@ -159,7 +159,13 @@ get_cop_results <- function(input_cop) {
            "Did not run! R2 Max needs to be less than 1."),
       need(input_cop$FR2max_cop_ci > input_cop$R2_cop_ci, 
            "Did not run! R2 Max needs to be greater than R2."),
-      need(input_cop$upper_bnd_cop_ci > input_cop$lower_bnd_cop_ci, "Did not run! The upper bound needs to be greater than the lower bound.")
+      need(input_cop$upper_bnd_cop_ci > input_cop$lower_bnd_cop_ci,
+           paste0("Did not run! The upper bound needs to be greater than the lower bound.",
+                  " The upper bound you entered of ", input_cop$upper_bnd_cop_ci, 
+                  " is less than or equal than the lower bound of ", 
+                  input_cop$lower_bnd_cop_ci, "."
+           )
+      )
     )
     
     

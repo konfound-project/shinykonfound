@@ -131,7 +131,13 @@ get_pse_results <- function(input_pse) {
                is.numeric(input_pse$sdx_pse_ci) &
                is.numeric(input_pse$sdy_pse_ci) &
                is.numeric(input_pse$R2_pse_ci), "Did not run! Did you enter numbers for the lower bound, upper bound, and number of observations? Please change any of these that are not a number."),
-        need(input_pse$upper_bnd_pse_ci > input_pse$lower_bnd_pse_ci, "Did not run! Upper bound needs to be greater than lower bound"),
+        need(input_pse$upper_bnd_pse_ci > input_pse$lower_bnd_pse_ci, 
+             paste0("Did not run! The upper bound needs to be greater than the lower bound.",
+                    " The upper bound you entered of ", input_pse$upper_bnd_pse_ci, 
+                    " is less than or equal than the lower bound of ", 
+                    input_pse$lower_bnd_pse_ci, "."
+             )
+        ),
         need(input_pse$n_obs_pse_ci > (input_pse$n_covariates_pse_ci + 2), "Did not run! There are too few observations relative to the number of observations and covariates. Please specify a less complex model to use KonFound-It."),
         need(input_pse$sdx_pse_ci > 0, "Did not run! Standard deviation of x needs to be greater than zero."),
         need(input_pse$sdy_pse_ci > 0, "Did not run! Standard deviation of y needs to be greater than zero."),

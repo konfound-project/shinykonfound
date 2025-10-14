@@ -159,7 +159,13 @@ get_rir_itcv_results <- function(input_linear) {
              "Did not run! Did you enter numbers for the lower bound, upper bound, number of observations, and number of covariates? Please change any of these that are not a number."),
         need(input_linear$n_obs_rir_ci > (input_linear$n_covariates_rir_ci + 2), 
              "Did not run! There are too few observations relative to the number of observations and covariates. Please specify a less complex model to use KonFound-It."),
-        need(input_linear$upper_bnd_rir_ci > input_linear$lower_bnd_rir_ci, "Did not run! The upper bound needs to be greater than the lower bound.")
+        need(input_linear$upper_bnd_rir_ci > input_linear$lower_bnd_rir_ci, 
+             paste0("Did not run! The upper bound needs to be greater than the lower bound.",
+                    " The upper bound you entered of ", input_linear$upper_bnd_rir_ci, 
+                    " is less than or equal than the lower bound of ", 
+                    input_linear$lower_bnd_rir_ci, "."
+             )
+        )
       )
       
       
@@ -244,6 +250,7 @@ get_rir_itcv_results <- function(input_linear) {
         )
       }
       
+      
       ##########################################################################
       ### GENERATE LINEAR RIR PLOT with Confidence Interval
       ##########################################################################
@@ -283,8 +290,6 @@ get_rir_itcv_results <- function(input_linear) {
       )
     
   }
-    
-    
     
     
     
@@ -443,7 +448,13 @@ get_rir_itcv_results <- function(input_linear) {
                "Did not run! Did you enter numbers for the lower bound, upper bound, number of observations, and number of covariates? Please change any of these that are not a number."),
           need(input_linear$n_obs_rir_ci > (input_linear$n_covariates_rir_ci + 2), 
                "Did not run! There are too few observations relative to the number of observations and covariates. Please specify a less complex model to use KonFound-It."),
-          need(input_linear$upper_bnd_rir_ci > input_linear$lower_bnd_rir_ci, "Did not run! The upper bound needs to be greater than the lower bound.")
+          need(input_linear$upper_bnd_rir_ci > input_linear$lower_bnd_rir_ci, 
+               paste0("Did not run! The upper bound needs to be greater than the lower bound.",
+                      " The upper bound you entered of ", input_linear$upper_bnd_rir_ci, 
+                      " is less than or equal than the lower bound of ", 
+                      input_linear$lower_bnd_rir_ci, "."
+               )
+          )
         )
         
         

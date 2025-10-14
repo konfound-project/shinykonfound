@@ -141,6 +141,7 @@ server <- function(input, output, session) {
       )
     })
   
+  
   ##############################################################################
   ### GENERATE LINEAR RIR + LINEAR ITCV STATA CODE
   ##############################################################################  
@@ -236,7 +237,8 @@ server <- function(input, output, session) {
         ", sdx = ", input$sdx_pse_ee, 
         ", sdy = ", input$sdy_pse_ee, 
         ", R2 = ", input$R2_pse_ee, ",", "\n\t",
-        "upper_bound = NULL, lower_bound = NULL, index = 'PSE')"
+        "upper_bound = NULL, lower_bound = NULL,", "\n\t", 
+        "index = 'PSE')"
       )
     })
   
@@ -296,6 +298,7 @@ server <- function(input, output, session) {
         "to_return = 'print', index = 'PSE')"
       )
     })
+  
   
   ##############################################################################
   ### GENERATE PSE STATA CODE
@@ -451,6 +454,7 @@ server <- function(input, output, session) {
       )
     })
   
+  
   ##############################################################################
   ### GENERATE COP STATA CODE
   ##############################################################################  
@@ -566,7 +570,6 @@ server <- function(input, output, session) {
     )
   })
   
-  
   user_est_di_ci <- 
     eventReactive(input$results_pg_di, {
       paste0(
@@ -596,6 +599,7 @@ server <- function(input, output, session) {
         "to_return = 'print', model_type = 'logistic')"
       )
     })
+  
   
   ##############################################################################
   ### GENERATE LOG STATA CODE
@@ -629,9 +633,6 @@ server <- function(input, output, session) {
         ", sig(0.05) onetail(0) switch_trm(1) replace(1) model_type(1)"
       ) 
     })
-  
-  
-  
   
   
   
