@@ -258,9 +258,12 @@ shinyUI(
                                                                       list(strong("RIR:"), 
                                                                            "Generalized Robustness of Inference to Replacement", 
                                                                            create_info_button("rir_info", "")
+                                                                      ),
+                                                                      list("Robustness of Inference to Replacement (With Fixed Standard Error)", 
+                                                                           create_info_button("rir_pse_info", "")
                                                                       )
                                                                     ),
-                                                                    choiceValues = c("SUBHEADING1", "IT", "PSE", "COP", "SUBHEADING2", "RIR"),
+                                                                    choiceValues = c("SUBHEADING1", "IT", "PSE", "COP", "SUBHEADING2", "RIR", "RIR_PSE"),
                                                                     selected = character(0)  # No default radio button selected
                                                        )
                                       )
@@ -379,7 +382,7 @@ shinyUI(
                                       ### Conditions for PSE
                                       ################################################################################
                                       
-                                      conditionalPanel(condition = "input.AnalysisL == 'PSE' && input.Outcome == 'Continuous'",
+                                      conditionalPanel(condition = "(input.AnalysisL == 'PSE' || input.AnalysisL == 'RIR_PSE') && input.Outcome == 'Continuous'",
                                                        style = "display: none;",
                                                        
                                                        
@@ -396,7 +399,7 @@ shinyUI(
                                                        ),
                                                        
                                                        conditionalPanel(condition = 
-                                                                          "input.AnalysisL == 'PSE' && input.Outcome == 'Continuous' && input.Uncertainty_PSE == 'EstEff'",
+                                                                          "(input.AnalysisL == 'PSE' || input.AnalysisL == 'RIR_PSE') && input.Outcome == 'Continuous' && input.Uncertainty_PSE == 'EstEff'",
                                                                         style = "display: none;",
                                                                         div(class = "label-style", "Enter these values (Note that decimals must be denoted with a period, e.g., 2.1):"),
                                                                         numericInput("est_effect_pse_ee", 
@@ -452,7 +455,7 @@ shinyUI(
                                                        
                                                        
                                                        conditionalPanel(condition = 
-                                                                          "input.AnalysisL == 'PSE' && input.Outcome == 'Continuous' && input.Uncertainty_PSE == 'ConfInt'",
+                                                                          "(input.AnalysisL == 'PSE' || input.AnalysisL == 'RIR_PSE') && input.Outcome == 'Continuous' && input.Uncertainty_PSE == 'ConfInt'",
                                                                         style = "display: none;",
                                                                         div(class = "label-style", "Enter these values (Note that decimals must be denoted with a period, e.g., 2.1):"),
                                                                         numericInput("lower_bnd_pse_ci", 

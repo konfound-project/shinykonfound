@@ -16,6 +16,7 @@ library(konfound)
 
 source("calculations-rir-itcv.R")
 source("calculations-pse.R")
+source("calculations-pse-rir.R",  local = TRUE)
 source("calculations-cop.R")
 source("calculations-log.R")
 
@@ -189,8 +190,19 @@ server <- function(input, output, session) {
   ### Preserve Standard Error (PSE)
   ##############################################################################
   
-  df_pse <- 
-    eventReactive(input$results_pg_pse, get_pse_results(input))
+  compute_pse <- reactive({
+    req(input$Outcome == "Continuous", input$DataL == "Linear model")
+    req(input$AnalysisL %in% c("PSE", "RIR_PSE"))  # PSE vs RIR_PSE
+    
+    if (input$AnalysisL == "RIR_PSE") {
+      get_pse_rir_results(input)  # from calculations-pse-rir.R
+    } else {
+      get_pse_results(input)      # from calculations-pse.R (component correlations)
+    }
+  })
+  
+  # Fire on the same Run button you already use for PSE
+  df_pse <- eventReactive(input$results_pg_pse, compute_pse())
   
   
   ##############################################################################
@@ -1156,6 +1168,13 @@ server <- function(input, output, session) {
               r_code <- user_est_pse_ci()
             }
           }
+          if (isTruthy(input$AnalysisL == "RIR_PSE")) {
+            if (input$Uncertainty_PSE == "EstEff") {
+              r_code <- user_est_pse()
+            } else {
+              r_code <- user_est_pse_ci()
+            }
+          }
         }
       }
       
@@ -1211,6 +1230,13 @@ server <- function(input, output, session) {
               r_code_def <- user_est_pse_ci_default()
             }
           }
+          if (isTruthy(input$AnalysisL == "RIR_PSE")) {
+            if (input$Uncertainty_PSE == "EstEff") {
+              r_code_def <- user_est_pse_default()
+            } else {
+              r_code_def <- user_est_pse_ci_default()
+            }
+          }
         }
       }
       
@@ -1245,6 +1271,9 @@ server <- function(input, output, session) {
         if(input$AnalysisL == "PSE"){
           stata_code <- s_user_est_pse()
         }
+        if(input$AnalysisL == "RIR_PSE"){
+          stata_code <- s_user_est_pse()
+        }
       }
       
       stata_code
@@ -1276,6 +1305,9 @@ server <- function(input, output, session) {
           stata_code_def <- s_user_est_cop_default()
         }
         if(input$AnalysisL == "PSE"){
+          stata_code_def <- s_user_est_pse_default()
+        }
+        if(input$AnalysisL == "RIR_PSE"){
           stata_code_def <- s_user_est_pse_default()
         }
       }
