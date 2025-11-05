@@ -6,6 +6,8 @@ library(shiny)
 library(tidyverse)
 library(konfound)
 
+
+
 ################################################################################
 ### PSE
 ################################################################################
@@ -79,7 +81,7 @@ get_pse_results <- function(input_pse) {
     
     pse_output <- 
       paste0(
-        "<strong>Component Correlations with Fixed Standard Error (Advanced Analysis):</strong><br><br>",
+        "<strong>Preserve Standard Error (Advanced Analysis):</strong><br><br>",
         "This function calculates the correlations associated with an ", 
         "omitted confounding variable (CV) that generate an estimated effect ",
         "that is approximately equal to the threshold while preserving the ",
@@ -180,7 +182,7 @@ get_pse_results <- function(input_pse) {
       
       pse_output <- 
         paste0(
-          "<strong>Component Correlations with Fixed Standard Error (Advanced Analysis):</strong><br><br>",
+          "<strong>Preserve Standard Error (Advanced Analysis):</strong><br><br>",
           "This function calculates the correlations associated with an ", 
           "omitted confounding variable (CV) that generate an estimated effect ",
           "that is approximately equal to the threshold while preserving the ",
