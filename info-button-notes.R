@@ -113,6 +113,18 @@ info_notes <-
     
     
     ############################################################################
+    rir_pse_info = list(
+      title = "More Information",
+      content = HTML(paste0(
+        "This calculates the correlation between the omitted variable and the focal predictor and between the omitted variable and the outcome necessary to make the estimated effect equal the specified threshold while the standard error remains fixed at the entered value for the original analysis. Extra inputs are required including the threshold for inference (e.g., 1.96 x standard error), standard deviation of the outcome (Y), the standard deviation of the focal predictor (X) and the observed R2."
+      )),
+      placement = "right",
+      trigger = "hover",
+      options = list(container = "body")
+    ),
+    
+    
+    ############################################################################
     cop_info = list(
       title = "More Information",
       content = HTML(paste0(
