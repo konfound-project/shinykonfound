@@ -10,6 +10,76 @@ library(konfound)
 ### PSE
 ################################################################################
 
+# helper function 1
+isinvalidate <- function(thr_t, ob_t) {
+  if ((0 < thr_t && thr_t < ob_t) || (ob_t < thr_t && thr_t < 0)) {
+    x <- TRUE
+  } else {
+    x <- FALSE
+  }
+  return(x)
+}
+
+# helper function 2
+se_preserve_replacement <- function(est_eff, std_err, n_obs, n_covariates,
+                                    sd_x, sd_y_obs,
+                                    alpha = 0.05, tails = 2) {
+  df <- n_obs - n_covariates - 3
+  
+  stopifnot(is.finite(std_err), std_err > 0,
+            is.finite(sd_x), sd_x > 0,
+            is.finite(df), df  > 0,
+            is.finite(sd_y_obs), sd_y_obs > 0,
+            is.finite(est_eff))
+  
+  t_hat <- est_eff / std_err
+  
+  # (B1) sd_{y|x} = se(delta_hat) * sd_x * sqrt(df)
+  sd_yx <- std_err * sd_x * sqrt(df)
+  
+  # critical t (signed to match the sign of the estimate);
+  # Appendix uses r# built from the critical t.
+  t_crit_abs <- if (tails == 2) stats::qt(1 - alpha/2, df) else stats::qt(1 - alpha, df)
+  t_crit     <- sign(est_eff) * abs(t_crit_abs)
+  
+  # (B3) r# = t_crit / sqrt(t_crit^2 + df)
+  r_sharp <- t_crit / sqrt(t_crit^2 + df)
+  
+  # (B2) sd_y_combined from sd_yx and r#
+  sd_y_combined <- sd_yx / sqrt(1 - r_sharp^2)
+  
+  # r_xy from the observed t (standard identity)
+  # r_xy = t / sqrt(t^2 + df)
+  r_xy <- t_hat / sqrt(t_hat^2 + df)
+  
+  # (B4) pi = 1 - ( r# * sd_y^{combined} / sd_y^{obs} ) / r_xy
+  pi <- 1 - (r_sharp * sd_y_combined / sd_y_obs) / r_xy
+  
+  # Some error messages for unusual values
+  if (!is.finite(pi)) stop("pi is not finite. Check inputs.")
+  if (pi <= 0 || pi >= 1) warning(sprintf("pi=%.4f is outside (0,1). Interpretation may be unstable.", pi))
+  
+  # (B5) solve for sd_y_unobs
+  # sd_y_combined^2 = (1 - pi) * s_y_obs^2 + pi * s_y_unobs^2
+  # hence, sd_y_unobs = sqrt( (sd_y_combined^2 - (1 - pi) * s_y_obs^2) / pi )
+  num <- sd_y_combined^2 - (1 - pi) * sd_y_obs^2
+  if (num <= 0) warning("The quantity under the square root for sd_y_unobs is non-positive. Check rounding and inputs.")
+  
+  sd_y_unobs <- sqrt(num / pi)
+  
+  est_eff_new <- t_crit * std_err
+  
+  list(
+    pi = pi,
+    sd_y_unobs = sd_y_unobs,
+    sd_yx = sd_yx,
+    r_sharp = r_sharp,
+    sd_y_combined = sd_y_combined,
+    r_xy = r_xy,
+    est_eff_new = est_eff_new
+  )
+}
+
 get_pse_rir_results <- function(input_pse) {
   
   
@@ -63,7 +133,7 @@ get_pse_rir_results <- function(input_pse) {
         )
       )
     
-    pse_rir_result <- konfound:::se_preserve_replacement(
+    pse_rir_result <- se_preserve_replacement(
       est_eff = as.numeric(input_pse$est_effect_pse_ee),
       std_err = as.numeric(input_pse$std_err_pse_ee),
       n_obs = as.numeric(input_pse$n_obs_pse_ee),
@@ -98,7 +168,7 @@ get_pse_rir_results <- function(input_pse) {
       thr_t <- qt(1 - 0.05 / 2, df)
     }
     
-    invalidate_ob <- konfound:::isinvalidate(thr_t, tyxGz)
+    invalidate_ob <- isinvalidate(thr_t, tyxGz)
     
     # Action verb and goal sentence
     action_verb <- if (invalidate_ob) "nullify the inference" else "attain statistical significance"
@@ -189,7 +259,7 @@ get_pse_rir_results <- function(input_pse) {
 
     z <- qnorm(1 - 0.05/2)
 
-    pse_rir_result <- konfound:::se_preserve_replacement(
+    pse_rir_result <- se_preserve_replacement(
       est_eff = (as.numeric(input_pse$lower_bnd_pse_ci) + as.numeric(input_pse$upper_bnd_pse_ci)) / 2,
       std_err = (as.numeric(input_pse$upper_bnd_pse_ci) - as.numeric(input_pse$lower_bnd_pse_ci)) / (2 * z),
       n_obs = as.numeric(input_pse$n_obs_pse_ci),
@@ -222,7 +292,7 @@ get_pse_rir_results <- function(input_pse) {
       thr_t <- qt(1 - 0.05 / 2, df)
     }
     
-    invalidate_ob <- konfound:::isinvalidate(thr_t, tyxGz)
+    invalidate_ob <- isinvalidate(thr_t, tyxGz)
     
     # Action verb and goal sentence
     action_verb <- if (invalidate_ob) "nullify the inference" else "attain statistical significance"
