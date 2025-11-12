@@ -98,8 +98,9 @@ get_cop_results <- function(input_cop) {
     cop_output <- 
       paste0(
         "<strong>Coefficient of Proportionality (COP):</strong><br><br>",
-        "This function calculates a correlation-based coefficient of proportionality (delta) ",
-        "which is exact even in finite samples as well as Oster's delta*. ",
+        "This function calculates a correlation-based coefficient of proportionality (COP) ",
+        "along with Oster's delta*. The correlation-based COP provides an exact measure ",
+        "even in finite samples and does not depend on the specification of a baseline model. ",
         "Using the absolute value of the estimated effect, result can be interpreted by symmetry.<br><br>",
         "Delta* is ", sprintf("%.3f", raw_calc$`delta*`),
         " (assuming no covariates in the baseline model M1), ",
@@ -208,8 +209,9 @@ get_cop_results <- function(input_cop) {
     cop_output <- 
       paste0(
         "<strong>Coefficient of Proportionality (COP):</strong><br><br>",
-        "This function calculates a correlation-based coefficient of proportionality (delta) ",
-        "which is exact even in finite samples as well as Oster's delta*. ",
+        "This function calculates a correlation-based coefficient of proportionality (COP) ",
+        "along with Oster's delta*. The correlation-based COP provides an exact measure ",
+        "even in finite samples and does not depend on the specification of a baseline model. ",
         "Using the absolute value of the estimated effect, result can be interpreted by symmetry.<br><br>",
         "Delta* is ", sprintf("%.3f", raw_calc$`delta*`),
         " (assuming no covariates in the baseline model M1), ",
