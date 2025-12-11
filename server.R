@@ -7,11 +7,14 @@ library(tidyverse)
 library(shinyjs)
 library(rclipboard)
 library(fedmatch)
+library(googlesheets4)
+
 
 # install.packages("remotes")
 # remotes::install_github("deepanshu88/shinyDarkmode")
 library(shinyDarkmode)
 
+#devtools::install_github("konfound-project/konfound")
 library(konfound)
 
 source("calculations-rir-itcv.R")
@@ -26,6 +29,11 @@ source("calculations-log.R")
 
 jscode <- "shinyjs.refresh_page = function() { history.go(0); }" 
 
+if (file.exists("konfound-shiny-service-account-key.json")) {
+  gs4_auth(path = "konfound-shiny-service-account-key.json")
+}
+
+EMAIL_SHEET_ID <- "https://docs.google.com/spreadsheets/d/1sO4ADOz_tBTnFcg0poty_LSUHRypWS3yXPLB-k7f5qA"
 
 server <- function(input, output, session) {
   
@@ -42,7 +50,30 @@ server <- function(input, output, session) {
   r <- reactiveValues(print_results1 = "") # Create empty reactive string for printed results (formatted).
   r <- reactiveValues(print_results2 = "") # Create empty reactive string for printed results (raw).
   
+
   
+  observeEvent(input$submit_email_button, {
+    
+    req(input$user_email) # Stop if empty
+    
+    new_data <- 
+      data.frame(
+        Timestamp = Sys.time(),
+        Email = input$user_email
+      )
+    
+    # Save the data
+    tryCatch({
+      sheet_append(EMAIL_SHEET_ID, new_data)
+      output$confirmation <- 
+        renderText("Success! We received your email. Thank you!")
+      updateTextInput(session, "user_email", value = "")
+    }, error = function(e) {
+      output$confirmation <- 
+        renderText("Error: Could not save your email.")
+    })
+    
+  })
   
   
   

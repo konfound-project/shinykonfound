@@ -153,6 +153,26 @@ shinyUI(
   navbarPage("",
              tabPanel(div(icon("house", lib = "font-awesome"), " Home"),
                       
+                      wellPanel(
+                        style = "background-color: #eee !important;",
+                        align = "center",
+                        p(strong("Would you be willing to share your email address (optional)?"),
+                          style = "font-size: 18px; margin-bottom: 5px;"),
+                        p(em("We would like to reach out to the people using sensitivity analysis techniques."),
+                          style = "font-size: 16px; margin-bottom: 5px;"),
+                        textInput(
+                          inputId = "user_email", 
+                          label = NULL,  # Label is hidden because the text above covers it
+                          placeholder = "name@example.com", 
+                          width = "300px"
+                        ),
+                        actionButton(inputId = "submit_email_button", 
+                                     "Share Email"),
+                        textOutput("confirmation")
+                      ),
+                      
+                      
+                      
                       sidebarLayout(
                         sidebarPanel(
                           verticalLayout(
@@ -799,10 +819,12 @@ shinyUI(
 
                         mainPanel(
                           verticalLayout(
-                            fluidRow(
-                              br(.noWS = "before"),
-                              align = "center",
-                              h3("Results")),
+                            
+                            wellPanel(
+                              fluidRow(
+                                align = "center",
+                                h3("Results")
+                              ),
                               
                               wellPanel(
                                 p(h4("Text Output")),
@@ -923,6 +945,7 @@ shinyUI(
                                   )
                                 )
                               )
+                            )
                             ),
 
 
