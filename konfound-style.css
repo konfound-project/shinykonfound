@@ -74,6 +74,16 @@ a:hover {
   color: #000;
   font-size: 16px;
 }
+
+
+
+/* change the text ACTUALLY TYPED into the box */
+.form-control {
+  color: #000; /* Sets the typed text color to black */
+  font-family: Monospace;
+  font-size: 14px;
+  font-weight: 600;
+}
               
               
               
