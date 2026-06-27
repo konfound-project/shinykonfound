@@ -259,7 +259,7 @@ get_cop_results <- function(input_cop) {
     list(
       text = cop_output,
       plot = raw_calc$Figure +
-        ggplot2::theme(text = ggplot2::element_text(size = 15)),
+        ggplot2::theme(text = ggplot2::element_text(size = 20)),
       raw = r_output
     )
   

@@ -616,7 +616,8 @@ get_rir_itcv_results <- function(input_linear) {
   linear_results <-
     list(
       text = linear_output,
-      plot = linear_plot,
+      plot = linear_plot +
+        ggplot2::theme(text = ggplot2::element_text(size = 18)),
       raw = r_output
     )
   
