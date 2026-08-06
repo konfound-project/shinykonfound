@@ -151,28 +151,7 @@ shinyUI(
 
   
   navbarPage("",
-             tabPanel(div(icon("house", lib = "font-awesome"), " Home"),
-                      
-                      wellPanel(
-                        style = "background-color: #eee !important;",
-                        align = "center",
-                        p(strong("Would you be willing to share your email address (optional)?"),
-                          style = "font-size: 18px; margin-bottom: 5px;"),
-                        p(em("We would like to reach out to the people using sensitivity analysis techniques."),
-                          style = "font-size: 16px; margin-bottom: 5px;"),
-                        textInput(
-                          inputId = "user_email", 
-                          label = NULL,  # Label is hidden because the text above covers it
-                          placeholder = "name@example.com", 
-                          width = "300px"
-                        ),
-                        actionButton(inputId = "submit_email_button", 
-                                     "Share Email"),
-                        textOutput("confirmation")
-                      ),
-                      
-                      
-                      
+             tabPanel(div(icon("house", lib = "font-awesome"), " Home"),  
                       sidebarLayout(
                         sidebarPanel(
                           verticalLayout(
@@ -208,7 +187,6 @@ shinyUI(
                             wellPanel(p(h4("Step 2", create_info_button("step2info", ""))),
                                       
                                       conditionalPanel(condition = "input.Outcome == 'Dichotomous'",
-                                                       style = "display: none;",
                                                        radioButtons("DataD", 
                                                                     div(class = "label-style", "Select source of data:"),
                                                                     choices = c("2x2 table", "Logistic model"),
@@ -217,7 +195,6 @@ shinyUI(
                                       ),
                                       
                                       conditionalPanel(condition = "input.Outcome == 'Continuous'",
-                                                       style = "display: none;",
                                                        radioButtons("DataL", 
                                                                     div(class = "label-style", "Select source of data:"),
                                                                     choiceNames = list("Estimates from a linear model"),
@@ -238,7 +215,6 @@ shinyUI(
                             wellPanel(p(h4("Step 3", create_info_button("step3info", ""))),
                                       
                                       conditionalPanel(condition = "input.Outcome == 'Dichotomous' && (input.DataD == 'Logistic model' || input.DataD == '2x2 table')",
-                                                       style = "display: none;",
                                                        radioButtons("Analysis", 
                                                                     div(class = "label-style", "Select type of analysis:"),
                                                                     choiceNames = list(
@@ -253,7 +229,6 @@ shinyUI(
                                       ),
                                       
                                       conditionalPanel(condition = "input.Outcome == 'Continuous' && input.DataL == 'Linear model'",
-                                                       style = "display: none;",
                                                        radioButtons("AnalysisL",
                                                                     div(class = "label-style", "Select type of analysis:"),
                                                                     choiceNames = list(
@@ -305,7 +280,6 @@ shinyUI(
                                       ################################################################################
                                       
                                       conditionalPanel(condition = "(input.AnalysisL == 'IT' || input.AnalysisL == 'RIR') && input.Outcome == 'Continuous'",
-                                                       style = "display: none;",
                                                        
                                                        radioButtons("Uncertainty_RIR", 
                                                                     div(class = "label-style", "Select format of input:"),
@@ -322,7 +296,6 @@ shinyUI(
                                                        
                                                        conditionalPanel(condition = 
                                                                           "(input.AnalysisL == 'IT' || input.AnalysisL == 'RIR') && input.Outcome == 'Continuous' && input.Uncertainty_RIR == 'EstEff'",
-                                                                        style = "display: none;",
                                                                         div(class = "label-style", "Enter these values (Note that decimals must be denoted with a period, e.g., 2.1):"),
                                                                         
                                                                         numericInput("est_effect_rir_ee", 
@@ -358,7 +331,6 @@ shinyUI(
                                                        
                                                        conditionalPanel(condition = 
                                                                           "(input.AnalysisL == 'IT' || input.AnalysisL == 'RIR') && input.Outcome == 'Continuous' && input.Uncertainty_RIR == 'ConfInt'",
-                                                                        style = "display: none;",
                                                                         div(class = "label-style", "Enter these values (Note that decimals must be denoted with a period, e.g., 2.1):"),
                                                                         
                                                                         numericInput("lower_bnd_rir_ci", 
@@ -400,7 +372,6 @@ shinyUI(
                                       ################################################################################
                                       
                                       conditionalPanel(condition = "input.AnalysisL == 'PSE' && input.Outcome == 'Continuous'",
-                                                       style = "display: none;",
                                                        
                                                        
                                                        radioButtons("Uncertainty_PSE", 
@@ -417,7 +388,6 @@ shinyUI(
                                                        
                                                        conditionalPanel(condition = 
                                                                           "input.AnalysisL == 'PSE' && input.Outcome == 'Continuous' && input.Uncertainty_PSE == 'EstEff'",
-                                                                        style = "display: none;",
                                                                         div(class = "label-style", "Enter these values (Note that decimals must be denoted with a period, e.g., 2.1):"),
                                                                         numericInput("est_effect_pse_ee", 
                                                                                      list("Estimated Effect",
@@ -473,7 +443,6 @@ shinyUI(
                                                        
                                                        conditionalPanel(condition = 
                                                                           "input.AnalysisL == 'PSE' && input.Outcome == 'Continuous' && input.Uncertainty_PSE == 'ConfInt'",
-                                                                        style = "display: none;",
                                                                         div(class = "label-style", "Enter these values (Note that decimals must be denoted with a period, e.g., 2.1):"),
                                                                         numericInput("lower_bnd_pse_ci", 
                                                                                      list("Lower Bound", 
@@ -534,7 +503,6 @@ shinyUI(
                                       ################################################################################
                                       
                                       conditionalPanel(condition = "input.AnalysisL == 'COP' && input.Outcome == 'Continuous'",
-                                                       style = "display: none;",
                                                        
                                                        radioButtons("Uncertainty_COP", 
                                                                     div(class = "label-style", "Select format of input:"),
@@ -551,7 +519,6 @@ shinyUI(
                                                        
                                                        conditionalPanel(condition = 
                                                                           "input.AnalysisL == 'COP' && input.Outcome == 'Continuous' && input.Uncertainty_COP == 'EstEff'",
-                                                                        style = "display: none;",
                                                                         div(class = "label-style", "Enter these values (Note that decimals must be denoted with a period, e.g., 2.1):"),
                                                                         
                                                                         numericInput("est_effect_cop_ee", 
@@ -614,7 +581,6 @@ shinyUI(
                                                         
                                                        conditionalPanel(condition = 
                                                                           "input.AnalysisL == 'COP' && input.Outcome == 'Continuous' && input.Uncertainty_COP == 'ConfInt'",
-                                                                        style = "display: none;",
                                                                         div(class = "label-style", "Enter these values (Note that decimals must be denoted with a period, e.g., 2.1):"),
                                                                         
                                                                         numericInput("lower_bnd_cop_ci", 
@@ -681,7 +647,6 @@ shinyUI(
                                       ################################################################################
                                       
                                       conditionalPanel(condition = "input.DataD == 'Logistic model' && input.Outcome == 'Dichotomous'",
-                                                       style = "display: none;",
                                                        
                                                        
                                                        radioButtons("Uncertainty_log", 
@@ -694,7 +659,6 @@ shinyUI(
                                                        
                                                        conditionalPanel(condition = 
                                                                           "input.DataD == 'Logistic model' && input.Outcome == 'Dichotomous' && input.Uncertainty_log == 'EstEff'",
-                                                                        style = "display: none;",
                                                                         div(class = "label-style", "Enter these values (Note that decimals must be denoted with a period, e.g., 2.1):"),
                                                                         
                                                                         numericInput("est_effect_log_ee", 
@@ -736,7 +700,6 @@ shinyUI(
                                                        
                                                        conditionalPanel(condition = 
                                                                           "input.DataD == 'Logistic model' && input.Outcome == 'Dichotomous' && input.Uncertainty_log == 'ConfInt'",
-                                                                        style = "display: none;",
                                                                         div(class = "label-style", "Enter these values (Note that decimals must be denoted with a period, e.g., 2.1):"),
                                                                         
                                                                         numericInput("lower_bnd_log_ci", 
@@ -782,7 +745,6 @@ shinyUI(
                                       
                                       conditionalPanel(condition = "(input.Analysis == 'RIR' || input.Analysis == 'Fragility') &&
                                                                                          (input.DataD == '2x2 table' && input.Outcome == 'Dichotomous')",
-                                                       style = "display: none;",
                                                        div(class = "label-style", "Enter these values:"),
                                                        numericInput("ctrl_fail", 
                                                                     "Control Condition: Result Failure", 
